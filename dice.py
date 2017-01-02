@@ -1,0 +1,5 @@
+
+class Dice(object):
+    pass
+
+
