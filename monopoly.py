@@ -19,8 +19,12 @@ def player_menu_loop():
                     utils.draw_player_menu(one, two)
 
                 elif event.key == pygame.K_RETURN:
-                    print one, two
-                    return
+                    if (one, two) == ('black', 'blue'):
+                        PvAI = True
+                        return
+                    elif (one, two) == ('blue', 'black'):
+                        PvAI = False
+                        return
 
 
         pygame.display.update()
