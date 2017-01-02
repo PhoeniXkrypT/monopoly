@@ -4,10 +4,12 @@ import pygame
 DISPLAY_W, DISPLAY_H = 800, 800
 BLACK = (0, 0, 0)
 WHITE = (255, 255, 255)
+BLUE = (0, 0, 255)
 GD = None
 CLK = None
 BACK_IMG = None
 P1_IMG = None
+PvAI = False
 
 def load_imgs():
     global BACK_IMG, P1_IMG
@@ -22,6 +24,7 @@ def init_pygame():
     GD = pygame.display.set_mode((DISPLAY_W, DISPLAY_H))
     pygame.display.set_caption('Monopoly')
     CLK = pygame.time.Clock()
+
 
 def init():
     init_pygame()
