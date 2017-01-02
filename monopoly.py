@@ -43,9 +43,9 @@ def game_loop():
             'yellow':['North Carolina Avenue']*3,
             'green':['North Carolina Avenue']*3,
     }
-    p1 = PlayerInfoUI('Player 1', 810, 10, 'royal_blue')
+    p1 = PlayerInfoUI(mglobals.PLAYER_ONE)
     p1.update_properties(prop)
-    p2 = PlayerInfoUI('Player 2', 810, 410, 'sea_green')
+    p2 = PlayerInfoUI(mglobals.PLAYER_TWO)
     p2.update_properties(prop)
     p1.render(); p2.render();
 
