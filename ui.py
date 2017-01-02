@@ -35,12 +35,17 @@ color_offset = {
 
 
 class PlayerInfoUI(object):
-    def __init__(self, player_name, x, y, color, cash=mglobals.CASH_INITIAL, properties={}):
+    def __init__(self, player_name, cash=mglobals.CASH_INITIAL, properties={}):
         self.player_name = player_name
-        self.x = x
-        self.y = y
+        if self.player_name == mglobals.PLAYER_ONE:
+            self.x = 810
+            self.y = 10
+            self.color = 'royal_blue'
+        elif self.player_name in [mglobals.PLAYER_TWO, mglobals.PLAYER_AI]:
+            self.x = 810
+            self.y = 410
+            self.color = 'sea_green'
         self.cash = cash
-        self.color = color
         self.properties = properties
         self._draw_rect()
 

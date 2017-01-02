@@ -21,6 +21,10 @@ GREEN = (0, 255, 0)
 SEA_GREEN = (46, 139, 87)
 BLUE = (0, 0, 255)
 
+PLAYER_ONE = 'Player 1'
+PLAYER_TWO = 'Player 2'
+PLAYER_AI  = 'Player AI'
+
 color_map = {
         'purple': PURPLE,
         'black': BLACK,
