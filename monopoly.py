@@ -5,6 +5,8 @@ import time
 import mglobals
 import utils
 
+from ui import PlayerInfoUI
+
 def player_menu_loop():
     one, two = 'black', 'blue'
     utils.draw_player_menu(one, two)
@@ -26,11 +28,27 @@ def player_menu_loop():
                         PvAI = False
                         return
 
-
         pygame.display.update()
         mglobals.CLK.tick(30)
 
 def game_loop():
+    utils.draw_background()
+    prop ={
+            'blue':['North Carolina Avenue']*2,
+            'purple':['Mediteranean Avenue']*2,
+            'sky_blue':['North Carolina Avenue']*3,
+            'pink':['North Carolina Avenue']*3,
+            'orange':['North Carolina Avenue']*3,
+            'red':['North Carolina Avenue']*3,
+            'yellow':['North Carolina Avenue']*3,
+            'green':['North Carolina Avenue']*3,
+    }
+    p1 = PlayerInfoUI('Player 1', 810, 10, 'royal_blue')
+    p1.update_properties(prop)
+    p2 = PlayerInfoUI('Player 2', 810, 410, 'sea_green')
+    p2.update_properties(prop)
+    p1.render(); p2.render();
+
     while True:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:

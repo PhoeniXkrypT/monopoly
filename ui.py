@@ -1,4 +1,9 @@
 
+import pygame
+
+import utils
+import mglobals
+
 class CentralUI(object):
     pass
 
@@ -16,3 +21,68 @@ class IncomeTaxUI(CentralUI):
 
 class LuxuryTaxUI(CentralUI):
     pass
+
+color_offset = {
+        'blue': (5, 15),
+        'brown': ( ),
+        'green': (),
+        'orange': (),
+        'pink': (),
+        'red': (),
+        'sky_blue': (),
+        'yellow': (),
+};
+
+
+class PlayerInfoUI(object):
+    def __init__(self, player_name, x, y, color, cash=mglobals.CASH_INITIAL, properties={}):
+        self.player_name = player_name
+        self.x = x
+        self.y = y
+        self.cash = cash
+        self.color = color
+        self.properties = properties
+        self._draw_rect()
+
+    def _draw_rect(self):
+        pygame.draw.rect(mglobals.GD, mglobals.color_map[self.color],
+                        [self.x, self.y, 375, 375], 4)
+
+    def _print_color(self, color, properties_list, x, y, y_inc):
+        utils.message_display_lines([i[:10] for i in properties_list],
+                                    x, y, y_inc, color, fntsize='small')
+
+    def update_cash(self, cash):
+        self.cash = cash
+
+    def update_properties(self, properties):
+        self.properties = properties
+
+    def _render_properties(self):
+        self._draw_rect()
+        x_offset, y_offset = 90, 180
+        y_start = 50
+        x_current, y_current = 0, 0
+        for i, color in enumerate(sorted(self.properties.keys())):
+            if i == 0:
+                x_current, y_current = self.x + 50, self.y + 70
+            elif i == 4:
+                x_current, y_current = self.x + 50, self.y + 220
+                y_offset = y_start + y_offset + 5
+            else:
+                x_current += 90
+
+            self._print_color(color, self.properties[color],
+                              x_current, y_current, 50)
+
+    def _render_name_score(self):
+        utils.message_display("%s : %d" %(self.player_name, self.cash),
+                              self.x + 100,
+                              self.y + 30,
+                              color=self.color,
+                              fntsize='mid')
+
+    def render(self):
+        self._render_name_score()
+        self._render_properties()
+
