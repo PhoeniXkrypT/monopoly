@@ -70,6 +70,7 @@ def init_pygame():
     GD = pygame.display.set_mode((DISPLAY_W, DISPLAY_H))
     pygame.display.set_caption('Monopoly')
     CLK = pygame.time.Clock()
+    pygame.event.set_allowed([pygame.QUIT, pygame.KEYDOWN, pygame.KEYUP])
 
 
 def init():
