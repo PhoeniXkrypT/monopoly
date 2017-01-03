@@ -20,22 +20,24 @@ class Player(object):
         self.properties = None
         self.money = 1500
         self.in_jail = False
-        self.free_jail_pass = False
+        self.free_jail_pass = 0
         self.pm = PlayerMovement()
         self.piu = PlayerInfoUI(self.player_name, self.money, {})
         self.piu.render()
 
-    def give(self, cash):
-        pass
+    def give_player_money(self, cash):
+        self.money += cash
+        self.piu.update_cash(self.money)
 
-    def take(self, cash):
-        pass
+    def take_player_money(self, cash):
+        self.money -= cash
+        self.piu.update_cash(self.money)
+        #TODO handle negative money, mortgage etc
 
     def buy_property(self):
         pass
 
-    def sell_property(self):
-        pass
+    #def sell_property(self):
 
     def mortgage_property(self):
         pass

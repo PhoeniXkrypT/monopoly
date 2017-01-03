@@ -59,6 +59,9 @@ class PlayerInfoUI(object):
 
     def update_cash(self, cash):
         self.cash = cash
+        self.render()
+
+    #TODO seperate render for cash and properties
 
     def update_properties(self, properties):
         self.properties = properties
@@ -80,7 +83,7 @@ class PlayerInfoUI(object):
             self._print_color(color, self.properties[color],
                               x_current, y_current, 50)
 
-    def _render_name_score(self):
+    def _render_name_cash(self):
         utils.message_display("%s : %d" %(self.player_name, self.cash),
                               self.x + 100,
                               self.y + 30,
@@ -88,6 +91,6 @@ class PlayerInfoUI(object):
                               fntsize='mid')
 
     def render(self):
-        self._render_name_score()
+        self._render_name_cash()
         self._render_properties()
 
