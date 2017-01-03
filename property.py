@@ -1,5 +1,5 @@
-# NEED TO ADD JAIL
-# GO square
+#TODO NEED TO ADD JAIL
+#TODO GO square
 
 class Property(object):
     def __init__(self, property_name, cost, color, rent_details, mortgage_val,
@@ -15,42 +15,69 @@ class Property(object):
         self.owner_name = owner_name
 
         self.house_count = 0
+        #TODO self.purchased can probably be removed
         self.purchased = False
         self.mortgaged = False
 
     def purchase(self, owner_name):
-        self.owner_name = owner_name
-        self.purchased = True
+        if not self.purchased:
+            self.owner_name = owner_name
+            self.purchased = True
+            return (True,)
+        return (False, '%s is already purchased!' % (self.property_name))
 
-    def mortgage(self):
-        self.mortgaged = True
-        return self.mortgage_val
-
-    def can_mortgage(self):
-        if self.house_count != 0:
-            return (False, 'Cannot mortgage property with houses!')
-        return True
-
-    def can_unmortgage(self, balance):
-        if balance >= self.mortgage_val * 1.1:
-            return True
-        return (False, 'Not enough balalnce!')
-
-    def unmortgage(self):
-        self.mortgaged = False
-        return int(self.mortgage_val * 1.1)
-
-    def compute_rent(self):
+    def can_mortgage(self, currentplayer):
+        if self.owner_name != currentplayer:
+            return (False, '%s does not own %s!' % (currentplayer, self.property_name))
         if self.mortgaged:
+            return (False, '%s is already mortgaged!' % (self.property_name))
+        if self.house_count != 0:
+            return (False, '%s has houses, so cannot mortgage!' % (self.property_name))
+        return (True,)
+
+    def mortgage(self, currentplayer):
+        if self.can_mortgage(currentplayer)[0]:
+            self.mortgaged = True
+            return self.mortgage_val
+        return 0
+
+    def can_unmortgage(self, currentplayer, balance):
+        if self.owner_name != currentplayer:
+            return (False, '%s does not own %s!' % (currentplayer, self.property_name))
+        if not self.mortgaged:
+            return (False, '%s is not mortgaged!' %(self.property_name))
+        if balance < self.mortgage_val * 1.1:
+            return (False, '%s does not have enough balalnce to unmortgage %s!'
+                           %(self.owner_name, self.property_name))
+        return (True,)
+
+    def unmortgage(self, currentplayer, balance):
+        if self.can_unmortgage(currentplayer, balance)[0]:
+            self.mortgaged = False
+            return int(self.mortgage_val * 1.1)
+        return 0
+
+    def compute_rent(self, currentplayer):
+        if currentplayer == self.owner_name or \
+           self.mortgaged:
             return 0
         if self.house_count == 0 and self.color_all:
             return self.rent_details[self.house_count] * 2
         return self.rent_details[self.house_count]
 
-    def build_house(self):
+    def build_house(self, currentplayer, balance):
+        #TODO even number of houses checked inside player
+        if self.owner_name != currentplayer:
+            return (False, '%s does not own %s!' % (currentplayer, self.property_name))
         if not color_all:
-            return (False,'Buy all properties of this color FIRST!!')
-        #check owner, cash and even number of houses
+            return (False, 'Buy all properties of this color FIRST!!')
+        if self.mortgaged:
+            return (False, '%s is mortgaged, cannot build' %(self.property_name))
+        if balance < self.house_hotel_cost:
+            return (False, '%s does not have enough money to build' %(self.owner_name))
+        self.house_count += 1
+        return (True,)
+
 
 class UtilityProperty(object):
     def __init__(self, property_name, cost, mortgage, owner_name=mglobals.BANK):
