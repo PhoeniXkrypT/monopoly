@@ -36,7 +36,7 @@ def player_menu_loop():
         mglobals.CLK.tick(30)
 
 def game_loop():
-    utils.draw_background()
+    utils.draw_board()
     prop ={
             'blue':['North Carolina Avenue']*2,
             'purple':['Mediteranean Avenue']*2,
@@ -62,10 +62,10 @@ def game_loop():
                 return
             elif event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_LEFT:
-                    utils.draw_background()
+                    utils.draw_board()
                     ps1.advance()
                 elif event.key == pygame.K_RIGHT:
-                    utils.draw_background()
+                    utils.draw_board()
                     ps1.goback()
 
         pygame.display.update()

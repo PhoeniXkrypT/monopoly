@@ -36,8 +36,7 @@ def message_display_lines(lines, x=mglobals.DISPLAY_W/2, y=mglobals.DISPLAY_H/2,
         message_display(line, x, y, color=color, fntsize=fntsize)
         y += y_inc
 
-def draw_background():
-    mglobals.GD.fill(mglobals.WHITE)
+def draw_board():
     mglobals.GD.blit(mglobals.BACK_IMG, (0, 0))
 
 def draw_player_menu(ocolor1, ocolor2):
