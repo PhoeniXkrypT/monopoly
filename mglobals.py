@@ -24,6 +24,7 @@ BLUE = (0, 0, 255)
 PLAYER_ONE = 'Player 1'
 PLAYER_TWO = 'Player 2'
 PLAYER_AI  = 'Player AI'
+BANK       = 'BANK'
 
 color_map = {
         'purple': PURPLE,
