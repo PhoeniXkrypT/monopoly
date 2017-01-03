@@ -24,6 +24,10 @@ BLUE = (0, 0, 255)
 
 PLAYER_ONE = 'Player 1'
 PLAYER_TWO = 'Player 2'
+
+PLAYER_ONE_COLOR = 'royal_blue'
+PLAYER_TWO_COLOR = 'sea_green'
+
 PLAYER_AI  = 'Player AI'
 BANK       = 'BANK'
 

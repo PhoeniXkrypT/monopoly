@@ -9,7 +9,7 @@ import property as _property
 
 from ui import PlayerInfoUI
 import ui
-from player import PlayerSelection
+from player import PlayerSelection, Player
 
 def player_menu_loop():
     one, two = 'black', 'blue'
@@ -46,18 +46,23 @@ def game_loop():
     for i in _property.PROPERTIES:
         prop[i.color].append(i.property_name)
 
-    p1 = PlayerInfoUI(mglobals.PLAYER_ONE)
-    p1.update_properties(prop)
-    p2 = PlayerInfoUI(mglobals.PLAYER_TWO)
-    p2.update_properties(prop)
+    # p1 = PlayerInfoUI(mglobals.PLAYER_ONE, 'royal_blue')
+    # p1.update_properties(prop)
+    # p2 = PlayerInfoUI(mglobals.PLAYER_TWO, 'sea_green')
+    # p2.update_properties(prop)
 
-    p1.render()
-    p2.render()
+    # p1.render()
+    # p2.render()
 
     # utils.clear_p2_info()
 
-    ps1 = PlayerSelection(1, 'royal_blue')
-    ps1.render()
+    # ps1 = PlayerSelection(1, 'royal_blue')
+    # ps1.render()
+
+    P1 = Player(mglobals.PLAYER_ONE)
+    P2 = Player(mglobals.PLAYER_TWO)
+
+    currentplayer, otherplayer = P1, P2
 
     while True:
         for event in pygame.event.get():
@@ -66,10 +71,14 @@ def game_loop():
             elif event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_LEFT:
                     utils.draw_board()
-                    ps1.advance()
+                    currentplayer.ps.advance()
+                    otherplayer.ps.render()
+                    # ps1.advance()
                 elif event.key == pygame.K_RIGHT:
                     utils.draw_board()
-                    ps1.goback()
+                    currentplayer.ps.goback()
+                    otherplayer.ps.render()
+                    # ps1.goback()
 
         mglobals.PROPERTY_DISPLAYS.update()
         mglobals.PROPERTY_DISPLAYS.draw(mglobals.GD)

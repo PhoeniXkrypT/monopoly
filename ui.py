@@ -59,18 +59,17 @@ def init_property_displays():
         mglobals.PROPERTY_NAME_SPRITE_MAP[i.property_name] = temp
 
 class PlayerInfoUI(object):
-    def __init__(self, player_name, cash=mglobals.CASH_INITIAL, properties={}):
+    def __init__(self, player_name, color, cash=mglobals.CASH_INITIAL, properties={}):
         self.player_name = player_name
         if self.player_name == mglobals.PLAYER_ONE:
             self.x = 810
             self.y = 10
-            self.color = 'royal_blue'
         elif self.player_name in [mglobals.PLAYER_TWO, mglobals.PLAYER_AI]:
             self.x = 810
             self.y = 410
-            self.color = 'sea_green'
         self.cash = cash
         self.properties = properties
+        self.color = color
         self._draw_rect()
 
     def _draw_rect(self):

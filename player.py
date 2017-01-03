@@ -26,6 +26,7 @@ class PlayerSelection(object):
         self.x, self.y = 0, 0
         self.cw, self.ch = 0, 0
         self.reposition()
+        self.render()
 
     def reposition(self):
         # If the position corresponds to a square
@@ -95,12 +96,16 @@ class PlayerSelection(object):
 class Player(object):
     def __init__(self, player_name):
         self.player_name = player_name
+        self.color = mglobals.PLAYER_ONE_COLOR \
+                            if self.player_name == mglobals.PLAYER_ONE \
+                            else mglobals.PLAYER_TWO_COLOR
         self.properties = None
         self.money = 1500
         self.in_jail = False
         self.free_jail_pass = 0
         self.pm = PlayerMovement()
-        self.piu = PlayerInfoUI(self.player_name, self.money, {})
+        self.ps = PlayerSelection(0, self.color)
+        self.piu = PlayerInfoUI(self.player_name, self.color)
         self.piu.render()
 
     def give_player_money(self, cash):
