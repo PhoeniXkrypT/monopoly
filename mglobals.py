@@ -2,6 +2,7 @@
 import pygame
 
 DISPLAY_W, DISPLAY_H = 1200, 800
+BOARD_WIDTH = 800
 
 BLACK = (0, 0, 0)
 WHITE = (255, 255, 255)
@@ -25,6 +26,8 @@ PLAYER_ONE = 'Player 1'
 PLAYER_TWO = 'Player 2'
 PLAYER_AI  = 'Player AI'
 BANK       = 'BANK'
+
+BOARD_SQUARES = 40
 
 color_map = {
         'purple': PURPLE,

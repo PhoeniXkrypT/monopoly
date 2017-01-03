@@ -6,6 +6,7 @@ import mglobals
 import utils
 
 from ui import PlayerInfoUI
+from player import PlayerSelection
 
 def player_menu_loop():
     one, two = 'black', 'blue'
@@ -16,6 +17,9 @@ def player_menu_loop():
                 pygame.quit()
                 quit()
             elif event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_q:
+                    pygame.quit()
+                    quit()
                 if event.key in [pygame.K_RIGHT, pygame.K_LEFT]:
                     one, two = two, one
                     utils.draw_player_menu(one, two)
@@ -49,12 +53,20 @@ def game_loop():
     p2.update_properties(prop)
     p1.render(); p2.render();
 
+    ps1 = PlayerSelection(1, 'royal_blue')
+    ps1.render()
+
     while True:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 return
             elif event.type == pygame.KEYDOWN:
-                utils.draw_background()
+                if event.key == pygame.K_LEFT:
+                    utils.draw_background()
+                    ps1.advance()
+                elif event.key == pygame.K_RIGHT:
+                    utils.draw_background()
+                    ps1.goback()
 
         pygame.display.update()
         mglobals.CLK.tick(30)
