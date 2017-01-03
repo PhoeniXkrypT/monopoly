@@ -53,6 +53,8 @@ def game_loop():
     p2.update_properties(prop)
     p1.render(); p2.render();
 
+    utils.clear_p2_info()
+
     ps1 = PlayerSelection(1, 'royal_blue')
     ps1.render()
 

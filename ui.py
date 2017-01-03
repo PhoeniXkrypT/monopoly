@@ -51,7 +51,7 @@ class PlayerInfoUI(object):
 
     def _draw_rect(self):
         pygame.draw.rect(mglobals.GD, mglobals.color_map[self.color],
-                        [self.x, self.y, 375, 375], 4)
+                         [self.x, self.y, 375, 375], 4)
 
     def _print_color(self, color, properties_list, x, y, y_inc):
         utils.message_display_lines([i[:10] for i in properties_list],
