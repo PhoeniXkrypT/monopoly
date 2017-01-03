@@ -1,11 +1,14 @@
 
 import pygame
 import time
+import collections
 
 import mglobals
 import utils
+import property as _property
 
 from ui import PlayerInfoUI
+import ui
 from player import PlayerSelection
 
 def player_menu_loop():
@@ -37,23 +40,21 @@ def player_menu_loop():
 
 def game_loop():
     utils.draw_board()
-    prop ={
-            'blue':['North Carolina Avenue']*2,
-            'purple':['Mediteranean Avenue']*2,
-            'sky_blue':['North Carolina Avenue']*3,
-            'pink':['North Carolina Avenue']*3,
-            'orange':['North Carolina Avenue']*3,
-            'red':['North Carolina Avenue']*3,
-            'yellow':['North Carolina Avenue']*3,
-            'green':['North Carolina Avenue']*3,
-    }
+
+    prop = collections.defaultdict(list)
+
+    for i in _property.PROPERTIES:
+        prop[i.color].append(i.property_name)
+
     p1 = PlayerInfoUI(mglobals.PLAYER_ONE)
     p1.update_properties(prop)
     p2 = PlayerInfoUI(mglobals.PLAYER_TWO)
     p2.update_properties(prop)
-    p1.render(); p2.render();
 
-    utils.clear_p2_info()
+    p1.render()
+    p2.render()
+
+    # utils.clear_p2_info()
 
     ps1 = PlayerSelection(1, 'royal_blue')
     ps1.render()
@@ -70,12 +71,16 @@ def game_loop():
                     utils.draw_board()
                     ps1.goback()
 
+        mglobals.PROPERTY_DISPLAYS.update()
+        mglobals.PROPERTY_DISPLAYS.draw(mglobals.GD)
+
         pygame.display.update()
         mglobals.CLK.tick(30)
 
 def main():
     mglobals.init()
     player_menu_loop()
+    ui.init_property_displays()
     game_loop()
     pygame.quit()
     quit()

@@ -4,6 +4,8 @@ import pygame
 import utils
 import mglobals
 
+import property as _property
+
 class CentralUI(object):
     pass
 
@@ -33,6 +35,28 @@ color_offset = {
         'yellow': (),
 };
 
+class PropertyDisplay(pygame.sprite.Sprite):
+    def __init__(self, property_name, color, fntsize='small'):
+        super(PropertyDisplay, self).__init__()
+        self.property_name = property_name[:12]
+        self.color = mglobals.color_map[color]
+        textfont = pygame.font.Font('./monaco.ttf', mglobals.fontsize_map[fntsize])
+        self.image = textfont.render(self.property_name, False, self.color)
+        self.rect = self.image.get_rect()
+        self.x, self.y = 900, 900
+
+    def update(self):
+        self.rect.x, self.rect.y = self.x, self.y
+
+    def set_x_y(self, x, y):
+        self.x = x
+        self.y = y
+
+def init_property_displays():
+    for i in _property.PROPERTIES:
+        temp = PropertyDisplay(i.property_name, i.color)
+        mglobals.PROPERTY_DISPLAYS.add(temp)
+        mglobals.PROPERTY_NAME_SPRITE_MAP[i.property_name] = temp
 
 class PlayerInfoUI(object):
     def __init__(self, player_name, cash=mglobals.CASH_INITIAL, properties={}):
@@ -57,6 +81,18 @@ class PlayerInfoUI(object):
         utils.message_display_lines([i[:10] for i in properties_list],
                                     x, y, y_inc, color, fntsize='small')
 
+    def _print_color2(self, color, properties_list, x, y, y_inc):
+        # For each property in properties_list:
+        #     Find the sprite of the property
+        #     Compute x, y according to the player
+        #     Do sprite.set_x_y(x, y)
+        #     (in main loop update() is called)
+        print "_print_color2"
+        for pname in properties_list:
+            psprite = mglobals.PROPERTY_NAME_SPRITE_MAP[pname]
+            psprite.set_x_y(x, y)
+            y += y_inc
+
     def update_cash(self, cash):
         self.cash = cash
         self.render()
@@ -73,14 +109,14 @@ class PlayerInfoUI(object):
         x_current, y_current = 0, 0
         for i, color in enumerate(sorted(self.properties.keys())):
             if i == 0:
-                x_current, y_current = self.x + 50, self.y + 70
+                x_current, y_current = self.x + 10, self.y + 70
             elif i == 4:
-                x_current, y_current = self.x + 50, self.y + 220
+                x_current, y_current = self.x + 10, self.y + 220
                 y_offset = y_start + y_offset + 5
             else:
                 x_current += 90
 
-            self._print_color(color, self.properties[color],
+            self._print_color2(color, self.properties[color],
                               x_current, y_current, 50)
 
     def _render_name_cash(self):

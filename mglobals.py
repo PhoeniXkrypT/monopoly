@@ -48,7 +48,7 @@ color_map = {
 fontsize_map = {
         'big': 50,
         'mid': 25,
-        'small': 14,
+        'small': 12,
 };
 
 GD = None
@@ -58,6 +58,8 @@ P1_IMG = None
 PvAI = False
 CASH_INITIAL = 1500
 P_INFO_CLRSCR = None
+PROPERTY_DISPLAYS = pygame.sprite.Group()
+PROPERTY_NAME_SPRITE_MAP = {}
 
 def load_imgs():
     global BACK_IMG, P1_IMG, P_INFO_CLRSCR
@@ -74,7 +76,6 @@ def init_pygame():
     pygame.display.set_caption('Monopoly')
     CLK = pygame.time.Clock()
     pygame.event.set_allowed([pygame.QUIT, pygame.KEYDOWN, pygame.KEYUP])
-
 
 def init():
     init_pygame()

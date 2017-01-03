@@ -1,9 +1,11 @@
 #TODO NEED TO ADD JAIL
 #TODO GO square
 
+BANK = 'BANK'
+
 class Property(object):
     def __init__(self, property_name, cost, color, rent_details, mortgage_val,
-                 house_hotel_cost, color_cost, color_all=False, owner_name=mglobals.BANK):
+                 house_hotel_cost, color_cost, color_all=False, owner_name=BANK):
         self.property_name = property_name
         self.cost = cost
         self.color = color
@@ -80,7 +82,7 @@ class Property(object):
 
 
 class UtilityProperty(object):
-    def __init__(self, property_name, cost, mortgage, owner_name=mglobals.BANK):
+    def __init__(self, property_name, cost, mortgage, owner_name=BANK):
         self.property_name = property_name
         self.cost = cost
         self.mortgage = mortgage
@@ -94,7 +96,7 @@ class UtilityProperty(object):
 
 
 class RailwayProperty(object):
-    def __init__(self, property_name, cost, mortgage, owner_name=mglobals.BANK):
+    def __init__(self, property_name, cost, mortgage, owner_name=BANK):
         self.property_name = property_name
         self.cost = cost
         self.mortgage = mortgage
