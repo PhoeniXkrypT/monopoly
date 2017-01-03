@@ -1,3 +1,5 @@
+# NEED TO ADD JAIL
+# GO square
 
 class Property(object):
     def __init__(self, property_name, cost, color, rent_details, mortgage_val,
@@ -12,11 +14,43 @@ class Property(object):
         self.color_all = color_all
         self.owner_name = owner_name
 
-    def purchase(self):
-        pass
+        self.house_count = 0
+        self.purchased = False
+        self.mortgaged = False
+
+    def purchase(self, owner_name):
+        self.owner_name = owner_name
+        self.purchased = True
+
+    def mortgage(self):
+        self.mortgaged = True
+        return self.mortgage_val
+
+    def can_mortgage(self):
+        if self.house_count != 0:
+            return (False, 'Cannot mortgage property with houses!')
+        return True
+
+    def can_unmortgage(self, balance):
+        if balance >= self.mortgage_val * 1.1:
+            return True
+        return (False, 'Not enough balalnce!')
+
+    def unmortgage(self):
+        self.mortgaged = False
+        return int(self.mortgage_val * 1.1)
 
     def compute_rent(self):
-        pass
+        if self.mortgaged:
+            return 0
+        if self.house_count == 0 and self.color_all:
+            return self.rent_details[self.house_count] * 2
+        return self.rent_details[self.house_count]
+
+    def build_house(self):
+        if not color_all:
+            return (False,'Buy all properties of this color FIRST!!')
+        #check owner, cash and even number of houses
 
 class UtilityProperty(object):
     def __init__(self, property_name, cost, mortgage, owner_name=mglobals.BANK):
