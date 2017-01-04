@@ -86,16 +86,18 @@ def game_loop():
                     utils.draw_board()
                     currentplayer.ps.hide()
                     currentplayer.ps.advance()
+                    currentplayer.ps.show()
                     otherplayer.ps.render()
 
                 elif event.key == pygame.K_RIGHT:
                     utils.draw_board()
                     currentplayer.ps.hide()
                     currentplayer.ps.goback()
+                    currentplayer.ps.show()
                     otherplayer.ps.render()
 
-                elif event.key == pygame.K_RETURN:
-                    currentplayer.ps.show()
+                # elif event.key == pygame.K_RETURN:
+                    # currentplayer.ps.show()
 
         mglobals.CENTRE_DISPLAYS.update()
         mglobals.CENTRE_DISPLAYS.draw(mglobals.GD)
