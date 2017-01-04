@@ -95,7 +95,10 @@ class PlayerSelection(object):
         psprite.set_x_y()
 
     def hide(self):
-        pass
+        psprite = mglobals.PROPNAME_INDEX_MAP.get(self.position, None)
+        if not psprite:
+            return
+        psprite.unset_x_y()
 
 class Player(object):
     def __init__(self, player_name):

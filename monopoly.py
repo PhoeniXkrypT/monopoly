@@ -84,11 +84,13 @@ def game_loop():
             elif event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_LEFT:
                     utils.draw_board()
+                    currentplayer.ps.hide()
                     currentplayer.ps.advance()
                     otherplayer.ps.render()
 
                 elif event.key == pygame.K_RIGHT:
                     utils.draw_board()
+                    currentplayer.ps.hide()
                     currentplayer.ps.goback()
                     otherplayer.ps.render()
 

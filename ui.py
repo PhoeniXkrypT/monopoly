@@ -11,12 +11,16 @@ class CentralUI(pygame.sprite.Sprite):
         super(CentralUI, self).__init__()
         self.pindex = pindex
         self.image = pygame.image.load("./property_pics/%d.png" % (pindex)).convert()
+        self.image = pygame.transform.scale(self.image, (350, 300))
         print pindex
         self.rect = self.image.get_rect()
-        self.x, self.y = 900, 900
+        self.unset_x_y()
 
     def set_x_y(self):
-        self.x, self.y = 250, 300
+        self.x, self.y = 225, 250
+
+    def unset_x_y(self):
+        self.x, self.y = 900, 900
 
     def update(self):
         self.rect.x, self.rect.y = self.x, self.y
