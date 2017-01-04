@@ -99,11 +99,7 @@ def game_loop():
                     utils.draw_board()
                     mglobals.DICEOBJ.hide()
                     currentplayer.ps.hide()
-                    mglobals.DICEOBJ.roll()
-
-                # elif event.key == pygame.K_RETURN:
-                    # currentplayer.ps.show()
-
+                    val, double = mglobals.DICEOBJ.roll()
 
         mglobals.CENTRE_DISPLAYS.update()
         mglobals.CENTRE_DISPLAYS.draw(mglobals.GD)
