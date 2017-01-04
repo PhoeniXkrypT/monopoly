@@ -69,9 +69,6 @@ def game_loop():
     P1 = Player(mglobals.PLAYER_ONE)
     P2 = Player(mglobals.PLAYER_TWO)
 
-    print prop
-    print '---'
-    print prop2
     P1.test_set_property(prop)
     P2.test_set_property(prop2)
 
@@ -84,6 +81,7 @@ def game_loop():
             elif event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_LEFT:
                     utils.draw_board()
+                    mglobals.DICEOBJ.hide()
                     currentplayer.ps.hide()
                     currentplayer.ps.advance()
                     currentplayer.ps.show()
@@ -91,18 +89,28 @@ def game_loop():
 
                 elif event.key == pygame.K_RIGHT:
                     utils.draw_board()
+                    mglobals.DICEOBJ.hide()
                     currentplayer.ps.hide()
                     currentplayer.ps.goback()
                     currentplayer.ps.show()
                     otherplayer.ps.render()
 
+                elif event.key == pygame.K_d:
+                    utils.draw_board()
+                    mglobals.DICEOBJ.hide()
+                    currentplayer.ps.hide()
+                    mglobals.DICEOBJ.roll()
+
                 # elif event.key == pygame.K_RETURN:
                     # currentplayer.ps.show()
+
 
         mglobals.CENTRE_DISPLAYS.update()
         mglobals.CENTRE_DISPLAYS.draw(mglobals.GD)
         mglobals.PROPERTY_DISPLAYS.update()
         mglobals.PROPERTY_DISPLAYS.draw(mglobals.GD)
+        mglobals.DICE_DISPLAY.update()
+        mglobals.DICE_DISPLAY.draw(mglobals.GD)
 
         pygame.display.update()
         mglobals.CLK.tick(30)
@@ -112,6 +120,7 @@ def main():
     player_menu_loop()
     ui.init_property_displays()
     ui.init_centre_displays()
+    ui.init_dice()
     game_loop()
     pygame.quit()
     quit()

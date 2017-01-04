@@ -5,6 +5,7 @@ import utils
 import mglobals
 
 import property as _property
+import dice
 
 class CentralUI(pygame.sprite.Sprite):
     def __init__(self, pindex):
@@ -33,8 +34,31 @@ def init_centre_displays():
         except pygame.error, e:
             pass
 
-class DiceUI(CentralUI):
-    pass
+class DiceUI(pygame.sprite.Sprite):
+    def __init__(self, number):
+        super(DiceUI, self).__init__()
+        self.number = number
+        textfont = pygame.font.Font('./monaco.ttf', mglobals.fontsize_map['mid'])
+        self.image = textfont.render('You rolled : %d' % (self.number), \
+                                     False, mglobals.color_map['black'])
+        self.rect = self.image.get_rect()
+        self.unset_x_y()
+
+    def set_x_y(self):
+        self.x, self.y = 300, 630
+
+    def unset_x_y(self):
+        self.x, self.y = 900, 900
+
+    def update(self):
+        self.rect.x, self.rect.y = self.x, self.y
+
+def init_dice():
+    mglobals.DICEOBJ = dice.Dice()
+    for number in xrange(2, 13):
+        temp = DiceUI(number)
+        mglobals.DICE_DISPLAY.add(temp)
+        mglobals.DICE_NUMBER_MAP[number] = temp
 
 class MonopolyChanceUI(CentralUI):
     pass
