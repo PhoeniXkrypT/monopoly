@@ -6,8 +6,29 @@ import mglobals
 
 import property as _property
 
-class CentralUI(object):
-    pass
+class CentralUI(pygame.sprite.Sprite):
+    def __init__(self, pindex):
+        super(CentralUI, self).__init__()
+        self.pindex = pindex
+        self.image = pygame.image.load("./property_pics/%d.png" % (pindex)).convert()
+        print pindex
+        self.rect = self.image.get_rect()
+        self.x, self.y = 900, 900
+
+    def set_x_y(self):
+        self.x, self.y = 250, 300
+
+    def update(self):
+        self.rect.x, self.rect.y = self.x, self.y
+
+def init_centre_displays():
+    for index in xrange(40):
+        try:
+            temp = CentralUI(index)
+            mglobals.CENTRE_DISPLAYS.add(temp)
+            mglobals.PROPNAME_INDEX_MAP[index] = temp
+        except pygame.error, e:
+            pass
 
 class DiceUI(CentralUI):
     pass
@@ -100,6 +121,7 @@ class PlayerInfoUI(object):
 
     def update_properties(self, properties):
         self.properties = properties
+        self.render()
 
     def _render_properties(self):
         self._draw_rect()

@@ -64,6 +64,8 @@ CASH_INITIAL = 1500
 P_INFO_CLRSCR = None
 PROPERTY_DISPLAYS = pygame.sprite.Group()
 PROPERTY_NAME_SPRITE_MAP = {}
+CENTRE_DISPLAYS = pygame.sprite.Group()
+PROPNAME_INDEX_MAP = {}
 
 def load_imgs():
     global BACK_IMG, P1_IMG, P_INFO_CLRSCR

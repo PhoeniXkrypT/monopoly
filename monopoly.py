@@ -42,9 +42,16 @@ def game_loop():
     utils.draw_board()
 
     prop = collections.defaultdict(list)
+    prop2 = collections.defaultdict(list)
 
+    x = 0
     for i in _property.PROPERTIES:
-        prop[i.color].append(i.property_name)
+        if x == 0:
+            prop[i.color].append(i.property_name)
+            x = 1
+        elif x == 1:
+            prop2[i.color].append(i.property_name)
+            x = 0
 
     # p1 = PlayerInfoUI(mglobals.PLAYER_ONE, 'royal_blue')
     # p1.update_properties(prop)
@@ -62,6 +69,12 @@ def game_loop():
     P1 = Player(mglobals.PLAYER_ONE)
     P2 = Player(mglobals.PLAYER_TWO)
 
+    print prop
+    print '---'
+    print prop2
+    P1.test_set_property(prop)
+    P2.test_set_property(prop2)
+
     currentplayer, otherplayer = P1, P2
 
     while True:
@@ -73,13 +86,17 @@ def game_loop():
                     utils.draw_board()
                     currentplayer.ps.advance()
                     otherplayer.ps.render()
-                    # ps1.advance()
+
                 elif event.key == pygame.K_RIGHT:
                     utils.draw_board()
                     currentplayer.ps.goback()
                     otherplayer.ps.render()
-                    # ps1.goback()
 
+                elif event.key == pygame.K_RETURN:
+                    currentplayer.ps.show()
+
+        mglobals.CENTRE_DISPLAYS.update()
+        mglobals.CENTRE_DISPLAYS.draw(mglobals.GD)
         mglobals.PROPERTY_DISPLAYS.update()
         mglobals.PROPERTY_DISPLAYS.draw(mglobals.GD)
 
@@ -90,6 +107,7 @@ def main():
     mglobals.init()
     player_menu_loop()
     ui.init_property_displays()
+    ui.init_centre_displays()
     game_loop()
     pygame.quit()
     quit()

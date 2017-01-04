@@ -1,5 +1,6 @@
 
 import pygame
+import collections
 
 import mglobals
 from ui import PlayerInfoUI
@@ -88,7 +89,10 @@ class PlayerSelection(object):
                          [self.x, self.y, self.cw, self.ch],
                          PlayerSelection.BOX_THICKNESS)
     def show(self):
-        pass
+        psprite = mglobals.PROPNAME_INDEX_MAP.get(self.position, None)
+        if not psprite:
+            return
+        psprite.set_x_y()
 
     def hide(self):
         pass
@@ -99,7 +103,7 @@ class Player(object):
         self.color = mglobals.PLAYER_ONE_COLOR \
                             if self.player_name == mglobals.PLAYER_ONE \
                             else mglobals.PLAYER_TWO_COLOR
-        self.properties = None
+        self.properties = collections.defaultdict(list)
         self.money = 1500
         self.in_jail = False
         self.free_jail_pass = 0
@@ -127,4 +131,8 @@ class Player(object):
 
     def unmortgage_property(self):
         pass
+
+    def test_set_property(self, properties):
+        self.properties = properties
+        self.piu.update_properties(properties)
 
