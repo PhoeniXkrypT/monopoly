@@ -73,9 +73,9 @@ DICEOBJ = None
 def load_imgs():
     global BACK_IMG, P1_IMG, P_INFO_CLRSCR
     BACK_IMG = pygame.image.load('pics/board_uk.jpg')
-    P1_IMG = pygame.image.load('pics/man1.png')
+    P1_IMG = pygame.image.load('pics/p1.png')
     BACK_IMG = pygame.transform.scale(BACK_IMG, (DISPLAY_W - 400, DISPLAY_H))
-    P1_IMG = pygame.transform.scale(P1_IMG, (int(DISPLAY_W*0.1), int(DISPLAY_H*0.1)))
+    #P1_IMG = pygame.transform.scale(P1_IMG, (int(DISPLAY_W*0.1), int(DISPLAY_H*0.1)))
     P_INFO_CLRSCR = pygame.Surface([380, 400])
 
 def init_pygame():

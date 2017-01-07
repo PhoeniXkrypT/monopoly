@@ -9,7 +9,7 @@ import property as _property
 
 from ui import PlayerInfoUI
 import ui
-from player import PlayerSelection, Player
+from player import PlayerSelection, Player, PlayerMovement
 
 def player_menu_loop():
     one, two = 'black', 'blue'
@@ -68,6 +68,7 @@ def game_loop():
 
     P1 = Player(mglobals.PLAYER_ONE)
     P2 = Player(mglobals.PLAYER_TWO)
+    P1.pm.render()
 
     P1.test_set_property(prop)
     P2.test_set_property(prop2)
@@ -100,6 +101,10 @@ def game_loop():
                     mglobals.DICEOBJ.hide()
                     currentplayer.ps.hide()
                     val, double = mglobals.DICEOBJ.roll()
+                    # pass the val to player movement
+                    # advance to the position+val place
+                    currentplayer.pm.advance(val)
+
 
         mglobals.CENTRE_DISPLAYS.update()
         mglobals.CENTRE_DISPLAYS.draw(mglobals.GD)

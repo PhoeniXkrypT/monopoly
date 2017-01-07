@@ -6,14 +6,63 @@ import mglobals
 from ui import PlayerInfoUI
 
 class PlayerMovement(object):
-    def __init__(self):
-        pass
+    RECT_WIDTH = 65
+    RECT_HEIGHT = 106
+    SQ_HEIGHT_WIDTH = 106
+    PIMG_WIDTH = 60
+    PIMG_HEIGHT = 40
+
+    def __init__(self, position):
+        self.position = position
+        self.x, self.y = 720, 730
 
     def advance(self, count):
-        pass
+        self.position = (self.position + count) % mglobals.BOARD_SQUARES
+        self.reposition()
+        self.render()
 
     def goback(self, count):
         pass
+
+    def reposition(self):
+        # If the position corresponds to a square
+        if self.position % 10 == 0:
+            if self.position in [0, 10]:
+                self.y = mglobals.DISPLAY_H - PlayerMovement.PIMG_HEIGHT - 33
+                self.x = 720 if self.position == 0 \
+                           else 25
+            else:
+                self.y = 33
+                self.x = 720 if self.position == 30 \
+                           else 25
+
+        # If the position corresponds to a vertical rectangle
+        elif (self.position > 0 and self.position < 10) or \
+             (self.position > 20 and self.position < 30):
+            if self.position > 0 and self.position < 10:
+                self.y = 730
+                self.x = mglobals.BOARD_WIDTH - PlayerMovement.SQ_HEIGHT_WIDTH \
+                         - PlayerMovement.PIMG_WIDTH \
+                         - ((self.position - 1) * PlayerMovement.RECT_WIDTH)
+            else:
+                self.y = 33
+                self.x = PlayerMovement.SQ_HEIGHT_WIDTH \
+                         + (((self.position % 10) - 1) * PlayerMovement.RECT_WIDTH)
+
+        # If the position corresponds to a horizontal rectangle
+        else:
+            if self.position > 10 and self.position < 20:
+                self.x = 25
+                self.y = mglobals.DISPLAY_H - PlayerMovement.SQ_HEIGHT_WIDTH\
+                         - PlayerMovement.PIMG_HEIGHT - 12 \
+                         - (((self.position % 10) - 1) * PlayerMovement.RECT_WIDTH)
+            else:
+                self.x = 720
+                self.y = PlayerMovement.SQ_HEIGHT_WIDTH + 12 \
+                         + (((self.position % 10) - 1) * PlayerMovement.RECT_WIDTH)
+
+    def render(self):
+        mglobals.GD.blit(mglobals.P1_IMG, (self.x, self.y))
 
 class PlayerSelection(object):
     BOX_THICKNESS = 5
@@ -110,7 +159,7 @@ class Player(object):
         self.money = 1500
         self.in_jail = False
         self.free_jail_pass = 0
-        self.pm = PlayerMovement()
+        self.pm = PlayerMovement(0)
         self.ps = PlayerSelection(0, self.color)
         self.piu = PlayerInfoUI(self.player_name, self.color)
         self.piu.render()
