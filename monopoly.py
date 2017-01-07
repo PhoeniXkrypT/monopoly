@@ -88,6 +88,8 @@ def game_loop():
                     currentplayer.ps.advance()
                     currentplayer.ps.show()
                     otherplayer.ps.render()
+                    currentplayer.pm.render()
+                    otherplayer.pm.render()
 
                 elif event.key == pygame.K_RIGHT:
                     utils.draw_board()
@@ -96,6 +98,9 @@ def game_loop():
                     currentplayer.ps.goback()
                     currentplayer.ps.show()
                     otherplayer.ps.render()
+                    currentplayer.pm.render()
+                    otherplayer.pm.render()
+
 
                 elif event.key == pygame.K_d:
                     utils.draw_board()
@@ -103,6 +108,7 @@ def game_loop():
                     currentplayer.ps.hide()
                     val, double = mglobals.DICEOBJ.roll()
                     currentplayer.pm.advance(val)
+                    otherplayer.pm.render()
 
 
         mglobals.CENTRE_DISPLAYS.update()
