@@ -1,5 +1,6 @@
 #TODO NEED TO ADD JAIL
 #TODO GO square
+import mglobals
 
 BANK = 'BANK'
 
@@ -21,9 +22,12 @@ class Property(object):
         self.purchased = False
         self.mortgaged = False
 
-    def purchase(self, owner_name):
-        if not self.purchased:
-            self.owner_name = owner_name
+    def can_purchase(self, currentplayer, balance):
+        pass
+
+    def purchase(self, currentplayer, balance):
+        if self.can_purchase(currentplayer, balance)[0]:
+            self.owner_name = currentplayer
             self.purchased = True
             return (True,)
         return (False, '%s is already purchased!' % (self.property_name))
@@ -43,13 +47,17 @@ class Property(object):
             return self.mortgage_val
         return 0
 
+    #TODO set this as a decorator?
+    def is_mortgaged(self):
+        return self.mortgaged
+
     def can_unmortgage(self, currentplayer, balance):
         if self.owner_name != currentplayer:
             return (False, '%s does not own %s!' % (currentplayer, self.property_name))
         if not self.mortgaged:
             return (False, '%s is not mortgaged!' %(self.property_name))
         if balance < self.mortgage_val * 1.1:
-            return (False, '%s does not have enough balalnce to unmortgage %s!'
+            return (False, '%s does not have enough balance to unmortgage %s!'
                            %(self.owner_name, self.property_name))
         return (True,)
 
@@ -164,3 +172,10 @@ PROPERTIES = [
         Property('Mayfair', 400, 'blue', {0: 50, 1: 200, 2: 600, 3: 1400, 4: 1700, 5: 2000}, 200, 200, 2, False),
 ]
 
+def init_pobject_map():
+    for pobject in PROPERTIES:
+        mglobals.POBJECT_MAP[pobject.property_name] = pobject
+
+
+def get_pobject(pname):
+    return mglobals.POBJECT_MAP[pname]

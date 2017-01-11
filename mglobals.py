@@ -70,6 +70,7 @@ PROPNAME_INDEX_MAP = {}
 DICE_DISPLAY = pygame.sprite.Group()
 DICE_NUMBER_MAP = {}
 DICEOBJ = None
+POBJECT_MAP = {}
 
 def load_imgs():
     global BACK_IMG, P1_IMG, P2_IMG, P_INFO_CLRSCR

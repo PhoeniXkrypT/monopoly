@@ -1,5 +1,6 @@
 
 import pygame
+import collections
 
 import utils
 import mglobals
@@ -109,7 +110,8 @@ def init_property_displays():
         mglobals.PROPERTY_NAME_SPRITE_MAP[i.property_name] = temp
 
 class PlayerInfoUI(object):
-    def __init__(self, player_name, color, cash=mglobals.CASH_INITIAL, properties={}):
+    def __init__(self, player_name, color, cash=mglobals.CASH_INITIAL, \
+                 properties=collections.defaultdict(list)):
         self.player_name = player_name
         if self.player_name == mglobals.PLAYER_ONE:
             self.x = 810
@@ -147,6 +149,18 @@ class PlayerInfoUI(object):
         self.render()
 
     #TODO seperate render for cash and properties
+    def add_property(self, color, pname):
+        if pname not in self.properties[color]:
+            self.properties[color].append(pname)
+            self._render_properties()
+
+    def replace_property(self, color, pname_old, pname_new):
+        temp = self.properties[color]
+        try:
+            temp[temp.index(pname_old)] = pname_new
+        except ValueError, e:
+            pass
+        self.render()
 
     def update_properties(self, properties):
         self.properties = properties

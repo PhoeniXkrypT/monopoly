@@ -44,6 +44,7 @@ def game_loop():
     prop = collections.defaultdict(list)
     prop2 = collections.defaultdict(list)
 
+    """
     x = 0
     for i in _property.PROPERTIES:
         if x == 0:
@@ -52,7 +53,7 @@ def game_loop():
         elif x == 1:
             prop2[i.color].append(i.property_name)
             x = 0
-
+    """
     # p1 = PlayerInfoUI(mglobals.PLAYER_ONE, 'royal_blue')
     # p1.update_properties(prop)
     # p2 = PlayerInfoUI(mglobals.PLAYER_TWO, 'sea_green')
@@ -101,7 +102,7 @@ def game_loop():
                     currentplayer.pm.render()
                     otherplayer.pm.render()
 
-
+                # Dice roll
                 elif event.key == pygame.K_d:
                     utils.draw_board()
                     mglobals.DICEOBJ.hide()
@@ -110,6 +111,15 @@ def game_loop():
                     currentplayer.pm.advance(val)
                     otherplayer.pm.render()
 
+                # Buy property
+                elif event.key == pygame.K_b:
+                    utils.draw_board()
+                    mglobals.DICEOBJ.hide()
+                    currentplayer.pm.render()
+                    otherplayer.pm.render()
+                    print currentplayer.pm.position
+
+                # Mortgage property
 
         mglobals.CENTRE_DISPLAYS.update()
         mglobals.CENTRE_DISPLAYS.draw(mglobals.GD)
@@ -127,6 +137,7 @@ def main():
     ui.init_property_displays()
     ui.init_centre_displays()
     ui.init_dice()
+    _property.init_pobject_map()
     game_loop()
     pygame.quit()
     quit()

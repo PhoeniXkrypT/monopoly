@@ -4,6 +4,7 @@ import collections
 
 import mglobals
 from ui import PlayerInfoUI
+import property as _property
 
 class PlayerMovement(object):
     RECT_WIDTH = 65
@@ -56,7 +57,7 @@ class PlayerMovement(object):
         else:
             if self.position > 10 and self.position < 20:
                 self.x = 25
-                self.y = mglobals.DISPLAY_H - PlayerMovement.SQ_HEIGHT_WIDTH\
+                self.y = mglobals.DISPLAY_H - PlayerMovement.SQ_HEIGHT_WIDTH \
                          - PlayerMovement.PIMG_HEIGHT - 12 \
                          - (((self.position % 10) - 1) * PlayerMovement.RECT_WIDTH)
             else:
@@ -178,16 +179,28 @@ class Player(object):
         self.piu.update_cash(self.money)
         #TODO handle negative money, mortgage etc
 
-    def buy_property(self):
-        pass
-
     #def sell_property(self):
 
-    def mortgage_property(self):
+    def buy_property(self, pname):
+        property_object = mglobals.POBJECT_MAP[pname]
         pass
 
-    def unmortgage_property(self):
-        pass
+    def mortgage_property(self, pobject):
+        val = self.pobject.mortgage()
+        if not val:
+            return False
+        self.money += val
+        #TODO replace property needs color also
+        self.piu.replace_property(pobject.pname, pobject.pname+'_m')
+        return True
+
+    def unmortgage_property(self, pobject):
+        value = self.pobject.unmortgage(self.player_name, self.balance)
+        if not self.value:
+            return False
+        self.money -= value
+        self.piu.replace_property(pobject.pname+'_m', self.pname)
+        return True
 
     def test_set_property(self, properties):
         self.properties = properties
