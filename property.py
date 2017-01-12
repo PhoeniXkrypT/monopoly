@@ -5,8 +5,9 @@ import mglobals
 BANK = 'BANK'
 
 class Property(object):
-    def __init__(self, property_name, cost, color, rent_details, mortgage_val,
+    def __init__(self, index, property_name, cost, color, rent_details, mortgage_val,
                  house_hotel_cost, color_cost, color_all=False, owner_name=BANK):
+        self.index = index
         self.property_name = property_name
         self.cost = cost
         self.color = color
@@ -23,7 +24,12 @@ class Property(object):
         self.mortgaged = False
 
     def can_purchase(self, currentplayer, balance):
-        pass
+        if self.owner_name == BANK:
+            if balance >= self.cost:
+                return (True,)
+            else:
+                return (False, '%s does not have enough cash.' % (currentplayer))
+        return (False, '%s is already purchased!' % (self.property_name))
 
     def purchase(self, currentplayer, balance):
         if self.can_purchase(currentplayer, balance)[0]:
@@ -90,7 +96,8 @@ class Property(object):
 
 
 class UtilityProperty(object):
-    def __init__(self, property_name, cost, mortgage, owner_name=BANK):
+    def __init__(self, index, property_name, cost, mortgage, owner_name=BANK):
+        self.index = index
         self.property_name = property_name
         self.cost = cost
         self.mortgage = mortgage
@@ -104,7 +111,8 @@ class UtilityProperty(object):
 
 
 class RailwayProperty(object):
-    def __init__(self, property_name, cost, mortgage, owner_name=BANK):
+    def __init__(self, index, property_name, cost, mortgage, owner_name=BANK):
+        self.index = index
         self.property_name = property_name
         self.cost = cost
         self.mortgage = mortgage
@@ -121,61 +129,61 @@ class PropertyColor(object):
 
 
 UTILITIES = [
-        UtilityProperty('Electric Company', 150, 75),
-        UtilityProperty('Water Works', 150, 75),
+        UtilityProperty(12, 'Electric Company', 150, 75),
+        UtilityProperty(28, 'Water Works', 150, 75),
 ]
 
 RAILWAYS = [
-        RailwayProperty('Kings Cross Station', 200, 100),
-        RailwayProperty('Marylebone Station', 200, 100),
-        RailwayProperty('Fenchurch St. Station', 200, 100),
-        RailwayProperty('Liverpool Street Station', 200, 100),
+        RailwayProperty(5, 'Kings Cross Station', 200, 100),
+        RailwayProperty(15, 'Marylebone Station', 200, 100),
+        RailwayProperty(25, 'Fenchurch St. Station', 200, 100),
+        RailwayProperty(35, 'Liverpool Street Station', 200, 100),
 ]
 
 PROPERTIES = [
         # Brown
-        Property('Old Kent Road', 60, 'brown', {0: 2, 1: 10, 2: 30, 3: 90, 4: 160, 5: 250}, 50, 30, 2, False),
-        Property('Whitechapel Road', 60, 'brown', {0: 4, 1: 20, 2: 60, 3: 180, 4: 360, 5: 450}, 50, 30, 2, False),
+        Property(1, 'Old Kent Road', 60, 'brown', {0: 2, 1: 10, 2: 30, 3: 90, 4: 160, 5: 250}, 50, 30, 2, False),
+        Property(3, 'Whitechapel Road', 60, 'brown', {0: 4, 1: 20, 2: 60, 3: 180, 4: 360, 5: 450}, 50, 30, 2, False),
 
         # Sky Blue
-        Property('The Angel Islington', 100, 'sky_blue', {0: 6, 1: 30, 2: 90, 3: 270, 4: 400, 5: 550}, 50, 50, 2, False),
-        Property('Euston Road', 100, 'sky_blue', {0: 6, 1: 30, 2: 90, 3: 270, 4: 400, 5: 550}, 50, 50, 2, False),
-        Property('Pentonville Road', 120, 'sky_blue', {0: 8, 1: 40, 2: 100, 3: 300, 4: 450, 5: 600}, 60, 50, 2, False),
+        Property(6, 'The Angel Islington', 100, 'sky_blue', {0: 6, 1: 30, 2: 90, 3: 270, 4: 400, 5: 550}, 50, 50, 2, False),
+        Property(8, 'Euston Road', 100, 'sky_blue', {0: 6, 1: 30, 2: 90, 3: 270, 4: 400, 5: 550}, 50, 50, 2, False),
+        Property(9, 'Pentonville Road', 120, 'sky_blue', {0: 8, 1: 40, 2: 100, 3: 300, 4: 450, 5: 600}, 60, 50, 2, False),
 
         # Pink
-        Property('Pall Mall', 140, 'pink', {0: 10, 1: 50, 2: 150, 3: 450, 4: 625, 5: 750}, 70, 100, 2, False),
-        Property('Whitehall', 140, 'pink', {0: 10, 1: 50, 2: 150, 3: 450, 4: 625, 5: 750}, 70, 100, 2, False),
-        Property('Northumberland Avenue', 160, 'pink', {0: 12, 1: 60, 2: 180, 3: 500, 4: 700, 5: 900}, 80, 80, 2, False),
+        Property(11, 'Pall Mall', 140, 'pink', {0: 10, 1: 50, 2: 150, 3: 450, 4: 625, 5: 750}, 70, 100, 2, False),
+        Property(13, 'Whitehall', 140, 'pink', {0: 10, 1: 50, 2: 150, 3: 450, 4: 625, 5: 750}, 70, 100, 2, False),
+        Property(14, 'Northumberland Avenue', 160, 'pink', {0: 12, 1: 60, 2: 180, 3: 500, 4: 700, 5: 900}, 80, 80, 2, False),
 
         # Orange
-        Property('Bow Street', 180, 'orange', {0: 14, 1: 70, 2: 200, 3: 550, 4: 750, 5: 950}, 90, 100, 2, False),
-        Property('Marlborough Street', 180, 'orange', {0: 14, 1: 70, 2: 200, 3: 550, 4: 750, 5: 950}, 90, 100, 2, False),
-        Property('Vine Street', 200, 'orange', {0: 16, 1: 80, 2: 220, 3: 600, 4: 800, 5: 1000}, 100, 100, 2, False),
+        Property(16, 'Bow Street', 180, 'orange', {0: 14, 1: 70, 2: 200, 3: 550, 4: 750, 5: 950}, 90, 100, 2, False),
+        Property(18, 'Marlborough Street', 180, 'orange', {0: 14, 1: 70, 2: 200, 3: 550, 4: 750, 5: 950}, 90, 100, 2, False),
+        Property(19, 'Vine Street', 200, 'orange', {0: 16, 1: 80, 2: 220, 3: 600, 4: 800, 5: 1000}, 100, 100, 2, False),
 
         # Red
-        Property('Strand', 220, 'red', {0: 18, 1: 90, 2: 250, 3: 700, 4: 875, 5: 1050}, 110, 150, 2, False),
-        Property('Fleet Street', 220, 'red', {0: 18, 1: 90, 2: 250, 3: 700, 4: 875, 5: 1050}, 110, 150, 2, False),
-        Property('Trafalgar Square', 240, 'red', {0: 20, 1: 100, 2: 300, 3: 750, 4: 925, 5: 1100}, 120, 150, 2, False),
+        Property(21, 'Strand', 220, 'red', {0: 18, 1: 90, 2: 250, 3: 700, 4: 875, 5: 1050}, 110, 150, 2, False),
+        Property(23, 'Fleet Street', 220, 'red', {0: 18, 1: 90, 2: 250, 3: 700, 4: 875, 5: 1050}, 110, 150, 2, False),
+        Property(24, 'Trafalgar Square', 240, 'red', {0: 20, 1: 100, 2: 300, 3: 750, 4: 925, 5: 1100}, 120, 150, 2, False),
 
         # Yellow
-        Property('Leicester Square', 260, 'yellow', {0: 22, 1: 110, 2: 330, 3: 800, 4: 975, 5: 1150}, 150, 150, 2, False),
-        Property('Coventry Street', 260, 'yellow', {0: 22, 1: 110, 2: 330, 3: 800, 4: 975, 5: 1150}, 150, 150, 2, False),
-        Property('Piccadilly', 280, 'yellow', {0: 22, 1: 120, 2: 360, 3: 850, 4: 1025, 5: 1200}, 150, 140, 2, False),
+        Property(26, 'Leicester Square', 260, 'yellow', {0: 22, 1: 110, 2: 330, 3: 800, 4: 975, 5: 1150}, 150, 150, 2, False),
+        Property(27, 'Coventry Street', 260, 'yellow', {0: 22, 1: 110, 2: 330, 3: 800, 4: 975, 5: 1150}, 150, 150, 2, False),
+        Property(29, 'Piccadilly', 280, 'yellow', {0: 22, 1: 120, 2: 360, 3: 850, 4: 1025, 5: 1200}, 150, 140, 2, False),
 
         # Green
-        Property('Regent Street', 300, 'green', {0: 26, 1: 130, 2: 390, 3: 900, 4: 1100, 5: 1275}, 200, 150, 2, False),
-        Property('Oxford Street', 300, 'green', {0: 26, 1: 130, 2: 390, 3: 900, 4: 1100, 5: 1275}, 200, 150, 2, False),
-        Property('Bond Street', 320, 'green', {0: 28, 1: 150, 2: 450, 3: 1000, 4: 1200, 5: 1400}, 200, 160, 2, False),
+        Property(31, 'Regent Street', 300, 'green', {0: 26, 1: 130, 2: 390, 3: 900, 4: 1100, 5: 1275}, 200, 150, 2, False),
+        Property(32, 'Oxford Street', 300, 'green', {0: 26, 1: 130, 2: 390, 3: 900, 4: 1100, 5: 1275}, 200, 150, 2, False),
+        Property(34, 'Bond Street', 320, 'green', {0: 28, 1: 150, 2: 450, 3: 1000, 4: 1200, 5: 1400}, 200, 160, 2, False),
 
         # Blue
-        Property('Park Lane', 350, 'blue', {0: 35, 1: 175, 2: 500, 3: 1100, 4: 1300, 5: 1500}, 175, 200, 2, False),
-        Property('Mayfair', 400, 'blue', {0: 50, 1: 200, 2: 600, 3: 1400, 4: 1700, 5: 2000}, 200, 200, 2, False),
+        Property(37, 'Park Lane', 350, 'blue', {0: 35, 1: 175, 2: 500, 3: 1100, 4: 1300, 5: 1500}, 175, 200, 2, False),
+        Property(39, 'Mayfair', 400, 'blue', {0: 50, 1: 200, 2: 600, 3: 1400, 4: 1700, 5: 2000}, 200, 200, 2, False),
 ]
 
 def init_pobject_map():
     for pobject in PROPERTIES:
-        mglobals.POBJECT_MAP[pobject.property_name] = pobject
+        mglobals.POBJECT_MAP[pobject.index] = pobject
 
 
-def get_pobject(pname):
-    return mglobals.POBJECT_MAP[pname]
+def get_pobject(index):
+    return mglobals.POBJECT_MAP[index]

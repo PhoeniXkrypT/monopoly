@@ -181,9 +181,13 @@ class Player(object):
 
     #def sell_property(self):
 
-    def buy_property(self, pname):
-        property_object = mglobals.POBJECT_MAP[pname]
-        pass
+    def buy_property(self, index):
+        property_object = mglobals.POBJECT_MAP[index]
+        if property_object.purchase(self.player_name, self.money)[0]:
+            prop_list = self.properties.get(property_object.color, None)
+            if not prop_list or property_object.property_name not in prop_list:
+                self.properties[property_object.color].append(property_object.property_name)
+        self.piu.update_properties(self.properties)
 
     def mortgage_property(self, pobject):
         val = self.pobject.mortgage()
@@ -202,7 +206,8 @@ class Player(object):
         self.piu.replace_property(pobject.pname+'_m', self.pname)
         return True
 
+    """
     def test_set_property(self, properties):
         self.properties = properties
         self.piu.update_properties(properties)
-
+    """

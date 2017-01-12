@@ -41,10 +41,10 @@ def player_menu_loop():
 def game_loop():
     utils.draw_board()
 
+    """
     prop = collections.defaultdict(list)
     prop2 = collections.defaultdict(list)
 
-    """
     x = 0
     for i in _property.PROPERTIES:
         if x == 0:
@@ -72,8 +72,8 @@ def game_loop():
     P1.pm.render()
     P2.pm.render()
 
-    P1.test_set_property(prop)
-    P2.test_set_property(prop2)
+    #P1.test_set_property(prop)
+    #P2.test_set_property(prop2)
 
     currentplayer, otherplayer = P1, P2
 
@@ -114,12 +114,15 @@ def game_loop():
                 # Buy property
                 elif event.key == pygame.K_b:
                     utils.draw_board()
+                    utils.clear_p1_info()
                     mglobals.DICEOBJ.hide()
                     currentplayer.pm.render()
                     otherplayer.pm.render()
-                    print currentplayer.pm.position
+                    currentplayer.buy_property(currentplayer.pm.position)
 
                 # Mortgage property
+
+                # Unmortgage property
 
         mglobals.CENTRE_DISPLAYS.update()
         mglobals.CENTRE_DISPLAYS.draw(mglobals.GD)
