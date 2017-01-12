@@ -5,6 +5,7 @@ import collections
 import mglobals
 from ui import PlayerInfoUI
 import property as _property
+import utils
 
 class PlayerMovement(object):
     RECT_WIDTH = 65
@@ -160,7 +161,7 @@ class Player(object):
                             if self.player_name == mglobals.PLAYER_ONE \
                             else mglobals.PLAYER_TWO_COLOR
         self.properties = collections.defaultdict(list)
-        self.money = 1500
+        self.cash = 1500
         self.in_jail = False
         self.free_jail_pass = 0
         self.ps = PlayerSelection(self.color)
@@ -170,30 +171,39 @@ class Player(object):
                             if self.player_name == mglobals.PLAYER_ONE \
                             else PlayerMovement(mglobals.P2_IMG)
 
-    def give_player_money(self, cash):
-        self.money += cash
-        self.piu.update_cash(self.money)
+    def give_player_cash(self, cash):
+        self.cash += cash
+        self.piu.update_cash(self.cash)
 
-    def take_player_money(self, cash):
-        self.money -= cash
-        self.piu.update_cash(self.money)
-        #TODO handle negative money, mortgage etc
+    def take_player_cash(self, cash):
+        self.cash -= cash
+        self.piu.update_cash(self.cash)
+        #TODO handle negative cash, mortgage etc
 
     #def sell_property(self):
 
     def buy_property(self, index):
-        property_object = mglobals.POBJECT_MAP[index]
-        if property_object.purchase(self.player_name, self.money)[0]:
-            prop_list = self.properties.get(property_object.color, None)
-            if not prop_list or property_object.property_name not in prop_list:
-                self.properties[property_object.color].append(property_object.property_name)
-        self.piu.update_properties(self.properties)
+        try:
+            property_object = mglobals.POBJECT_MAP[index]
+            if property_object.purchase(self.player_name, self.cash)[0]:
+                prop_list = self.properties.get(property_object.color, None)
+                if not prop_list or property_object.property_name not in prop_list:
+                    self.properties[property_object.color].append(property_object.property_name)
+                    self.cash -= property_object.cost
+                    if self.player_name == mglobals.PLAYER_ONE:
+                        utils.clear_p1_info()
+                    else:
+                        utils.clear_p2_info()
+                    self.piu.update_cash(self.cash)
+                    self.piu.update_properties(self.properties)
+        except KeyError, e:
+            pass
 
     def mortgage_property(self, pobject):
         val = self.pobject.mortgage()
         if not val:
             return False
-        self.money += val
+        self.cash += val
         #TODO replace property needs color also
         self.piu.replace_property(pobject.pname, pobject.pname+'_m')
         return True
@@ -202,7 +212,7 @@ class Player(object):
         value = self.pobject.unmortgage(self.player_name, self.balance)
         if not self.value:
             return False
-        self.money -= value
+        self.cash -= value
         self.piu.replace_property(pobject.pname+'_m', self.pname)
         return True
 

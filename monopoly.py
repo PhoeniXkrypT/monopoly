@@ -72,9 +72,6 @@ def game_loop():
     P1.pm.render()
     P2.pm.render()
 
-    #P1.test_set_property(prop)
-    #P2.test_set_property(prop2)
-
     currentplayer, otherplayer = P1, P2
 
     while True:
@@ -114,7 +111,6 @@ def game_loop():
                 # Buy property
                 elif event.key == pygame.K_b:
                     utils.draw_board()
-                    utils.clear_p1_info()
                     mglobals.DICEOBJ.hide()
                     currentplayer.pm.render()
                     otherplayer.pm.render()

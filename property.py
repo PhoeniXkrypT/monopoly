@@ -23,20 +23,21 @@ class Property(object):
         self.purchased = False
         self.mortgaged = False
 
-    def can_purchase(self, currentplayer, balance):
+    def can_purchase(self, currentplayer, cash):
         if self.owner_name == BANK:
-            if balance >= self.cost:
+            if cash >= self.cost:
                 return (True,)
             else:
                 return (False, '%s does not have enough cash.' % (currentplayer))
         return (False, '%s is already purchased!' % (self.property_name))
 
-    def purchase(self, currentplayer, balance):
-        if self.can_purchase(currentplayer, balance)[0]:
+    def purchase(self, currentplayer, cash):
+        val = self.can_purchase(currentplayer, cash)
+        if val[0]:
             self.owner_name = currentplayer
             self.purchased = True
             return (True,)
-        return (False, '%s is already purchased!' % (self.property_name))
+        return val
 
     def can_mortgage(self, currentplayer):
         if self.owner_name != currentplayer:
@@ -90,7 +91,7 @@ class Property(object):
         if self.mortgaged:
             return (False, '%s is mortgaged, cannot build' %(self.property_name))
         if balance < self.house_hotel_cost:
-            return (False, '%s does not have enough money to build' %(self.owner_name))
+            return (False, '%s does not have enough cash to build' %(self.owner_name))
         self.house_count += 1
         return (True,)
 
