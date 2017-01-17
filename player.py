@@ -184,12 +184,12 @@ class Player(object):
 
     def buy_property(self, index):
         try:
-            property_object = mglobals.POBJECT_MAP[index]
-            if property_object.purchase(self.player_name, self.cash)[0]:
-                prop_list = self.properties.get(property_object.color, None)
-                if not prop_list or property_object.property_name not in prop_list:
-                    self.properties[property_object.color].append(property_object.property_name)
-                    self.cash -= property_object.cost
+            p_object = mglobals.POBJECT_MAP[index]
+            if p_object.purchase(self.player_name, self.cash)[0]:
+                prop_list = self.properties.get(p_object.color, None)
+                if not prop_list or p_object.property_name not in prop_list:
+                    self.properties[p_object.color].append(p_object.property_name)
+                    self.cash -= p_object.cost
                     if self.player_name == mglobals.PLAYER_ONE:
                         utils.clear_p1_info()
                     else:
@@ -199,21 +199,22 @@ class Player(object):
         except KeyError, e:
             pass
 
-    def mortgage_property(self, pobject):
-        val = self.pobject.mortgage()
+    def mortgage_property(self, index):
+        p_object = mglobals.POBJECT_MAP[index]
+        val = self.p_object.mortgage()
         if not val:
             return False
         self.cash += val
         #TODO replace property needs color also
-        self.piu.replace_property(pobject.pname, pobject.pname+'_m')
+        self.piu.replace_property(p_object.pname, p_object.pname+'_m')
         return True
 
-    def unmortgage_property(self, pobject):
-        value = self.pobject.unmortgage(self.player_name, self.balance)
+    def unmortgage_property(self, p_object):
+        value = self.p_object.unmortgage(self.player_name, self.balance)
         if not self.value:
             return False
         self.cash -= value
-        self.piu.replace_property(pobject.pname+'_m', self.pname)
+        self.piu.replace_property(p_object.pname+'_m', self.pname)
         return True
 
     """
