@@ -21,6 +21,7 @@ DARKER_YELLOW = (200, 160, 30)
 GREEN = (0, 255, 0)
 SEA_GREEN = (46, 139, 87)
 BLUE = (0, 0, 255)
+GRAY = (96,96,96)
 
 PLAYER_ONE = 'Player 1'
 PLAYER_TWO = 'Player 2'
@@ -47,6 +48,7 @@ color_map = {
         'sea_green': SEA_GREEN,
         'royal_blue': ROYAL_BLUE,
         'white': WHITE,
+        'gray': GRAY,
 };
 
 fontsize_map = {

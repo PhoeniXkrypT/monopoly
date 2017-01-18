@@ -166,7 +166,7 @@ class Player(object):
         self.free_jail_pass = 0
         self.ps = PlayerSelection(self.color)
         self.piu = PlayerInfoUI(self.player_name, self.color)
-        self.piu.render()
+        self.piu._render_name_cash()
         self.pm = PlayerMovement(mglobals.P1_IMG) \
                             if self.player_name == mglobals.PLAYER_ONE \
                             else PlayerMovement(mglobals.P2_IMG)
@@ -200,25 +200,28 @@ class Player(object):
             pass
 
     def mortgage_property(self, index):
-        p_object = mglobals.POBJECT_MAP[index]
-        val = self.p_object.mortgage()
-        if not val:
-            return False
-        self.cash += val
-        #TODO replace property needs color also
-        self.piu.replace_property(p_object.pname, p_object.pname+'_m')
-        return True
+        try:
+            p_object = mglobals.POBJECT_MAP[index]
+            val = p_object.mortgage(self.player_name)
+            if not val:
+                return False
+            self.cash += val
+            if self.player_name == mglobals.PLAYER_ONE:
+                utils.clear_p1_info()
+            else:
+                utils.clear_p2_info()
+            self.piu.replace_property(p_object.color, p_object.property_name, p_object.property_name+'_m')
+            self.piu.update_cash(self.cash)
+            self.piu.update_properties(self.properties)
+            return True
+        except KeyError, e:
+            pass
 
     def unmortgage_property(self, p_object):
         value = self.p_object.unmortgage(self.player_name, self.balance)
         if not self.value:
             return False
         self.cash -= value
-        self.piu.replace_property(p_object.pname+'_m', self.pname)
+        self.piu.replace_property(p_object.color, p_object.pname+'_m', self.pname)
         return True
 
-    """
-    def test_set_property(self, properties):
-        self.properties = properties
-        self.piu.update_properties(properties)
-    """

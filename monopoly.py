@@ -41,19 +41,6 @@ def player_menu_loop():
 def game_loop():
     utils.draw_board()
 
-    """
-    prop = collections.defaultdict(list)
-    prop2 = collections.defaultdict(list)
-
-    x = 0
-    for i in _property.PROPERTIES:
-        if x == 0:
-            prop[i.color].append(i.property_name)
-            x = 1
-        elif x == 1:
-            prop2[i.color].append(i.property_name)
-            x = 0
-    """
     # p1 = PlayerInfoUI(mglobals.PLAYER_ONE, 'royal_blue')
     # p1.update_properties(prop)
     # p2 = PlayerInfoUI(mglobals.PLAYER_TWO, 'sea_green')
@@ -117,6 +104,13 @@ def game_loop():
                     currentplayer.buy_property(currentplayer.pm.position)
 
                 # Mortgage property
+                elif event.key == pygame.K_m:
+                    utils.draw_board()
+                    mglobals.DICEOBJ.hide()
+                    currentplayer.pm.render()
+                    otherplayer.pm.render()
+                    currentplayer.ps.show()
+                    currentplayer.mortgage_property(currentplayer.ps.position)
 
                 # Unmortgage property
 

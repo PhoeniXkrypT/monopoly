@@ -48,6 +48,7 @@ class Property(object):
             return (False, '%s has houses, so cannot mortgage!' % (self.property_name))
         return (True,)
 
+    #TODO Display the error messages also
     def mortgage(self, currentplayer):
         if self.can_mortgage(currentplayer)[0]:
             self.mortgaged = True

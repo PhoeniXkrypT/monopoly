@@ -94,7 +94,7 @@ class PropertyDisplay(pygame.sprite.Sprite):
         textfont = pygame.font.Font('./monaco.ttf', mglobals.fontsize_map[fntsize])
         self.image = textfont.render(self.property_name, False, self.color)
         self.rect = self.image.get_rect()
-        self.x, self.y = 900, 900
+        self.unset_x_y()
 
     def update(self):
         self.rect.x, self.rect.y = self.x, self.y
@@ -103,11 +103,17 @@ class PropertyDisplay(pygame.sprite.Sprite):
         self.x = x
         self.y = y
 
+    def unset_x_y(self):
+        self.x, self.y = 900, 900
+
 def init_property_displays():
     for i in _property.PROPERTIES:
         temp = PropertyDisplay(i.property_name, i.color)
         mglobals.PROPERTY_DISPLAYS.add(temp)
         mglobals.PROPERTY_NAME_SPRITE_MAP[i.property_name] = temp
+        temp_m = PropertyDisplay(i.property_name, 'gray')
+        mglobals.PROPERTY_DISPLAYS.add(temp_m)
+        mglobals.PROPERTY_NAME_SPRITE_MAP[i.property_name+'_m'] = temp_m
 
 class PlayerInfoUI(object):
     def __init__(self, player_name, color, cash=mglobals.CASH_INITIAL, \
@@ -138,7 +144,7 @@ class PlayerInfoUI(object):
         #     Compute x, y according to the player
         #     Do sprite.set_x_y(x, y)
         #     (in main loop update() is called)
-        print "_print_color2"
+        print "_print_color2", x, y, color, properties_list
         for pname in properties_list:
             psprite = mglobals.PROPERTY_NAME_SPRITE_MAP[pname]
             psprite.set_x_y(x, y)
@@ -146,7 +152,7 @@ class PlayerInfoUI(object):
 
     def update_cash(self, cash):
         self.cash = cash
-        self.render()
+        self._render_name_cash()
 
     #TODO seperate render for cash and properties
     def add_property(self, color, pname):
@@ -158,13 +164,14 @@ class PlayerInfoUI(object):
         temp = self.properties[color]
         try:
             temp[temp.index(pname_old)] = pname_new
+            mglobals.PROPERTY_NAME_SPRITE_MAP[pname_old].unset_x_y()
         except ValueError, e:
             pass
-        self.render()
+        #self.render()
 
     def update_properties(self, properties):
         self.properties = properties
-        self.render()
+        self._render_properties()
 
     def _render_properties(self):
         self._draw_rect()
@@ -189,8 +196,8 @@ class PlayerInfoUI(object):
                               self.y + 30,
                               color=self.color,
                               fntsize='mid')
-
+    """
     def render(self):
         self._render_name_cash()
         self._render_properties()
-
+    """
