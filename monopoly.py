@@ -3,12 +3,11 @@ import pygame
 import time
 import collections
 
+import ui
 import mglobals
 import utils
 import property as _property
 
-from ui import PlayerInfoUI
-import ui
 from player import Player, PlayerSelection, PlayerMovement
 
 def player_menu_loop():
@@ -68,7 +67,6 @@ def game_loop():
             elif event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_LEFT:
                     utils.draw_board()
-                    mglobals.DICEOBJ.hide()
                     currentplayer.ps.hide()
                     currentplayer.ps.advance()
                     currentplayer.ps.show()
@@ -78,7 +76,6 @@ def game_loop():
 
                 elif event.key == pygame.K_RIGHT:
                     utils.draw_board()
-                    mglobals.DICEOBJ.hide()
                     currentplayer.ps.hide()
                     currentplayer.ps.goback()
                     currentplayer.ps.show()
@@ -98,7 +95,6 @@ def game_loop():
                 # Buy property
                 elif event.key == pygame.K_b:
                     utils.draw_board()
-                    mglobals.DICEOBJ.hide()
                     currentplayer.pm.render()
                     otherplayer.pm.render()
                     currentplayer.buy_property(currentplayer.pm.position)
@@ -106,13 +102,19 @@ def game_loop():
                 # Mortgage property
                 elif event.key == pygame.K_m:
                     utils.draw_board()
-                    mglobals.DICEOBJ.hide()
                     currentplayer.pm.render()
                     otherplayer.pm.render()
                     currentplayer.ps.show()
                     currentplayer.mortgage_property(currentplayer.ps.position)
 
                 # Unmortgage property
+                elif event.key == pygame.K_u:
+                    utils.draw_board()
+                    currentplayer.pm.render()
+                    otherplayer.pm.render()
+                    currentplayer.ps.show()
+                    currentplayer.unmortgage_property(currentplayer.ps.position)
+
 
         mglobals.CENTRE_DISPLAYS.update()
         mglobals.CENTRE_DISPLAYS.draw(mglobals.GD)

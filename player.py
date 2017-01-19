@@ -3,9 +3,10 @@ import pygame
 import collections
 
 import mglobals
-from ui import PlayerInfoUI
-import property as _property
 import utils
+import property as _property
+
+from ui import PlayerInfoUI
 
 class PlayerMovement(object):
     RECT_WIDTH = 65
@@ -190,10 +191,7 @@ class Player(object):
                 if not prop_list or p_object.property_name not in prop_list:
                     self.properties[p_object.color].append(p_object.property_name)
                     self.cash -= p_object.cost
-                    if self.player_name == mglobals.PLAYER_ONE:
-                        utils.clear_p1_info()
-                    else:
-                        utils.clear_p2_info()
+                    utils.clear_info(self.player_name)
                     self.piu.update_cash(self.cash)
                     self.piu.update_properties(self.properties)
         except KeyError, e:
@@ -206,10 +204,7 @@ class Player(object):
             if not val:
                 return False
             self.cash += val
-            if self.player_name == mglobals.PLAYER_ONE:
-                utils.clear_p1_info()
-            else:
-                utils.clear_p2_info()
+            utils.clear_info(self.player_name)
             self.piu.replace_property(p_object.color, p_object.property_name, p_object.property_name+'_m')
             self.piu.update_cash(self.cash)
             self.piu.update_properties(self.properties)
@@ -217,11 +212,17 @@ class Player(object):
         except KeyError, e:
             pass
 
-    def unmortgage_property(self, p_object):
-        value = self.p_object.unmortgage(self.player_name, self.balance)
-        if not self.value:
-            return False
-        self.cash -= value
-        self.piu.replace_property(p_object.color, p_object.pname+'_m', self.pname)
-        return True
-
+    def unmortgage_property(self, index):
+        try:
+            p_object = mglobals.POBJECT_MAP[index]
+            val = p_object.unmortgage(self.player_name, self.cash)
+            if not val:
+                return False
+            self.cash -= val
+            utils.clear_info(self.player_name)
+            self.piu.replace_property(p_object.color, p_object.property_name+'_m', p_object.property_name)
+            self.piu.update_cash(self.cash)
+            self.piu.update_properties(self.properties)
+            return True
+        except KeyError, e:
+            pass
