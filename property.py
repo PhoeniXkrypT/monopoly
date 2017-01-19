@@ -65,7 +65,7 @@ class Property(object):
         if not self.mortgaged:
             return (False, '%s is not mortgaged!' %(self.property_name))
         if balance < self.mortgage_val * 1.1:
-            return (False, '%s does not have enough balance to unmortgage %s!'
+            return (False, '%s does not have enough cash to unmortgage %s!'
                            %(self.owner_name, self.property_name))
         return (True,)
 
