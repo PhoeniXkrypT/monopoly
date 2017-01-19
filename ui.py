@@ -4,7 +4,6 @@ import collections
 
 import utils
 import mglobals
-
 import property as _property
 import dice
 
@@ -196,8 +195,3 @@ class PlayerInfoUI(object):
                               self.y + 30,
                               color=self.color,
                               fntsize='mid')
-    """
-    def render(self):
-        self._render_name_cash()
-        self._render_properties()
-    """

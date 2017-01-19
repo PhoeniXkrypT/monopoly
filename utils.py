@@ -39,6 +39,12 @@ def message_display_lines(lines, x=mglobals.DISPLAY_W/2, y=mglobals.DISPLAY_H/2,
 def draw_board():
     mglobals.GD.blit(mglobals.BACK_IMG, (0, 0))
 
+def clear_info(player):
+    if player == mglobals.PLAYER_ONE:
+        clear_p1_info()
+    else:
+        clear_p2_info()
+
 def clear_p1_info():
     mglobals.P_INFO_CLRSCR.fill(mglobals.color_map['white'])
     mglobals.GD.blit(mglobals.P_INFO_CLRSCR, (808, 0))
