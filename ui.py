@@ -30,7 +30,7 @@ def init_centre_displays():
         try:
             temp = CentralUI(index)
             mglobals.CENTRE_DISPLAYS.add(temp)
-            mglobals.PROPNAME_INDEX_MAP[index] = temp
+            mglobals.INDEX_PROPPIC_MAP[index] = temp
         except pygame.error, e:
             pass
 
@@ -143,7 +143,7 @@ class PlayerInfoUI(object):
         #     Compute x, y according to the player
         #     Do sprite.set_x_y(x, y)
         #     (in main loop update() is called)
-        print "_print_color2", x, y, color, properties_list
+        print "_print_color2", self.player_name, color, properties_list
         for pname in properties_list:
             psprite = mglobals.PROPERTY_NAME_SPRITE_MAP[pname]
             psprite.set_x_y(x, y)
