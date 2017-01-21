@@ -59,6 +59,7 @@ def game_loop():
     P2.pm.render()
 
     currentplayer, otherplayer = P1, P2
+    double_count = 0
 
     while True:
         for event in pygame.event.get():
@@ -89,8 +90,21 @@ def game_loop():
                     mglobals.DICEOBJ.hide()
                     currentplayer.ps.hide()
                     val, double = mglobals.DICEOBJ.roll()
+                    print "DICE DOUBLE ", double
                     currentplayer.pm.advance(val)
                     otherplayer.pm.render()
+
+                    """
+                    #TODO count = 3 goto Jail
+                    if double:
+                        double_count += 1
+                    if double_count == 0:
+                        currentplayer, otherplayer = otherplayer, currentplayer
+                        print currentplayer.player_name, otherplayer.player_name
+                    elif double_count == 3:
+                        currentplayer, otherplayer = otherplayer, currentplayer
+                        double_count = 0
+                    """
 
                 # Buy property
                 elif event.key == pygame.K_b:
@@ -115,6 +129,9 @@ def game_loop():
                     currentplayer.ps.show()
                     currentplayer.unmortgage_property(currentplayer.ps.position)
 
+                # Build house/hotel
+                elif event.key == pygame.K_h:
+                    currentplayer.build_house(currentplayer.ps.position)
 
         mglobals.CENTRE_DISPLAYS.update()
         mglobals.CENTRE_DISPLAYS.draw(mglobals.GD)

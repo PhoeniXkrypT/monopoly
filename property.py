@@ -19,8 +19,6 @@ class Property(object):
         self.owner_name = owner_name
 
         self.house_count = 0
-        #TODO self.purchased can probably be removed
-        self.purchased = False
         self.mortgaged = False
 
     def can_purchase(self, currentplayer, cash):
@@ -35,7 +33,6 @@ class Property(object):
         val = self.can_purchase(currentplayer, cash)
         if val[0]:
             self.owner_name = currentplayer
-            self.purchased = True
             return (True,)
         return val
 
@@ -59,31 +56,31 @@ class Property(object):
     def is_mortgaged(self):
         return self.mortgaged
 
-    def can_unmortgage(self, currentplayer, balance):
+    def can_unmortgage(self, currentplayer, cash):
         if self.owner_name != currentplayer:
             return (False, '%s does not own %s!' % (currentplayer, self.property_name))
         if not self.mortgaged:
             return (False, '%s is not mortgaged!' %(self.property_name))
-        if balance < self.mortgage_val * 1.1:
+        if cash < self.mortgage_val * 1.1:
             return (False, '%s does not have enough cash to unmortgage %s!'
                            %(self.owner_name, self.property_name))
         return (True,)
 
-    def unmortgage(self, currentplayer, balance):
-        if self.can_unmortgage(currentplayer, balance)[0]:
+    def unmortgage(self, currentplayer, cash):
+        if self.can_unmortgage(currentplayer, cash)[0]:
             self.mortgaged = False
             return int(self.mortgage_val * 1.1)
         return 0
 
     def compute_rent(self, currentplayer):
         if currentplayer == self.owner_name or \
-           self.mortgaged:
+           self.owner_name == BANK or self.mortgaged:
             return 0
         if self.house_count == 0 and self.color_all:
             return self.rent_details[self.house_count] * 2
         return self.rent_details[self.house_count]
 
-    def build_house(self, currentplayer, balance):
+    def can_build_house(self, currentplayer, cash):
         #TODO even number of houses checked inside player
         if self.owner_name != currentplayer:
             return (False, '%s does not own %s!' % (currentplayer, self.property_name))
@@ -91,11 +88,17 @@ class Property(object):
             return (False, 'Buy all properties of this color FIRST!!')
         if self.mortgaged:
             return (False, '%s is mortgaged, cannot build' %(self.property_name))
-        if balance < self.house_hotel_cost:
+        if cash < self.house_hotel_cost:
             return (False, '%s does not have enough cash to build' %(self.owner_name))
-        self.house_count += 1
+        if self.house_count > 5:
+            return (False, 'Cannot build more houses/hotel on ', self.property_name)
         return (True,)
 
+    def build(self, currentplayer, cash):
+        if self.can_build_house(currentplayer, cash)[0]:
+            self.house_count += 1
+            return self.house_hotel_cost
+        return 0
 
 class UtilityProperty(object):
     def __init__(self, index, property_name, cost, mortgage, owner_name=BANK):
@@ -182,10 +185,12 @@ PROPERTIES = [
         Property(39, 'Mayfair', 400, 'blue', {0: 50, 1: 200, 2: 600, 3: 1400, 4: 1700, 5: 2000}, 200, 200, 2, False),
 ]
 
+PROP_COLOR_NUM = {'brown': (2, [1, 3]), 'sky_blue': (3, [6, 8, 9]), 'pink': (3, [11, 13, 14]), 'orange': (3, [16, 18, 19]), \
+                  'red': (3, [21,23,24]), 'yellow': (3, [26, 27, 29]), 'green': (3, [31, 32, 34]), 'blue': (2, [37, 39])}
+
 def init_pobject_map():
     for pobject in PROPERTIES:
         mglobals.POBJECT_MAP[pobject.index] = pobject
-
 
 def get_pobject(index):
     return mglobals.POBJECT_MAP[index]

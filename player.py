@@ -144,13 +144,13 @@ class PlayerSelection(object):
                          [self.x, self.y, self.cw, self.ch],
                          PlayerSelection.BOX_THICKNESS)
     def show(self):
-        psprite = mglobals.PROPNAME_INDEX_MAP.get(self.position, None)
+        psprite = mglobals.INDEX_PROPPIC_MAP.get(self.position, None)
         if not psprite:
             return
         psprite.set_x_y()
 
     def hide(self):
-        psprite = mglobals.PROPNAME_INDEX_MAP.get(self.position, None)
+        psprite = mglobals.INDEX_PROPPIC_MAP.get(self.position, None)
         if not psprite:
             return
         psprite.unset_x_y()
@@ -179,9 +179,16 @@ class Player(object):
     def take_player_cash(self, cash):
         self.cash -= cash
         self.piu.update_cash(self.cash)
-        #TODO handle negative cash, mortgage etc
+        #TODO handle negative cash
 
     #def sell_property(self):
+
+    #TODO Change color_all when sell_property, mortgage?
+    def check_color_all(self, color):
+        if len(self.properties[color]) == _property.PROP_COLOR_NUM[color][0]:
+            for each in _property.PROP_COLOR_NUM[color][1]:
+                p_object = mglobals.POBJECT_MAP[each]
+                p_object.color_all = True
 
     def buy_property(self, index):
         try:
@@ -191,6 +198,7 @@ class Player(object):
                 if not prop_list or p_object.property_name not in prop_list:
                     self.properties[p_object.color].append(p_object.property_name)
                     self.cash -= p_object.cost
+                    self.check_color_all(p_object.color)
                     utils.clear_info(self.player_name)
                     self.piu.update_cash(self.cash)
                     self.piu.update_properties(self.properties)
@@ -224,5 +232,17 @@ class Player(object):
             self.piu.update_cash(self.cash)
             self.piu.update_properties(self.properties)
             return True
+        except KeyError, e:
+            pass
+
+    def build_house(self, index):
+        try :
+            p_object = mglobals.POBJECT_MAP[index]
+            val = p_object.build(self.player_name, self.cash)
+            if not val:
+                return False
+            self.cash -= val
+            utils.clear_info(self.player_name)
+            self.piu.update_cash(self.cash)
         except KeyError, e:
             pass
