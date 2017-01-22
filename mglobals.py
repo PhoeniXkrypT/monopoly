@@ -1,5 +1,6 @@
 
 import pygame
+import collections
 
 DISPLAY_W, DISPLAY_H = 1200, 800
 BOARD_WIDTH = 800
@@ -65,14 +66,15 @@ P2_IMG = None
 PvAI = False
 CASH_INITIAL = 1500
 P_INFO_CLRSCR = None
-PROPERTY_DISPLAYS = pygame.sprite.Group()
-PROPERTY_NAME_SPRITE_MAP = {}
-CENTRE_DISPLAYS = pygame.sprite.Group()
-INDEX_PROPPIC_MAP = {}
-DICE_DISPLAY = pygame.sprite.Group()
-DICE_NUMBER_MAP = {}
 DICEOBJ = None
+DICE_NUMBER_MAP = {}
+DICE_DISPLAY = pygame.sprite.Group()
+PROPERTY_NAME_SPRITE_MAP = {}
+PROPERTY_DISPLAYS = pygame.sprite.Group()
+CENTRE_DISPLAYS = pygame.sprite.Group()
 POBJECT_MAP = {}
+PROP_COLOR_INDEX = collections.defaultdict(list)
+INDEX_PROPPIC_MAP = {}
 
 def load_imgs():
     global BACK_IMG, P1_IMG, P2_IMG, P_INFO_CLRSCR

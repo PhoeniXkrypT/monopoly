@@ -183,11 +183,13 @@ class Player(object):
 
     #def sell_property(self):
 
-    #TODO Change color_all when sell_property, mortgage?
-    def check_color_all(self, color):
-        if len(self.properties[color]) == _property.PROP_COLOR_NUM[color][0]:
-            for each in _property.PROP_COLOR_NUM[color][1]:
-                p_object = mglobals.POBJECT_MAP[each]
+    #TODO Change color_all when sell_property
+    def set_color_all(self, color, unset=False):
+        for each in mglobals.PROP_COLOR_INDEX[color]:
+            p_object = mglobals.POBJECT_MAP[each]
+            if unset:
+                p_object.color_all = False
+            else:
                 p_object.color_all = True
 
     def buy_property(self, index):
@@ -198,7 +200,9 @@ class Player(object):
                 if not prop_list or p_object.property_name not in prop_list:
                     self.properties[p_object.color].append(p_object.property_name)
                     self.cash -= p_object.cost
-                    self.check_color_all(p_object.color)
+                    if len(self.properties[p_object.color]) == \
+                       len(mglobals.PROP_COLOR_INDEX[p_object.color]):
+                        self.set_color_all(p_object.color)
                     utils.clear_info(self.player_name)
                     self.piu.update_cash(self.cash)
                     self.piu.update_properties(self.properties)

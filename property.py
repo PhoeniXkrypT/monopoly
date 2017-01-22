@@ -185,12 +185,10 @@ PROPERTIES = [
         Property(39, 'Mayfair', 400, 'blue', {0: 50, 1: 200, 2: 600, 3: 1400, 4: 1700, 5: 2000}, 200, 200, 2, False),
 ]
 
-PROP_COLOR_NUM = {'brown': (2, [1, 3]), 'sky_blue': (3, [6, 8, 9]), 'pink': (3, [11, 13, 14]), 'orange': (3, [16, 18, 19]), \
-                  'red': (3, [21,23,24]), 'yellow': (3, [26, 27, 29]), 'green': (3, [31, 32, 34]), 'blue': (2, [37, 39])}
-
 def init_pobject_map():
-    for pobject in PROPERTIES:
-        mglobals.POBJECT_MAP[pobject.index] = pobject
+    for p_object in PROPERTIES:
+        mglobals.POBJECT_MAP[p_object.index] = p_object
+        mglobals.PROP_COLOR_INDEX[p_object.color].append(p_object.index)
 
-def get_pobject(index):
-    return mglobals.POBJECT_MAP[index]
+#def get_pobject(index):
+#    return mglobals.POBJECT_MAP[index]
