@@ -190,6 +190,7 @@ class PlayerInfoUI(object):
                               x_current, y_current, 50)
 
     def _render_name_cash(self):
+        self._draw_rect()
         utils.message_display("%s : %d" %(self.player_name, self.cash),
                               self.x + 100,
                               self.y + 30,
