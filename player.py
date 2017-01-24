@@ -15,19 +15,40 @@ class PlayerMovement(object):
     PIMG_WIDTH = 60
     PIMG_HEIGHT = 40
 
-    def __init__(self, player_img, position=0):
+    def __init__(self, player_name, player_img, position=0):
         self.position = position
+        self.player_name = player_name
         self.player_img = player_img
         self.x, self.y = 720, 730
+
+    def find_rent_amount(self):
+        for player, obj in mglobals.PLAYER_OBJ.iteritems():
+            if player == self.player_name:
+                currentplayer = obj
+            else:
+                otherplayer = obj
+        try:
+            p_object = mglobals.POBJECT_MAP[self.position]
+            val = p_object.compute_rent(self.player_name)
+            currentplayer.cash -= val
+            utils.clear_info(currentplayer.player_name)
+            currentplayer.piu.update_cash(currentplayer.cash)
+            otherplayer.cash += val
+            utils.clear_info(otherplayer.player_name)
+            otherplayer.piu.update_cash(otherplayer.cash)
+        except KeyError, e:
+            pass
 
     def advance(self, count):
         self.position = (self.position + count) % mglobals.BOARD_SQUARES
         self.reposition()
+        self.find_rent_amount()
         self.render()
 
     def goback(self, count):
         self.position = (self.position - count) % mglobals.BOARD_SQUARES
         self.reposition()
+        self.find_rent_amount()
         self.render()
 
     def reposition(self):
@@ -168,9 +189,9 @@ class Player(object):
         self.ps = PlayerSelection(self.color)
         self.piu = PlayerInfoUI(self.player_name, self.color)
         self.piu._render_name_cash()
-        self.pm = PlayerMovement(mglobals.P1_IMG) \
+        self.pm = PlayerMovement(self.player_name, mglobals.P1_IMG) \
                             if self.player_name == mglobals.PLAYER_ONE \
-                            else PlayerMovement(mglobals.P2_IMG)
+                            else PlayerMovement(self.player_name, mglobals.P2_IMG)
 
     def give_player_cash(self, cash):
         self.cash += cash
