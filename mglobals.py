@@ -66,6 +66,8 @@ P2_IMG = None
 PvAI = False
 CASH_INITIAL = 1500
 P_INFO_CLRSCR = None
+
+PLAYER_OBJ = {}
 DICEOBJ = None
 DICE_NUMBER_MAP = {}
 DICE_DISPLAY = pygame.sprite.Group()
