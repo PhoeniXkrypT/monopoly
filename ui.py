@@ -154,7 +154,6 @@ class PlayerInfoUI(object):
         self.cash = cash
         self._render_name_cash()
 
-    #TODO seperate render for cash and properties
     def add_property(self, color, pname):
         if pname not in self.properties[color]:
             self.properties[color].append(pname)
@@ -191,6 +190,7 @@ class PlayerInfoUI(object):
                               x_current, y_current, 50)
 
     def _render_name_cash(self):
+        utils.clear_info(self.player_name)
         self._draw_rect()
         utils.message_display("%s : %d" %(self.player_name, self.cash),
                               self.x + 100,

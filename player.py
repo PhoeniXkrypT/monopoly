@@ -38,12 +38,8 @@ class PlayerMovement(object):
                 val = p_object.compute_rent(self.player_name, \
                                             len(otherplayer.properties.get(p_object.color, [])), \
                                             count)
-            currentplayer.cash -= val
-            utils.clear_info(currentplayer.player_name)
-            currentplayer.piu.update_cash(currentplayer.cash)
-            otherplayer.cash += val
-            utils.clear_info(otherplayer.player_name)
-            otherplayer.piu.update_cash(otherplayer.cash)
+            currentplayer.take_player_cash(val)
+            otherplayer.give_player_cash(val)
         except KeyError, e:
             pass
 
@@ -205,12 +201,14 @@ class Player(object):
         self.cash += cash
         self.piu.update_cash(self.cash)
 
+    #TODO handle negative cash
     def take_player_cash(self, cash):
         self.cash -= cash
         self.piu.update_cash(self.cash)
-        #TODO handle negative cash
 
-    #def sell_property(self):
+    #TODO sell_property
+    def sell_property(self):
+        pass
 
     #TODO Change color_all when sell_property
     def set_color_all(self, color, unset=False):
@@ -228,12 +226,10 @@ class Player(object):
                 prop_list = self.properties.get(p_object.color, None)
                 if not prop_list or p_object.property_name not in prop_list:
                     self.properties[p_object.color].append(p_object.property_name)
-                    self.cash -= p_object.cost
+                    self.take_player_cash(p_object.cost)
                     if len(self.properties[p_object.color]) == \
                        len(mglobals.PROP_COLOR_INDEX[p_object.color]):
                         self.set_color_all(p_object.color)
-                    utils.clear_info(self.player_name)
-                    self.piu.update_cash(self.cash)
                     self.piu.update_properties(self.properties)
         except KeyError, e:
             pass
@@ -244,10 +240,8 @@ class Player(object):
             val = p_object.mortgage(self.player_name)
             if not val:
                 return False
-            self.cash += val
-            utils.clear_info(self.player_name)
+            self.give_player_cash(val)
             self.piu.replace_property(p_object.color, p_object.property_name, p_object.property_name+'_m')
-            self.piu.update_cash(self.cash)
             self.piu.update_properties(self.properties)
             return True
         except KeyError, e:
@@ -259,10 +253,8 @@ class Player(object):
             val = p_object.unmortgage(self.player_name, self.cash)
             if not val:
                 return False
-            self.cash -= val
-            utils.clear_info(self.player_name)
+            self.take_player_cash(val)
             self.piu.replace_property(p_object.color, p_object.property_name+'_m', p_object.property_name)
-            self.piu.update_cash(self.cash)
             self.piu.update_properties(self.properties)
             return True
         except KeyError, e:
@@ -277,8 +269,6 @@ class Player(object):
             val = p_object.build(self.player_name, self.cash)
             if not val:
                 return False
-            self.cash -= val
-            utils.clear_info(self.player_name)
-            self.piu.update_cash(self.cash)
+            self.take_player_cash(val)
         except KeyError, e:
             pass
