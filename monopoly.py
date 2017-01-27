@@ -55,8 +55,20 @@ def game_loop():
 
     P1 = Player(mglobals.PLAYER_ONE)
     P2 = Player(mglobals.PLAYER_TWO)
+
+    mglobals.PLAYER_OBJ[mglobals.PLAYER_ONE] = P1
+    mglobals.PLAYER_OBJ[mglobals.PLAYER_TWO] = P2
+
     P1.pm.render()
     P2.pm.render()
+
+    P2.buy_property(3)
+    P2.buy_property(6)
+    P2.buy_property(8)
+    P2.buy_property(15)
+    P2.buy_property(25)
+    P2.buy_property(39)
+
 
     currentplayer, otherplayer = P1, P2
     double_count = 0
@@ -90,7 +102,6 @@ def game_loop():
                     mglobals.DICEOBJ.hide()
                     currentplayer.ps.hide()
                     val, double = mglobals.DICEOBJ.roll()
-                    print "DICE DOUBLE ", double
                     currentplayer.pm.advance(val)
                     otherplayer.pm.render()
 
