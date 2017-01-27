@@ -21,7 +21,7 @@ class PlayerMovement(object):
         self.player_img = player_img
         self.x, self.y = 720, 730
 
-    def find_rent_amount(self):
+    def find_rent_amount(self, count):
         for player, obj in mglobals.PLAYER_OBJ.iteritems():
             if player == self.player_name:
                 currentplayer = obj
@@ -29,7 +29,15 @@ class PlayerMovement(object):
                 otherplayer = obj
         try:
             p_object = mglobals.POBJECT_MAP[self.position]
-            val = p_object.compute_rent(self.player_name)
+            if p_object in _property.PROPERTIES:
+                val = p_object.compute_rent(self.player_name)
+            elif p_object in _property.RAILWAYS:
+                val = p_object.compute_rent(self.player_name, \
+                                            len(otherplayer.properties.get(p_object.color, [])))
+            else:
+                val = p_object.compute_rent(self.player_name, \
+                                            len(otherplayer.properties.get(p_object.color, [])), \
+                                            count)
             currentplayer.cash -= val
             utils.clear_info(currentplayer.player_name)
             currentplayer.piu.update_cash(currentplayer.cash)
@@ -42,13 +50,13 @@ class PlayerMovement(object):
     def advance(self, count):
         self.position = (self.position + count) % mglobals.BOARD_SQUARES
         self.reposition()
-        self.find_rent_amount()
+        self.find_rent_amount(count)
         self.render()
 
     def goback(self, count):
         self.position = (self.position - count) % mglobals.BOARD_SQUARES
         self.reposition()
-        self.find_rent_amount()
+        self.find_rent_amount(count)
         self.render()
 
     def reposition(self):
@@ -261,6 +269,9 @@ class Player(object):
             pass
 
     def build_house(self, index):
+        if index in [each.index for each in _property.UTILITIES] + \
+                     [each.index for each in _property.RAILWAYS]:
+            return False
         try :
             p_object = mglobals.POBJECT_MAP[index]
             val = p_object.build(self.player_name, self.cash)

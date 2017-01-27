@@ -22,7 +22,7 @@ DARKER_YELLOW = (200, 160, 30)
 GREEN = (0, 255, 0)
 SEA_GREEN = (46, 139, 87)
 BLUE = (0, 0, 255)
-GRAY = (96,96,96)
+GRAY = (169,169,169)
 
 PLAYER_ONE = 'Player 1'
 PLAYER_TWO = 'Player 2'

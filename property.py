@@ -124,12 +124,16 @@ class UtilityProperty(BaseProperty):
         self.cost = cost
         self.mortgage_val = mortgage_val
         self.owner_name = owner_name
-        self.color = 'util'
+        self.color = 'purple'
+        self.rent_details = {1: 4, 2: 10}
 
         self.mortgaged = False
 
-    def compute_rent(self, currentplayer):
-        return 0
+    def compute_rent(self, currentplayer, util_count, dice_val):
+        if currentplayer == self.owner_name or \
+           self.owner_name == BANK or self.mortgaged:
+            return 0
+        return self.rent_details[util_count] * dice_val
 
 
 class RailwayProperty(BaseProperty):
@@ -141,11 +145,15 @@ class RailwayProperty(BaseProperty):
         self.mortgage_val = mortgage_val
         self.owner_name = owner_name
         self.color = 'black'
+        self.rent_details = {1: 25, 2: 50, 3: 100, 4: 200}
 
         self.mortgaged = False
 
-    def compute_rent(self, currentplayer):
-        return 0
+    def compute_rent(self, currentplayer, rail_count):
+        if currentplayer == self.owner_name or \
+           self.owner_name == BANK or self.mortgaged:
+            return 0
+        return self.rent_details[rail_count]
 
 class PropertyColor(object):
     pass

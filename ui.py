@@ -86,12 +86,13 @@ color_offset = {
 };
 
 class PropertyDisplay(pygame.sprite.Sprite):
-    def __init__(self, property_name, color, fntsize='small'):
+    def __init__(self, property_name, color, alias=False, fntsize='small'):
         super(PropertyDisplay, self).__init__()
         self.property_name = property_name[:12]
         self.color = mglobals.color_map[color]
+        self.alias = alias
         textfont = pygame.font.Font('./monaco.ttf', mglobals.fontsize_map[fntsize])
-        self.image = textfont.render(self.property_name, False, self.color)
+        self.image = textfont.render(self.property_name, self.alias, self.color)
         self.rect = self.image.get_rect()
         self.unset_x_y()
 
@@ -106,11 +107,11 @@ class PropertyDisplay(pygame.sprite.Sprite):
         self.x, self.y = 900, 900
 
 def init_property_displays():
-    for i in _property.PROPERTIES:
+    for i in _property.PROPERTIES + _property.RAILWAYS + _property.UTILITIES:
         temp = PropertyDisplay(i.property_name, i.color)
         mglobals.PROPERTY_DISPLAYS.add(temp)
         mglobals.PROPERTY_NAME_SPRITE_MAP[i.property_name] = temp
-        temp_m = PropertyDisplay(i.property_name, 'gray')
+        temp_m = PropertyDisplay(i.property_name, 'gray', True)
         mglobals.PROPERTY_DISPLAYS.add(temp_m)
         mglobals.PROPERTY_NAME_SPRITE_MAP[i.property_name+'_m'] = temp_m
 
