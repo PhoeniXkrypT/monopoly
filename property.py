@@ -4,23 +4,11 @@ import mglobals
 
 BANK = 'BANK'
 
-class Property(object):
-    def __init__(self, index, property_name, cost, color, rent_details, mortgage_val,
-                 house_hotel_cost, color_cost, color_all=False, owner_name=BANK):
-        self.index = index
-        self.property_name = property_name
-        self.cost = cost
-        self.color = color
-        self.rent_details = rent_details
-        self.mortgage_val = mortgage_val
-        self.house_hotel_cost = house_hotel_cost
-        self.color_cost = color_cost
-        self.color_all = color_all
-        self.owner_name = owner_name
+class BaseProperty(object):
+    def __init__(self):
+        pass
 
-        self.house_count = 0
-        self.mortgaged = False
-
+    #TODO Display the error messages also
     def can_purchase(self, currentplayer, cash):
         if self.owner_name == BANK:
             if cash >= self.cost:
@@ -36,25 +24,22 @@ class Property(object):
             return (True,)
         return val
 
+    #TODO set this as a decorator?
+    def is_mortgaged(self):
+        return self.mortgaged
+
     def can_mortgage(self, currentplayer):
         if self.owner_name != currentplayer:
             return (False, '%s does not own %s!' % (currentplayer, self.property_name))
         if self.mortgaged:
             return (False, '%s is already mortgaged!' % (self.property_name))
-        if self.house_count != 0:
-            return (False, '%s has houses, so cannot mortgage!' % (self.property_name))
         return (True,)
 
-    #TODO Display the error messages also
     def mortgage(self, currentplayer):
         if self.can_mortgage(currentplayer)[0]:
             self.mortgaged = True
             return self.mortgage_val
         return 0
-
-    #TODO set this as a decorator?
-    def is_mortgaged(self):
-        return self.mortgaged
 
     def can_unmortgage(self, currentplayer, cash):
         if self.owner_name != currentplayer:
@@ -72,16 +57,42 @@ class Property(object):
             return int(self.mortgage_val * 1.1)
         return 0
 
+class Property(BaseProperty):
+    def __init__(self, index, property_name, cost, color, rent_details, mortgage_val,
+                 house_hotel_cost, color_cost, color_all=False, owner_name=BANK):
+        super(Property, self).__init__()
+        self.index = index
+        self.property_name = property_name
+        self.cost = cost
+        self.color = color
+        self.rent_details = rent_details
+        self.mortgage_val = mortgage_val
+        self.house_hotel_cost = house_hotel_cost
+        self.color_cost = color_cost
+        self.color_all = color_all
+        self.owner_name = owner_name
+
+        self.house_count = 0
+        self.mortgaged = False
+
+    def can_mortgage(self, currentplayer):
+        if self.owner_name != currentplayer:
+            return (False, '%s does not own %s!' % (currentplayer, self.property_name))
+        if self.mortgaged:
+            return (False, '%s is already mortgaged!' % (self.property_name))
+        if self.house_count != 0:
+            return (False, '%s has houses, so cannot mortgage!' % (self.property_name))
+        return (True,)
+
     def compute_rent(self, currentplayer):
         if currentplayer == self.owner_name or \
            self.owner_name == BANK or self.mortgaged:
             return 0
         if self.house_count == 0 and self.color_all:
-            return self.rent_details[self.house_count] * 2
+            return self.rent_details[self.house_count] * self.color_cost
         return self.rent_details[self.house_count]
 
     def can_build_house(self, currentplayer, cash):
-        #TODO even number of houses checked inside player
         if self.owner_name != currentplayer:
             return (False, '%s does not own %s!' % (currentplayer, self.property_name))
         if not self.color_all:
@@ -105,34 +116,36 @@ class Property(object):
             return self.house_hotel_cost
         return 0
 
-class UtilityProperty(object):
-    def __init__(self, index, property_name, cost, mortgage, owner_name=BANK):
+class UtilityProperty(BaseProperty):
+    def __init__(self, index, property_name, cost, mortgage_val, owner_name=BANK):
+        super(UtilityProperty, self).__init__()
         self.index = index
         self.property_name = property_name
         self.cost = cost
-        self.mortgage = mortgage
+        self.mortgage_val = mortgage_val
         self.owner_name = owner_name
+        self.color = 'util'
 
-    def purchase(self):
-        pass
+        self.mortgaged = False
 
-    def compute_rent(self):
-        pass
+    def compute_rent(self, currentplayer):
+        return 0
 
 
-class RailwayProperty(object):
-    def __init__(self, index, property_name, cost, mortgage, owner_name=BANK):
+class RailwayProperty(BaseProperty):
+    def __init__(self, index, property_name, cost, mortgage_val, owner_name=BANK):
+        super(RailwayProperty, self).__init__()
         self.index = index
         self.property_name = property_name
         self.cost = cost
-        self.mortgage = mortgage
+        self.mortgage_val = mortgage_val
         self.owner_name = owner_name
+        self.color = 'black'
 
-    def purchase(self):
-        pass
+        self.mortgaged = False
 
-    def compute_rent(self):
-        pass
+    def compute_rent(self, currentplayer):
+        return 0
 
 class PropertyColor(object):
     pass
@@ -194,6 +207,12 @@ def init_pobject_map():
     for p_object in PROPERTIES:
         mglobals.POBJECT_MAP[p_object.index] = p_object
         mglobals.PROP_COLOR_INDEX[p_object.color].append(p_object.index)
+    for obj in UTILITIES:
+        mglobals.POBJECT_MAP[obj.index] = obj
+        mglobals.PROP_COLOR_INDEX[obj.color].append(obj.index)
+    for obj in RAILWAYS:
+        mglobals.POBJECT_MAP[obj.index] = obj
+        mglobals.PROP_COLOR_INDEX[obj.color].append(obj.index)
 
 #def get_pobject(index):
 #    return mglobals.POBJECT_MAP[index]
