@@ -77,6 +77,8 @@ CENTRE_DISPLAYS = pygame.sprite.Group()
 POBJECT_MAP = {}
 PROP_COLOR_INDEX = collections.defaultdict(list)
 INDEX_PROPPIC_MAP = {}
+HOUSE_COUNT_DISPLAYS = pygame.sprite.Group()
+INDEX_HOUSE_COUNT_MAP = collections.defaultdict(dict)
 
 def load_imgs():
     global BACK_IMG, P1_IMG, P2_IMG, P_INFO_CLRSCR
@@ -84,7 +86,6 @@ def load_imgs():
     P1_IMG = pygame.image.load('pics/p1.png')
     P2_IMG = pygame.image.load('pics/p2.png')
     BACK_IMG = pygame.transform.scale(BACK_IMG, (DISPLAY_W - 400, DISPLAY_H))
-    #P1_IMG = pygame.transform.scale(P1_IMG, (int(DISPLAY_W*0.1), int(DISPLAY_H*0.1)))
     P_INFO_CLRSCR = pygame.Surface([380, 400])
 
 def init_pygame():

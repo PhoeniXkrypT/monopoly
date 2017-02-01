@@ -95,19 +95,23 @@ class Property(BaseProperty):
     def can_build_house(self, currentplayer, cash):
         if self.owner_name != currentplayer:
             return (False, '%s does not own %s!' % (currentplayer, self.property_name))
+        """
         if not self.color_all:
             return (False, 'Buy all properties of this color FIRST!!')
+        """
         if self.mortgaged:
             return (False, '%s is mortgaged, cannot build' %(self.property_name))
         if cash < self.house_hotel_cost:
             return (False, '%s does not have enough cash to build' %(self.owner_name))
         if self.house_count >= 5:
             return (False, 'Cannot build more houses/hotel on ', self.property_name)
+        """
         h_count = []
         for each_index in mglobals.PROP_COLOR_INDEX[self.color]:
             h_count.append(mglobals.POBJECT_MAP[each_index].house_count)
         if not(self.house_count < max(h_count)) and len(set(h_count)) != 1:
             return (False, 'Build equal number of houses in a color!')
+        """
         return (True,)
 
     def build(self, currentplayer, cash):
@@ -212,13 +216,7 @@ PROPERTIES = [
 ]
 
 def init_pobject_map():
-    for p_object in PROPERTIES:
-        mglobals.POBJECT_MAP[p_object.index] = p_object
-        mglobals.PROP_COLOR_INDEX[p_object.color].append(p_object.index)
-    for obj in UTILITIES:
-        mglobals.POBJECT_MAP[obj.index] = obj
-        mglobals.PROP_COLOR_INDEX[obj.color].append(obj.index)
-    for obj in RAILWAYS:
+    for obj in PROPERTIES + RAILWAYS + UTILITIES:
         mglobals.POBJECT_MAP[obj.index] = obj
         mglobals.PROP_COLOR_INDEX[obj.color].append(obj.index)
 

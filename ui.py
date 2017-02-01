@@ -7,6 +7,17 @@ import mglobals
 import property as _property
 import dice
 
+color_offset = {
+        'blue': (5, 15),
+        'brown': ( ),
+        'green': (),
+        'orange': (),
+        'pink': (),
+        'red': (),
+        'sky_blue': (),
+        'yellow': (),
+};
+
 class CentralUI(pygame.sprite.Sprite):
     def __init__(self, pindex):
         super(CentralUI, self).__init__()
@@ -74,17 +85,6 @@ class IncomeTaxUI(CentralUI):
 class LuxuryTaxUI(CentralUI):
     pass
 
-color_offset = {
-        'blue': (5, 15),
-        'brown': ( ),
-        'green': (),
-        'orange': (),
-        'pink': (),
-        'red': (),
-        'sky_blue': (),
-        'yellow': (),
-};
-
 class PropertyDisplay(pygame.sprite.Sprite):
     def __init__(self, property_name, color, alias=False, fntsize='small'):
         super(PropertyDisplay, self).__init__()
@@ -96,15 +96,15 @@ class PropertyDisplay(pygame.sprite.Sprite):
         self.rect = self.image.get_rect()
         self.unset_x_y()
 
-    def update(self):
-        self.rect.x, self.rect.y = self.x, self.y
-
     def set_x_y(self, x, y):
         self.x = x
         self.y = y
 
     def unset_x_y(self):
         self.x, self.y = 900, 900
+
+    def update(self):
+        self.rect.x, self.rect.y = self.x, self.y
 
 def init_property_displays():
     for i in _property.PROPERTIES + _property.RAILWAYS + _property.UTILITIES:
@@ -114,6 +114,40 @@ def init_property_displays():
         temp_m = PropertyDisplay(i.property_name, 'gray', True)
         mglobals.PROPERTY_DISPLAYS.add(temp_m)
         mglobals.PROPERTY_NAME_SPRITE_MAP[i.property_name+'_m'] = temp_m
+
+class HouseCountDisplay(pygame.sprite.Sprite):
+    def __init__(self, index, count, color='white', fntsize='small'):
+        super(HouseCountDisplay, self).__init__()
+        self.index = index
+        self.count = count
+        self.color = mglobals.color_map[color]
+        textfont = pygame.font.Font('./monaco.ttf', mglobals.fontsize_map[fntsize])
+        self.image = textfont.render(self.count, True, self.color)
+        if self.index in xrange(11,20):
+            self.image = pygame.transform.rotate(self.image, 270)
+        elif self.index in xrange(21,30):
+            self.image = pygame.transform.rotate(self.image, 180)
+        elif self.index in xrange(31,40):
+            self.image = pygame.transform.rotate(self.image, 90)
+        self.rect = self.image.get_rect()
+        self.unset_x_y()
+
+    def set_x_y(self, x, y):
+        self.x = x
+        self.y = y
+
+    def unset_x_y(self):
+        self.x, self.y = 900, 900
+
+    def update(self):
+        self.rect.x, self.rect.y = self.x, self.y
+
+def init_house_count_displays():
+    for each in _property.PROPERTIES:
+        for val in xrange(1, 6):
+            temp = HouseCountDisplay(each.index, str(val))
+            mglobals.HOUSE_COUNT_DISPLAYS.add(temp)
+            mglobals.INDEX_HOUSE_COUNT_MAP[each.index][val] = temp
 
 class PlayerInfoUI(object):
     def __init__(self, player_name, color, cash=mglobals.CASH_INITIAL, \
@@ -152,12 +186,12 @@ class PlayerInfoUI(object):
 
     def update_cash(self, cash):
         self.cash = cash
-        self._render_name_cash()
+        self.render_name_cash()
 
     def add_property(self, color, pname):
         if pname not in self.properties[color]:
             self.properties[color].append(pname)
-            self._render_properties()
+            self.render_properties()
 
     def replace_property(self, color, pname_old, pname_new):
         temp = self.properties[color]
@@ -170,9 +204,9 @@ class PlayerInfoUI(object):
 
     def update_properties(self, properties):
         self.properties = properties
-        self._render_properties()
+        self.render_properties()
 
-    def _render_properties(self):
+    def render_properties(self):
         self._draw_rect()
         x_offset, y_offset = 90, 180
         y_start = 50
@@ -189,7 +223,7 @@ class PlayerInfoUI(object):
             self._print_color2(color, self.properties[color],
                               x_current, y_current, 50)
 
-    def _render_name_cash(self):
+    def render_name_cash(self):
         utils.clear_info(self.player_name)
         self._draw_rect()
         utils.message_display("%s : %d" %(self.player_name, self.cash),

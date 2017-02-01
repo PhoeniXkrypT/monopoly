@@ -62,13 +62,12 @@ def game_loop():
     P1.pm.render()
     P2.pm.render()
 
-    P2.buy_property(3)
-    P2.buy_property(6)
+    P1.buy_property(1)
+    P1.buy_property(11)
+    P1.buy_property(32)
     P2.buy_property(8)
     P2.buy_property(15)
-    P2.buy_property(25)
     P2.buy_property(39)
-
 
     currentplayer, otherplayer = P1, P2
     double_count = 0
@@ -142,14 +141,20 @@ def game_loop():
 
                 # Build house/hotel
                 elif event.key == pygame.K_h:
+                    utils.draw_board()
+                    currentplayer.pm.render()
+                    otherplayer.pm.render()
+                    currentplayer.ps.show()
                     currentplayer.build_house(currentplayer.ps.position)
 
+        mglobals.DICE_DISPLAY.update()
+        mglobals.DICE_DISPLAY.draw(mglobals.GD)
         mglobals.CENTRE_DISPLAYS.update()
         mglobals.CENTRE_DISPLAYS.draw(mglobals.GD)
         mglobals.PROPERTY_DISPLAYS.update()
         mglobals.PROPERTY_DISPLAYS.draw(mglobals.GD)
-        mglobals.DICE_DISPLAY.update()
-        mglobals.DICE_DISPLAY.draw(mglobals.GD)
+        mglobals.HOUSE_COUNT_DISPLAYS.update()
+        mglobals.HOUSE_COUNT_DISPLAYS.draw(mglobals.GD)
 
         pygame.display.update()
         mglobals.CLK.tick(30)
@@ -160,6 +165,7 @@ def main():
     ui.init_property_displays()
     ui.init_centre_displays()
     ui.init_dice()
+    ui.init_house_count_displays()
     _property.init_pobject_map()
     game_loop()
     pygame.quit()

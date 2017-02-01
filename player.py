@@ -181,6 +181,9 @@ class PlayerSelection(object):
         psprite.unset_x_y()
 
 class Player(object):
+    RECT_WIDTH = 65
+    SQ_HEIGHT_WIDTH = 106
+
     def __init__(self, player_name):
         self.player_name = player_name
         self.color = mglobals.PLAYER_ONE_COLOR \
@@ -192,7 +195,7 @@ class Player(object):
         self.free_jail_pass = 0
         self.ps = PlayerSelection(self.color)
         self.piu = PlayerInfoUI(self.player_name, self.color)
-        self.piu._render_name_cash()
+        self.piu.render_name_cash()
         self.pm = PlayerMovement(self.player_name, mglobals.P1_IMG) \
                             if self.player_name == mglobals.PLAYER_ONE \
                             else PlayerMovement(self.player_name, mglobals.P2_IMG)
@@ -228,7 +231,8 @@ class Player(object):
                     self.properties[p_object.color].append(p_object.property_name)
                     self.take_player_cash(p_object.cost)
                     if len(self.properties[p_object.color]) == \
-                       len(mglobals.PROP_COLOR_INDEX[p_object.color]):
+                       len(mglobals.PROP_COLOR_INDEX[p_object.color]) and \
+                       not(p_object in _property.RAILWAYS + _property.UTILITIES):
                         self.set_color_all(p_object.color)
                     self.piu.update_properties(self.properties)
         except KeyError, e:
@@ -260,15 +264,40 @@ class Player(object):
         except KeyError, e:
             pass
 
+    def h_count_reposition(self, position):
+        x, y = 900, 900
+        # If the position corresponds to a vertical rectangle
+        if position > 0 and position < 10:
+            y = (mglobals.DISPLAY_H - Player.RECT_HEIGHT + 6)
+            x = mglobals.BOARD_WIDTH - Player.SQ_HEIGHT_WIDTH \
+                    - Player.RECT_WIDTH * (position - 0.5 )
+        elif position > 10 and position < 20:
+            y = mglobals.DISPLAY_H - Player.SQ_HEIGHT_WIDTH \
+                    - Player.RECT_WIDTH * ((position % 10) - 0.5)
+            x = Player.SQ_HEIGHT_WIDTH - 18
+        # If the position corresponds to a horizontal rectangle
+        elif position > 20 and position < 30:
+            y = 87
+            x = Player.SQ_HEIGHT_WIDTH + Player.RECT_WIDTH * ((position % 10) - 0.5)
+        elif position > 30 and position < 40:
+            y = Player.SQ_HEIGHT_WIDTH + Player.RECT_WIDTH * ((position % 10) - 0.5)
+            x = mglobals.BOARD_WIDTH - 100
+        return x, y
+
     def build_house(self, index):
-        if index in [each.index for each in _property.UTILITIES] + \
-                     [each.index for each in _property.RAILWAYS]:
+        if index in [each.index for each in _property.UTILITIES + _property.RAILWAYS]:
             return False
-        try :
+        try:
             p_object = mglobals.POBJECT_MAP[index]
             val = p_object.build(self.player_name, self.cash)
             if not val:
                 return False
+            prev_count = p_object.house_count - 1
+            if not(prev_count == 0):
+                mglobals.INDEX_HOUSE_COUNT_MAP[index][prev_count].unset_x_y()
+            hsprite = mglobals.INDEX_HOUSE_COUNT_MAP[index][p_object.house_count]
+            x, y = self.h_count_reposition(index)
+            hsprite.set_x_y(x, y)
             self.take_player_cash(val)
         except KeyError, e:
             pass
