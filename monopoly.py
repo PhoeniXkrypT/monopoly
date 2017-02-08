@@ -155,6 +155,8 @@ def game_loop():
         mglobals.PROPERTY_DISPLAYS.draw(mglobals.GD)
         mglobals.HOUSE_COUNT_DISPLAYS.update()
         mglobals.HOUSE_COUNT_DISPLAYS.draw(mglobals.GD)
+        mglobals.CHESTCHANCE_DISPLAYS.update()
+        mglobals.CHESTCHANCE_DISPLAYS.draw(mglobals.GD)
 
         pygame.display.update()
         mglobals.CLK.tick(30)
@@ -162,9 +164,10 @@ def game_loop():
 def main():
     mglobals.init()
     player_menu_loop()
-    ui.init_property_displays()
-    ui.init_centre_displays()
     ui.init_dice()
+    ui.init_chestchance()
+    ui.init_centre_displays()
+    ui.init_property_displays()
     ui.init_house_count_displays()
     _property.init_pobject_map()
     game_loop()

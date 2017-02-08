@@ -4,6 +4,7 @@ import collections
 
 import mglobals
 import utils
+import infra
 import property as _property
 
 from ui import PlayerInfoUI
@@ -43,10 +44,13 @@ class PlayerMovement(object):
         except KeyError, e:
             pass
 
+    #TODO Collect 200 if player passes GO
     def advance(self, count):
         self.position = (self.position + count) % mglobals.BOARD_SQUARES
         self.reposition()
         self.find_rent_amount(count)
+        if self.position in infra.CHANCE_INDEXLIST + infra.CHEST_INDEXLIST:
+            infra.chance_chest(self.player_name)
         self.render()
 
     def goback(self, count):

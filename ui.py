@@ -6,6 +6,7 @@ import utils
 import mglobals
 import property as _property
 import dice
+import infra
 
 color_offset = {
         'blue': (5, 15),
@@ -73,17 +74,50 @@ def init_dice():
             mglobals.DICE_DISPLAY.add(temp)
             mglobals.DICE_NUMBER_MAP[(number1, number2)] = temp
 
-class MonopolyChanceUI(CentralUI):
+class CHESTCHANCEUI(pygame.sprite.Sprite):
+    def __init__(self, message):
+        super(CHESTCHANCEUI, self).__init__()
+        self.message = message
+        textfont = pygame.font.Font('./monaco.ttf', mglobals.fontsize_map['small_p'])
+        self.image = textfont.render(self.message, \
+                                     False, mglobals.color_map['black'])
+        self.rect = self.image.get_rect()
+        self.unset_x_y()
+
+    def set_x_y(self):
+        self.x, self.y = 120, 600
+
+    def unset_x_y(self):
+        self.x, self.y = 900, 900
+
+    def update(self):
+        self.rect.x, self.rect.y = self.x, self.y
+
+def init_chestchance():
+    for i in xrange(16):
+        temp = CHESTCHANCEUI(infra.COMMUNITYCHEST[i])
+        mglobals.CHESTCHANCE_DISPLAYS.add(temp)
+        mglobals.CHEST_MAP[i] = temp
+    for i in xrange(16):
+        temp = CHESTCHANCEUI(infra.CHANCE[i])
+        mglobals.CHESTCHANCE_DISPLAYS.add(temp)
+        mglobals.CHANCE_MAP[i] = temp
+
+"""
+class MonopolyChanceUI(InfraUI):
+    def __init__():
+        super(MonopolyChanceUI, self).__init__()
+        pass
+
+class MonopolyCommunityChestUI(InfraUI):
     pass
 
-class MonopolyCommunityChestUI(CentralUI):
+class IncomeTaxUI(InfraUI):
     pass
 
-class IncomeTaxUI(CentralUI):
+class LuxuryTaxUI(InfraUI):
     pass
-
-class LuxuryTaxUI(CentralUI):
-    pass
+"""
 
 class PropertyDisplay(pygame.sprite.Sprite):
     def __init__(self, property_name, color, alias=False, fntsize='small'):

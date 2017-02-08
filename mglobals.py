@@ -55,6 +55,7 @@ color_map = {
 fontsize_map = {
         'big': 50,
         'mid': 25,
+        'small_p': 15,
         'small': 12,
 };
 
@@ -79,6 +80,9 @@ PROP_COLOR_INDEX = collections.defaultdict(list)
 INDEX_PROPPIC_MAP = {}
 HOUSE_COUNT_DISPLAYS = pygame.sprite.Group()
 INDEX_HOUSE_COUNT_MAP = collections.defaultdict(dict)
+CHESTCHANCE_DISPLAYS = pygame.sprite.Group()
+CHEST_MAP = {}
+CHANCE_MAP = {}
 
 def load_imgs():
     global BACK_IMG, P1_IMG, P2_IMG, P_INFO_CLRSCR
