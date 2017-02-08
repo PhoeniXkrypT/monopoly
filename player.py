@@ -44,9 +44,11 @@ class PlayerMovement(object):
         except KeyError, e:
             pass
 
-    #TODO Collect 200 if player passes GO
-    def advance(self, count):
+    def advance(self, count, jail=False):
+        prev_pos = self.position
         self.position = (self.position + count) % mglobals.BOARD_SQUARES
+        if (self.position == 0 or prev_pos > self.position) and (not jail):
+            mglobals.PLAYER_OBJ[self.player_name].give_player_cash(200)
         self.reposition()
         self.find_rent_amount(count)
         if self.position in infra.CHANCE_INDEXLIST + infra.CHEST_INDEXLIST:

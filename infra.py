@@ -35,7 +35,7 @@ def chance(player_obj, value):
     if value == 0:
         player_obj.pm.advance(mglobals.BOARD_SQUARES - player_obj.pm.position)
     elif value == 1:
-        player_obj.pm.advance(mglobals.BOARD_SQUARES + 10 - player_obj.pm.position)
+        player_obj.pm.advance(mglobals.BOARD_SQUARES + 10 - player_obj.pm.position, True)
     elif value == 2:
         player_obj.pm.advance(mglobals.BOARD_SQUARES + 11 - player_obj.pm.position)
     elif value == 3:
@@ -71,7 +71,7 @@ def chest(player_obj, value):
     elif value == 1:
         player_obj.pm.advance(mglobals.BOARD_SQUARES + 1 - player_obj.pm.position)
     elif value == 2:
-        player_obj.pm.advance(mglobals.BOARD_SQUARES + 10 - player_obj.pm.position)
+        player_obj.pm.advance(mglobals.BOARD_SQUARES + 10 - player_obj.pm.position, True)
     elif value == 3:
         player_obj.take_player_cash(100)
     elif value == 4:
