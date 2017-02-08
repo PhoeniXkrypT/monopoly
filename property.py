@@ -1,5 +1,5 @@
 #TODO NEED TO ADD JAIL
-#TODO GO square
+
 import mglobals
 
 BANK = 'BANK'

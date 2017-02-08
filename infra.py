@@ -7,9 +7,6 @@ import mglobals
 CHANCE_INDEXLIST = [7, 22, 36]
 CHEST_INDEXLIST = [2, 17, 33]
 
-class BaseChanceChest(object):
-    pass
-
 class MonopolyChance(object):
     def __init__(self):
         pass
@@ -23,12 +20,29 @@ class IncomeTax(object):
 class LuxuryTax(object):
     pass
 
+def deduct_house_hotel_repair(player_obj, house_cost, hotel_cost):
+    repair_amt = 0
+    for each_color in player_obj.properties:
+        pindex_list = mglobals.PROP_COLOR_INDEX[each_color]
+        for each_prop in player_obj.properties[each_color]:
+            for index in pindex_list:
+                if mglobals.POBJECT_MAP[index].property_name == each_prop:
+                    prop = mglobals.POBJECT_MAP[index]
+                    if prop.house_count > 4:
+                        repair_amt += hotel_cost
+                    else:
+                        repair_amt += prop.house_count * house_cost
+    return repair_amt
+
+#TODO unset CHANCE CHEST MESSAGE
 def chance_chest(player_name):
     player_obj = mglobals.PLAYER_OBJ[player_name]
     value = random.randrange(16)
     if player_obj.pm.position in CHANCE_INDEXLIST:
+        mglobals.CHANCE_MAP[value].set_x_y()
         chance(player_obj, value)
     else:
+        mglobals.CHEST_MAP[value].set_x_y()
         chest(player_obj, value)
 
 def chance(player_obj, value):
@@ -47,9 +61,11 @@ def chance(player_obj, value):
     elif value == 6:
         player_obj.pm.goback(3)
     elif value == 7:
-        pass
+        amt = deduct_house_hotel_repair(player_obj, 25, 100)
+        player_obj.take_player_cash(amt)
     elif value == 8:
-        pass
+        amt = deduct_house_hotel_repair(player_obj, 40, 115)
+        player_obj.take_player_cash(amt)
     elif value == 9:
         player_obj.take_player_cash(150)
     elif value == 10:
@@ -137,5 +153,6 @@ COMMUNITYCHEST={
         12: 'You have won second prize in a beauty contest. Collect £10',
         13: 'It is your birthday. Collect £10 from each player',
         14: 'Get out of jail free.',
+        #TODO Take Chance
         15: 'Pay a £10 fine or take a "Chance"',
 }
