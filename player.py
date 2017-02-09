@@ -47,12 +47,18 @@ class PlayerMovement(object):
     def advance(self, count, jail=False):
         prev_pos = self.position
         self.position = (self.position + count) % mglobals.BOARD_SQUARES
-        if (self.position == 0 or prev_pos > self.position) and (not jail):
-            mglobals.PLAYER_OBJ[self.player_name].give_player_cash(200)
         self.reposition()
         self.find_rent_amount(count)
+        if (self.position == 0 or prev_pos > self.position) and (not jail):
+            mglobals.PLAYER_OBJ[self.player_name].give_player_cash(200)
         if self.position in infra.CHANCE_INDEXLIST + infra.CHEST_INDEXLIST:
             infra.chance_chest(self.player_name)
+        # Income Tax deduction
+        if self.position == 4:
+            mglobals.PLAYER_OBJ[self.player_name].take_player_cash(200)
+        # Super Tax deduction
+        if self.position == 38:
+            mglobals.PLAYER_OBJ[self.player_name].take_player_cash(100)
         self.render()
 
     def goback(self, count):
@@ -196,7 +202,7 @@ class Player(object):
                             if self.player_name == mglobals.PLAYER_ONE \
                             else mglobals.PLAYER_TWO_COLOR
         self.properties = collections.defaultdict(list)
-        self.cash = 1500
+        self.cash = mglobals.CASH_INITIAL
         self.in_jail = False
         self.free_jail_pass = 0
         self.ps = PlayerSelection(self.color)
