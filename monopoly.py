@@ -98,6 +98,8 @@ def game_loop():
                 # Dice roll
                 elif event.key == pygame.K_d:
                     utils.draw_board()
+                    mglobals.CHANCE_MAP[mglobals.CHANCE_CHEST_VALUE].unset_x_y()
+                    mglobals.CHEST_MAP[mglobals.CHANCE_CHEST_VALUE].unset_x_y()
                     mglobals.DICEOBJ.hide()
                     currentplayer.ps.hide()
                     val, double = mglobals.DICEOBJ.roll()

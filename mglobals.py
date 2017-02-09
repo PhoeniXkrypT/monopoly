@@ -5,6 +5,8 @@ import collections
 DISPLAY_W, DISPLAY_H = 1200, 800
 BOARD_WIDTH = 800
 
+BOARD_SQUARES = 40
+
 BLACK = (0, 0, 0)
 WHITE = (255, 255, 255)
 
@@ -32,8 +34,6 @@ PLAYER_TWO_COLOR = 'sea_green'
 
 PLAYER_AI  = 'Player AI'
 BANK       = 'BANK'
-
-BOARD_SQUARES = 40
 
 color_map = {
         'purple': PURPLE,
@@ -67,6 +67,7 @@ P2_IMG = None
 PvAI = False
 CASH_INITIAL = 1500
 P_INFO_CLRSCR = None
+CHANCE_CHEST_VALUE = 0
 
 PLAYER_OBJ = {}
 DICEOBJ = None

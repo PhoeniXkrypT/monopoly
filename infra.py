@@ -34,16 +34,15 @@ def deduct_house_hotel_repair(player_obj, house_cost, hotel_cost):
                         repair_amt += prop.house_count * house_cost
     return repair_amt
 
-#TODO unset CHANCE CHEST MESSAGE
 def chance_chest(player_name):
     player_obj = mglobals.PLAYER_OBJ[player_name]
-    value = random.randrange(16)
+    mglobals.CHANCE_CHEST_VALUE = random.randrange(16)
     if player_obj.pm.position in CHANCE_INDEXLIST:
-        mglobals.CHANCE_MAP[value].set_x_y()
-        chance(player_obj, value)
+        mglobals.CHANCE_MAP[mglobals.CHANCE_CHEST_VALUE].set_x_y()
+        chance(player_obj, mglobals.CHANCE_CHEST_VALUE)
     else:
-        mglobals.CHEST_MAP[value].set_x_y()
-        chest(player_obj, value)
+        mglobals.CHEST_MAP[mglobals.CHANCE_CHEST_VALUE].set_x_y()
+        chest(player_obj, mglobals.CHANCE_CHEST_VALUE)
 
 def chance(player_obj, value):
     if value == 0:
@@ -90,15 +89,11 @@ def chest(player_obj, value):
         player_obj.pm.advance(mglobals.BOARD_SQUARES + 10 - player_obj.pm.position, True)
     elif value == 3:
         player_obj.take_player_cash(100)
-    elif value == 4:
-        player_obj.take_player_cash(50)
-    elif value == 5:
+    elif value == 4 or value == 5:
         player_obj.take_player_cash(50)
     elif value == 6:
         player_obj.give_player_cash(200)
-    elif value == 7:
-        player_obj.give_player_cash(100)
-    elif value == 8:
+    elif value == 7 or value == 8:
         player_obj.give_player_cash(100)
     elif value == 9:
         player_obj.give_player_cash(50)
