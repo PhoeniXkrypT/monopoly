@@ -94,30 +94,15 @@ class CHESTCHANCEUI(pygame.sprite.Sprite):
         self.rect.x, self.rect.y = self.x, self.y
 
 def init_chestchance():
+    mglobals.JAIL_MSG = CHESTCHANCEUI("In JAIL")
+    mglobals.CHESTCHANCE_DISPLAYS.add(mglobals.JAIL_MSG)
     for i in xrange(16):
         temp = CHESTCHANCEUI(infra.COMMUNITYCHEST[i])
         mglobals.CHESTCHANCE_DISPLAYS.add(temp)
         mglobals.CHEST_MAP[i] = temp
-    for i in xrange(16):
-        temp = CHESTCHANCEUI(infra.CHANCE[i])
-        mglobals.CHESTCHANCE_DISPLAYS.add(temp)
-        mglobals.CHANCE_MAP[i] = temp
-
-"""
-class MonopolyChanceUI(InfraUI):
-    def __init__():
-        super(MonopolyChanceUI, self).__init__()
-        pass
-
-class MonopolyCommunityChestUI(InfraUI):
-    pass
-
-class IncomeTaxUI(InfraUI):
-    pass
-
-class LuxuryTaxUI(InfraUI):
-    pass
-"""
+        temp1 = CHESTCHANCEUI(infra.CHANCE[i])
+        mglobals.CHESTCHANCE_DISPLAYS.add(temp1)
+        mglobals.CHANCE_MAP[i] = temp1
 
 class PropertyDisplay(pygame.sprite.Sprite):
     def __init__(self, property_name, color, alias=False, fntsize='small'):

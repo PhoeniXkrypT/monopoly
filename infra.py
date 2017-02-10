@@ -14,24 +14,15 @@ class MonopolyChance(object):
 class MonopolyCommunityChest(object):
     pass
 
-class IncomeTax(object):
-    pass
-
-class LuxuryTax(object):
-    pass
-
 def deduct_house_hotel_repair(player_obj, house_cost, hotel_cost):
     repair_amt = 0
-    for each_color in player_obj.properties:
-        pindex_list = mglobals.PROP_COLOR_INDEX[each_color]
-        for each_prop in player_obj.properties[each_color]:
-            for index in pindex_list:
-                if mglobals.POBJECT_MAP[index].property_name == each_prop:
-                    prop = mglobals.POBJECT_MAP[index]
-                    if prop.house_count > 4:
-                        repair_amt += hotel_cost
-                    else:
-                        repair_amt += prop.house_count * house_cost
+    for color in player_obj.properties:
+        for pname in player_obj.properties[color]:
+            prop = mglobals.PNAME_OBJ_MAP[pname]
+            if prop.house_count > 4:
+                repair_amt += hotel_cost
+            else:
+                repair_amt += prop.house_count * house_cost
     return repair_amt
 
 def chance_chest(player_name):
@@ -48,7 +39,8 @@ def chance(player_obj, value):
     if value == 0:
         player_obj.pm.advance(mglobals.BOARD_SQUARES - player_obj.pm.position)
     elif value == 1:
-        player_obj.pm.advance(mglobals.BOARD_SQUARES + 10 - player_obj.pm.position, True)
+        player_obj.pm.advance(mglobals.BOARD_SQUARES + 10 - player_obj.pm.position)
+        player_obj.in_jail= True
     elif value == 2:
         player_obj.pm.advance(mglobals.BOARD_SQUARES + 11 - player_obj.pm.position)
     elif value == 3:
@@ -78,7 +70,7 @@ def chance(player_obj, value):
     elif value == 14:
         player_obj.give_player_cash(50)
     elif value == 15:
-        pass
+        player_obj.free_jail_pass += 1
 
 def chest(player_obj, value):
     if value == 0:
@@ -86,7 +78,8 @@ def chest(player_obj, value):
     elif value == 1:
         player_obj.pm.advance(mglobals.BOARD_SQUARES + 1 - player_obj.pm.position)
     elif value == 2:
-        player_obj.pm.advance(mglobals.BOARD_SQUARES + 10 - player_obj.pm.position, True)
+        player_obj.pm.advance(mglobals.BOARD_SQUARES + 10 - player_obj.pm.position)
+        player_obj.in_jail= True
     elif value == 3:
         player_obj.take_player_cash(100)
     elif value == 4 or value == 5:
@@ -109,7 +102,7 @@ def chest(player_obj, value):
                 obj.take_player_cash(10)
         player_obj.give_player_cash(10)
     elif value == 14:
-        pass
+        player_obj.free_jail_pass += 1
     elif value == 15:
         player_obj.take_player_cash(10)
 

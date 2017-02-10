@@ -68,22 +68,26 @@ PvAI = False
 CASH_INITIAL = 1500
 P_INFO_CLRSCR = None
 CHANCE_CHEST_VALUE = 0
+JAIL_MSG = None
 
 PLAYER_OBJ = {}
 DICEOBJ = None
 DICE_NUMBER_MAP = {}
 DICE_DISPLAY = pygame.sprite.Group()
+
 PROPERTY_NAME_SPRITE_MAP = {}
 PROPERTY_DISPLAYS = pygame.sprite.Group()
 CENTRE_DISPLAYS = pygame.sprite.Group()
 POBJECT_MAP = {}
+PNAME_OBJ_MAP = {}
 PROP_COLOR_INDEX = collections.defaultdict(list)
 INDEX_PROPPIC_MAP = {}
 HOUSE_COUNT_DISPLAYS = pygame.sprite.Group()
 INDEX_HOUSE_COUNT_MAP = collections.defaultdict(dict)
-CHESTCHANCE_DISPLAYS = pygame.sprite.Group()
-CHEST_MAP = {}
+
 CHANCE_MAP = {}
+CHEST_MAP = {}
+CHESTCHANCE_DISPLAYS = pygame.sprite.Group()
 
 def load_imgs():
     global BACK_IMG, P1_IMG, P2_IMG, P_INFO_CLRSCR
