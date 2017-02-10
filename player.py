@@ -44,21 +44,30 @@ class PlayerMovement(object):
         except KeyError, e:
             pass
 
-    def advance(self, count, jail=False):
+    def advance(self, count):
+        currentplayer = mglobals.PLAYER_OBJ[self.player_name]
         prev_pos = self.position
         self.position = (self.position + count) % mglobals.BOARD_SQUARES
-        self.reposition()
         self.find_rent_amount(count)
-        if (self.position == 0 or prev_pos > self.position) and (not jail):
-            mglobals.PLAYER_OBJ[self.player_name].give_player_cash(200)
+        if (self.position == 0 or prev_pos > self.position) and \
+            (not currentplayer.in_jail):
+            currentplayer.give_player_cash(200)
         if self.position in infra.CHANCE_INDEXLIST + infra.CHEST_INDEXLIST:
             infra.chance_chest(self.player_name)
         # Income Tax deduction
         if self.position == 4:
-            mglobals.PLAYER_OBJ[self.player_name].take_player_cash(200)
+            currentplayer.take_player_cash(200)
         # Super Tax deduction
-        if self.position == 38:
-            mglobals.PLAYER_OBJ[self.player_name].take_player_cash(100)
+        elif self.position == 38:
+            currentplayer.take_player_cash(100)
+        # Go to jail
+        elif self.position == 30:
+            #TODO Get out of jail
+            self.position = 10
+            currentplayer.in_jail = True
+        if self.position == 10 and currentplayer.in_jail:
+            mglobals.JAIL_MSG.set_x_y()
+        self.reposition()
         self.render()
 
     def goback(self, count):
@@ -280,7 +289,7 @@ class Player(object):
         x, y = 900, 900
         # If the position corresponds to a vertical rectangle
         if position > 0 and position < 10:
-            y = (mglobals.DISPLAY_H - Player.RECT_HEIGHT + 6)
+            y = (mglobals.DISPLAY_H - Player.SQ_HEIGHT_WIDTH + 6)
             x = mglobals.BOARD_WIDTH - Player.SQ_HEIGHT_WIDTH \
                     - Player.RECT_WIDTH * (position - 0.5 )
         elif position > 10 and position < 20:

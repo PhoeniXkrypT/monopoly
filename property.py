@@ -215,6 +215,5 @@ def init_pobject_map():
     for obj in PROPERTIES + RAILWAYS + UTILITIES:
         mglobals.POBJECT_MAP[obj.index] = obj
         mglobals.PROP_COLOR_INDEX[obj.color].append(obj.index)
+        mglobals.PNAME_OBJ_MAP[obj.property_name] = obj
 
-#def get_pobject(index):
-#    return mglobals.POBJECT_MAP[index]
