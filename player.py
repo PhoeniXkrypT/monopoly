@@ -225,12 +225,12 @@ class Player(object):
         self.cash += cash
         self.piu.update_cash(self.cash)
 
-    #TODO handle negative cash
     def take_player_cash(self, cash):
+        if self.cash - cash < 1:
+            return (False, 'Not enough money!')
         self.cash -= cash
         self.piu.update_cash(self.cash)
 
-    #TODO Change color_all when sell_property
     def set_color_all(self, color, unset=False):
         for each in mglobals.PROP_COLOR_INDEX[color]:
             p_object = mglobals.POBJECT_MAP[each]
