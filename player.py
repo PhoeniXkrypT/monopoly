@@ -230,10 +230,6 @@ class Player(object):
         self.cash -= cash
         self.piu.update_cash(self.cash)
 
-    #TODO sell_property
-    def sell_property(self):
-        pass
-
     #TODO Change color_all when sell_property
     def set_color_all(self, color, unset=False):
         for each in mglobals.PROP_COLOR_INDEX[color]:
@@ -282,6 +278,38 @@ class Player(object):
             self.piu.replace_property(p_object.color, p_object.property_name+'_m', p_object.property_name)
             self.piu.update_properties(self.properties)
             return True
+        except KeyError, e:
+            pass
+
+    def sell_property(self, index):
+        try:
+            p_object = mglobals.POBJECT_MAP[index]
+            if p_object.owner_name == self.player_name:
+                if p_object in _property.PROPERTIES:
+                    h_count = []
+                    for each_index in mglobals.PROP_COLOR_INDEX[p_object.color]:
+                        h_count.append(mglobals.POBJECT_MAP[each_index].house_count)
+                if p_object in _property.UTILITIES + _property.RAILWAYS \
+                        or max(h_count) == 0:
+                    p_object.owner_name = mglobals.BANK
+                    self.give_player_cash(p_object.cost)
+                    self.properties[p_object.color].remove(p_object.property_name)
+                    mglobals.PROPERTY_NAME_SPRITE_MAP[p_object.property_name].unset_x_y()
+                    if self.properties.get(p_object.color) == []:
+                        self.properties.pop(p_object.color)
+                    if p_object in _property.PROPERTIES:
+                        self.set_color_all(p_object.color, True)
+                    self.piu.update_properties(self.properties)
+                else:
+                    if set(h_count) != 1 and p_object.house_count != max(h_count):
+                        return (False, 'Sell houses in property of %s color.' % p_object.color)
+                    mglobals.INDEX_HOUSE_COUNT_MAP[index][p_object.house_count].unset_x_y()
+                    p_object.house_count -= 1
+                    self.give_player_cash(p_object.house_hotel_cost)
+                    if p_object.house_count != 0:
+                        hsprite = mglobals.INDEX_HOUSE_COUNT_MAP[index][p_object.house_count]
+                        x, y = self.h_count_reposition(index)
+                        hsprite.set_x_y(x, y)
         except KeyError, e:
             pass
 

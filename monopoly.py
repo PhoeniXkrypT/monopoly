@@ -63,6 +63,7 @@ def game_loop():
     P2.pm.render()
 
     P1.buy_property(1)
+    P1.buy_property(3)
     P1.buy_property(11)
     P1.buy_property(32)
     P2.buy_property(8)
@@ -148,6 +149,15 @@ def game_loop():
                     otherplayer.pm.render()
                     currentplayer.ps.show()
                     currentplayer.build_house(currentplayer.ps.position)
+
+                # Sell property
+                elif event.key == pygame.K_s:
+                    utils.draw_board()
+                    currentplayer.pm.render()
+                    otherplayer.pm.render()
+                    currentplayer.ps.show()
+                    currentplayer.sell_property(currentplayer.ps.position)
+
 
         mglobals.DICE_DISPLAY.update()
         mglobals.DICE_DISPLAY.draw(mglobals.GD)
