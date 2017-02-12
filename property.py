@@ -2,15 +2,13 @@
 
 import mglobals
 
-BANK = 'BANK'
-
 class BaseProperty(object):
     def __init__(self):
         pass
 
     #TODO Display the error messages also
     def can_purchase(self, currentplayer, cash):
-        if self.owner_name == BANK:
+        if self.owner_name == mglobals.BANK:
             if cash >= self.cost:
                 return (True,)
             else:
@@ -59,7 +57,7 @@ class BaseProperty(object):
 
 class Property(BaseProperty):
     def __init__(self, index, property_name, cost, color, rent_details, mortgage_val,
-                 house_hotel_cost, color_cost, color_all=False, owner_name=BANK):
+                 house_hotel_cost, color_cost, color_all=False, owner_name=mglobals.BANK):
         super(Property, self).__init__()
         self.index = index
         self.property_name = property_name
@@ -86,7 +84,7 @@ class Property(BaseProperty):
 
     def compute_rent(self, currentplayer):
         if currentplayer == self.owner_name or \
-           self.owner_name == BANK or self.mortgaged:
+           self.owner_name == mglobals.BANK or self.mortgaged:
             return 0
         if self.house_count == 0 and self.color_all:
             return self.rent_details[self.house_count] * self.color_cost
@@ -117,7 +115,7 @@ class Property(BaseProperty):
         return 0
 
 class UtilityProperty(BaseProperty):
-    def __init__(self, index, property_name, cost, mortgage_val, owner_name=BANK):
+    def __init__(self, index, property_name, cost, mortgage_val, owner_name=mglobals.BANK):
         super(UtilityProperty, self).__init__()
         self.index = index
         self.property_name = property_name
@@ -131,13 +129,13 @@ class UtilityProperty(BaseProperty):
 
     def compute_rent(self, currentplayer, util_count, dice_val):
         if currentplayer == self.owner_name or \
-           self.owner_name == BANK or self.mortgaged:
+           self.owner_name == mglobals.BANK or self.mortgaged:
             return 0
         return self.rent_details[util_count] * dice_val
 
 
 class RailwayProperty(BaseProperty):
-    def __init__(self, index, property_name, cost, mortgage_val, owner_name=BANK):
+    def __init__(self, index, property_name, cost, mortgage_val, owner_name=mglobals.BANK):
         super(RailwayProperty, self).__init__()
         self.index = index
         self.property_name = property_name
@@ -151,7 +149,7 @@ class RailwayProperty(BaseProperty):
 
     def compute_rent(self, currentplayer, rail_count):
         if currentplayer == self.owner_name or \
-           self.owner_name == BANK or self.mortgaged:
+           self.owner_name == mglobals.BANK or self.mortgaged:
             return 0
         return self.rent_details[rail_count]
 
