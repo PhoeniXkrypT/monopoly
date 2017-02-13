@@ -126,11 +126,18 @@ class PropertyDisplay(pygame.sprite.Sprite):
         self.rect.x, self.rect.y = self.x, self.y
 
 def init_property_displays():
-    for i in _property.PROPERTIES + _property.RAILWAYS + _property.UTILITIES:
+    for i in _property.PROPERTIES:
         temp = PropertyDisplay(i.property_name, i.color)
         mglobals.PROPERTY_DISPLAYS.add(temp)
         mglobals.PROPERTY_NAME_SPRITE_MAP[i.property_name] = temp
         temp_m = PropertyDisplay(i.property_name, 'gray', True)
+        mglobals.PROPERTY_DISPLAYS.add(temp_m)
+        mglobals.PROPERTY_NAME_SPRITE_MAP[i.property_name+'_m'] = temp_m
+    for i in _property.RAILWAYS + _property.UTILITIES:
+        temp = PropertyDisplay(i.property_name[:1], i.color, True, 'mid')
+        mglobals.PROPERTY_DISPLAYS.add(temp)
+        mglobals.PROPERTY_NAME_SPRITE_MAP[i.property_name] = temp
+        temp_m = PropertyDisplay(i.property_name[:1], 'gray', True, 'mid')
         mglobals.PROPERTY_DISPLAYS.add(temp_m)
         mglobals.PROPERTY_NAME_SPRITE_MAP[i.property_name+'_m'] = temp_m
 
@@ -187,17 +194,22 @@ class PlayerInfoUI(object):
         pygame.draw.rect(mglobals.GD, mglobals.color_map[self.color],
                          [self.x, self.y, 375, 375], 4)
 
-    def _print_color(self, color, properties_list, x, y, y_inc):
-        utils.message_display_lines([i[:10] for i in properties_list],
-                                    x, y, y_inc, color, fntsize='small')
+    def _print_color(self, color, properties_list):
+        if color == 'black':
+            x, y = self.x + 10, self.y + 340
+        else:
+            x, y = self.x + 260, self.y + 340
+        for pname in properties_list:
+            psprite = mglobals.PROPERTY_NAME_SPRITE_MAP[pname]
+            psprite.set_x_y(x, y)
+            x += 60
 
+    # For each property in properties_list:
+    #     Find the sprite of the property
+    #     Compute x, y according to the player
+    #     Do sprite.set_x_y(x, y)
+    #     (in main loop update() is called)
     def _print_color2(self, color, properties_list, x, y, y_inc):
-        # For each property in properties_list:
-        #     Find the sprite of the property
-        #     Compute x, y according to the player
-        #     Do sprite.set_x_y(x, y)
-        #     (in main loop update() is called)
-        print "_print_color2", self.player_name, color, properties_list
         for pname in properties_list:
             psprite = mglobals.PROPERTY_NAME_SPRITE_MAP[pname]
             psprite.set_x_y(x, y)
@@ -219,7 +231,6 @@ class PlayerInfoUI(object):
             mglobals.PROPERTY_NAME_SPRITE_MAP[pname_old].unset_x_y()
         except ValueError, e:
             pass
-        #self.render()
 
     def update_properties(self, properties):
         self.properties = properties
@@ -230,17 +241,22 @@ class PlayerInfoUI(object):
         x_offset, y_offset = 90, 180
         y_start = 50
         x_current, y_current = 0, 0
-        for i, color in enumerate(sorted(self.properties.keys())):
-            if i == 0:
-                x_current, y_current = self.x + 10, self.y + 70
-            elif i == 4:
-                x_current, y_current = self.x + 10, self.y + 220
-                y_offset = y_start + y_offset + 5
+        i = 0
+        for color in sorted(self.properties.keys()):
+            if color in ['purple', 'black']:
+                self._print_color(color, self.properties[color])
             else:
-                x_current += 90
+                if i == 0:
+                    x_current, y_current = self.x + 10, self.y + 70
+                elif i == 4:
+                    x_current, y_current = self.x + 10, self.y + 220
+                    y_offset = y_start + y_offset + 5
+                else:
+                    x_current += 90
 
-            self._print_color2(color, self.properties[color],
-                              x_current, y_current, 50)
+                self._print_color2(color, self.properties[color],
+                                      x_current, y_current, 50)
+                i += 1
 
     def render_name_cash(self):
         utils.clear_info(self.player_name)
