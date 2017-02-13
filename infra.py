@@ -14,24 +14,19 @@ class Jail(object):
         self.free_jail_pass = 0
         self.in_jail = False
 
-    def use_jail_pass(self):
-        if self.in_jail and self.free_jail_pass:
-            print "JAIL PASS"
-            self.free_jail_pass -= 1
-            self.in_jail = False
-
     def use_cash(self):
         if self.in_jail:
             print "JAIL USE CASH "
             mglobals.PLAYER_OBJ[self.player].take_player_cash(50)
             self.in_jail = False
+            mglobals.JAIL_MSG.unset_x_y()
 
-class MonopolyChance(object):
-    def __init__(self):
-        pass
-
-class MonopolyCommunityChest(object):
-    pass
+    def use_jail_pass(self):
+        print "JAIL PASS", self.free_jail_pass
+        if self.in_jail and self.free_jail_pass:
+            self.free_jail_pass -= 1
+            self.in_jail = False
+            mglobals.JAIL_MSG.unset_x_y()
 
 class ChanceChest(object):
     def __init__(self):
@@ -51,8 +46,10 @@ class ChanceChest(object):
         repair_amt = 0
         for color in player_obj.properties:
             for pname in player_obj.properties[color]:
+                if '_' in pname:
+                    pname = pname[:-2]
                 prop = mglobals.PNAME_OBJ_MAP[pname]
-                if prop in _property.PROPERTIES:
+                if prop in _property.PROPERTIES and not(prop.mortgaged):
                     if prop.house_count > 4:
                         repair_amt += hotel_cost
                     else:
