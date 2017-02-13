@@ -3,9 +3,28 @@
 import random
 
 import mglobals
+import property as _property
 
 CHANCE_INDEXLIST = [7, 22, 36]
 CHEST_INDEXLIST = [2, 17, 33]
+
+class Jail(object):
+    def __init__(self, player):
+        self.player = player
+        self.free_jail_pass = 0
+        self.in_jail = False
+
+    def use_jail_pass(self):
+        if self.in_jail and self.free_jail_pass:
+            print "JAIL PASS"
+            self.free_jail_pass -= 1
+            self.in_jail = False
+
+    def use_cash(self):
+        if self.in_jail:
+            print "JAIL USE CASH "
+            mglobals.PLAYER_OBJ[self.player].take_player_cash(50)
+            self.in_jail = False
 
 class MonopolyChance(object):
     def __init__(self):
@@ -14,97 +33,102 @@ class MonopolyChance(object):
 class MonopolyCommunityChest(object):
     pass
 
-def deduct_house_hotel_repair(player_obj, house_cost, hotel_cost):
-    repair_amt = 0
-    for color in player_obj.properties:
-        for pname in player_obj.properties[color]:
-            prop = mglobals.PNAME_OBJ_MAP[pname]
-            if prop.house_count > 4:
-                repair_amt += hotel_cost
-            else:
-                repair_amt += prop.house_count * house_cost
-    return repair_amt
+class ChanceChest(object):
+    def __init__(self):
+        pass
 
-def chance_chest(player_name):
-    player_obj = mglobals.PLAYER_OBJ[player_name]
-    mglobals.CHANCE_CHEST_VALUE = random.randrange(16)
-    if player_obj.pm.position in CHANCE_INDEXLIST:
-        mglobals.CHANCE_MAP[mglobals.CHANCE_CHEST_VALUE].set_x_y()
-        chance(player_obj, mglobals.CHANCE_CHEST_VALUE)
-    else:
-        mglobals.CHEST_MAP[mglobals.CHANCE_CHEST_VALUE].set_x_y()
-        chest(player_obj, mglobals.CHANCE_CHEST_VALUE)
+    def chance_chest(self, player_name):
+        player_obj = mglobals.PLAYER_OBJ[player_name]
+        mglobals.CHANCE_CHEST_VALUE = random.randrange(16)
+        if player_obj.pm.position in CHANCE_INDEXLIST:
+            mglobals.CHANCE_MAP[mglobals.CHANCE_CHEST_VALUE].set_x_y()
+            self.chance(player_obj, mglobals.CHANCE_CHEST_VALUE)
+        else:
+            mglobals.CHEST_MAP[mglobals.CHANCE_CHEST_VALUE].set_x_y()
+            self.chest(player_obj, mglobals.CHANCE_CHEST_VALUE)
 
-def chance(player_obj, value):
-    if value == 0:
-        player_obj.pm.advance(mglobals.BOARD_SQUARES - player_obj.pm.position)
-    elif value == 1:
-        player_obj.pm.advance(mglobals.BOARD_SQUARES + 10 - player_obj.pm.position)
-        player_obj.in_jail= True
-    elif value == 2:
-        player_obj.pm.advance(mglobals.BOARD_SQUARES + 11 - player_obj.pm.position)
-    elif value == 3:
-        player_obj.pm.advance(mglobals.BOARD_SQUARES + 15 - player_obj.pm.position)
-    elif value == 4:
-        player_obj.pm.advance(mglobals.BOARD_SQUARES + 24 - player_obj.pm.position)
-    elif value == 5:
-        player_obj.pm.advance(mglobals.BOARD_SQUARES + 39 - player_obj.pm.position)
-    elif value == 6:
-        player_obj.pm.goback(3)
-    elif value == 7:
-        amt = deduct_house_hotel_repair(player_obj, 25, 100)
-        player_obj.take_player_cash(amt)
-    elif value == 8:
-        amt = deduct_house_hotel_repair(player_obj, 40, 115)
-        player_obj.take_player_cash(amt)
-    elif value == 9:
-        player_obj.take_player_cash(150)
-    elif value == 10:
-        player_obj.take_player_cash(20)
-    elif value == 11:
-        player_obj.take_player_cash(15)
-    elif value == 12:
-        player_obj.give_player_cash(150)
-    elif value == 13:
-        player_obj.give_player_cash(100)
-    elif value == 14:
-        player_obj.give_player_cash(50)
-    elif value == 15:
-        player_obj.free_jail_pass += 1
+    def deduct_house_hotel_repair(self, player_obj, house_cost, hotel_cost):
+        repair_amt = 0
+        for color in player_obj.properties:
+            for pname in player_obj.properties[color]:
+                prop = mglobals.PNAME_OBJ_MAP[pname]
+                if prop in _property.PROPERTIES:
+                    if prop.house_count > 4:
+                        repair_amt += hotel_cost
+                    else:
+                        repair_amt += prop.house_count * house_cost
+        return repair_amt
 
-def chest(player_obj, value):
-    if value == 0:
-        player_obj.pm.advance(mglobals.BOARD_SQUARES - player_obj.pm.position)
-    elif value == 1:
-        player_obj.pm.advance(mglobals.BOARD_SQUARES + 1 - player_obj.pm.position)
-    elif value == 2:
-        player_obj.pm.advance(mglobals.BOARD_SQUARES + 10 - player_obj.pm.position)
-        player_obj.in_jail= True
-    elif value == 3:
-        player_obj.take_player_cash(100)
-    elif value == 4 or value == 5:
-        player_obj.take_player_cash(50)
-    elif value == 6:
-        player_obj.give_player_cash(200)
-    elif value == 7 or value == 8:
-        player_obj.give_player_cash(100)
-    elif value == 9:
-        player_obj.give_player_cash(50)
-    elif value == 10:
-        player_obj.give_player_cash(25)
-    elif value == 11:
-        player_obj.give_player_cash(20)
-    elif value == 12:
-        player_obj.give_player_cash(10)
-    elif value == 13:
-        for player, obj in mglobals.PLAYER_OBJ.iteritems():
-            if not(player == player_obj.player_name):
-                obj.take_player_cash(10)
-        player_obj.give_player_cash(10)
-    elif value == 14:
-        player_obj.free_jail_pass += 1
-    elif value == 15:
-        player_obj.take_player_cash(10)
+    def chance(self, player_obj, value):
+        if value == 0:
+            player_obj.pm.advance(mglobals.BOARD_SQUARES - player_obj.pm.position)
+        elif value == 1:
+            player_obj.pm.advance(mglobals.BOARD_SQUARES + 10 - player_obj.pm.position)
+            player_obj.jail.in_jail= True
+        elif value == 2:
+            player_obj.pm.advance(mglobals.BOARD_SQUARES + 11 - player_obj.pm.position)
+        elif value == 3:
+            player_obj.pm.advance(mglobals.BOARD_SQUARES + 15 - player_obj.pm.position)
+        elif value == 4:
+            player_obj.pm.advance(mglobals.BOARD_SQUARES + 24 - player_obj.pm.position)
+        elif value == 5:
+            player_obj.pm.advance(mglobals.BOARD_SQUARES + 39 - player_obj.pm.position)
+        elif value == 6:
+            player_obj.pm.goback(3)
+        elif value == 7:
+            amt = self.deduct_house_hotel_repair(player_obj, 25, 100)
+            player_obj.take_player_cash(amt)
+        elif value == 8:
+            amt = self.deduct_house_hotel_repair(player_obj, 40, 115)
+            player_obj.take_player_cash(amt)
+        elif value == 9:
+            player_obj.take_player_cash(150)
+        elif value == 10:
+            player_obj.take_player_cash(20)
+        elif value == 11:
+            player_obj.take_player_cash(15)
+        elif value == 12:
+            player_obj.give_player_cash(150)
+        elif value == 13:
+            player_obj.give_player_cash(100)
+        elif value == 14:
+            player_obj.give_player_cash(50)
+        elif value == 15:
+            player_obj.jail.free_jail_pass += 1
+
+    def chest(self, player_obj, value):
+        if value == 0:
+            player_obj.pm.advance(mglobals.BOARD_SQUARES - player_obj.pm.position)
+        elif value == 1:
+            player_obj.pm.advance(mglobals.BOARD_SQUARES + 1 - player_obj.pm.position)
+        elif value == 2:
+            player_obj.pm.advance(mglobals.BOARD_SQUARES + 10 - player_obj.pm.position)
+            player_obj.jail.in_jail= True
+        elif value == 3:
+            player_obj.take_player_cash(100)
+        elif value == 4 or value == 5:
+            player_obj.take_player_cash(50)
+        elif value == 6:
+            player_obj.give_player_cash(200)
+        elif value == 7 or value == 8:
+            player_obj.give_player_cash(100)
+        elif value == 9:
+            player_obj.give_player_cash(50)
+        elif value == 10:
+            player_obj.give_player_cash(25)
+        elif value == 11:
+            player_obj.give_player_cash(20)
+        elif value == 12:
+            player_obj.give_player_cash(10)
+        elif value == 13:
+            for player, obj in mglobals.PLAYER_OBJ.iteritems():
+                if not(player == player_obj.player_name):
+                    obj.take_player_cash(10)
+            player_obj.give_player_cash(10)
+        elif value == 14:
+            player_obj.jail.free_jail_pass += 1
+        elif value == 15:
+            player_obj.take_player_cash(10)
 
 CHANCE = {
         0: 'Advance to GO',

@@ -67,7 +67,6 @@ def game_loop():
     P1.buy_property(11)
     P1.buy_property(32)
     P2.buy_property(8)
-    P2.buy_property(15)
     P2.buy_property(39)
 
     currentplayer, otherplayer = P1, P2
@@ -75,6 +74,13 @@ def game_loop():
 
     while True:
         for event in pygame.event.get():
+
+            #TODO Fix jail
+            if currentplayer.jail.in_jail:
+                mglobals.JAIL_MSG.set_x_y()
+            else:
+                mglobals.JAIL_MSG.unset_x_y()
+
             if event.type == pygame.QUIT:
                 return
             elif event.type == pygame.KEYDOWN:
@@ -158,6 +164,25 @@ def game_loop():
                     currentplayer.ps.show()
                     currentplayer.sell_property(currentplayer.ps.position)
 
+                # Options 1, 2 & 3 to get out of jail
+                if currentplayer.pm.position == 10:
+                    if event.key == pygame.K_1:
+                        utils.draw_board()
+                        currentplayer.pm.render()
+                        otherplayer.pm.render()
+                        currentplayer.jail.use_cash()
+
+                    elif event.key == pygame.K_2:
+                        utils.draw_board()
+                        currentplayer.pm.render()
+                        otherplayer.pm.render()
+                        currentplayer.jail.use_jail_pass()
+
+                    elif event.key == pygame.K_3:
+                        utils.draw_board()
+                        currentplayer.pm.render()
+                        otherplayer.pm.render()
+                        pass
 
         mglobals.DICE_DISPLAY.update()
         mglobals.DICE_DISPLAY.draw(mglobals.GD)

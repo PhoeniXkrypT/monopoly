@@ -49,11 +49,14 @@ class PlayerMovement(object):
         prev_pos = self.position
         self.position = (self.position + count) % mglobals.BOARD_SQUARES
         self.find_rent_amount(count)
+        if self.position == 10 and currentplayer.jail.in_jail:
+            print "JAIL"
+            pass
         if (self.position == 0 or prev_pos > self.position) and \
-            (not currentplayer.in_jail):
+            (not currentplayer.jail.in_jail):
             currentplayer.give_player_cash(200)
         if self.position in infra.CHANCE_INDEXLIST + infra.CHEST_INDEXLIST:
-            infra.chance_chest(self.player_name)
+            infra.ChanceChest().chance_chest(self.player_name)
         # Income Tax deduction
         if self.position == 4:
             currentplayer.take_player_cash(200)
@@ -64,9 +67,7 @@ class PlayerMovement(object):
         elif self.position == 30:
             #TODO Get out of jail
             self.position = 10
-            currentplayer.in_jail = True
-        if self.position == 10 and currentplayer.in_jail:
-            mglobals.JAIL_MSG.set_x_y()
+            currentplayer.jail.in_jail = True
         self.reposition()
         self.render()
 
@@ -212,8 +213,9 @@ class Player(object):
                             else mglobals.PLAYER_TWO_COLOR
         self.properties = collections.defaultdict(list)
         self.cash = mglobals.CASH_INITIAL
-        self.in_jail = False
-        self.free_jail_pass = 0
+        #self.in_jail = False
+        #self.free_jail_pass = 0
+        self.jail = infra.Jail(self.player_name)
         self.ps = PlayerSelection(self.color)
         self.piu = PlayerInfoUI(self.player_name, self.color)
         self.piu.render_name_cash()
