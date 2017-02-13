@@ -194,15 +194,11 @@ class PlayerInfoUI(object):
         pygame.draw.rect(mglobals.GD, mglobals.color_map[self.color],
                          [self.x, self.y, 375, 375], 4)
 
-    def _print_color(self, color, properties_list):
-        if color == 'black':
-            x, y = self.x + 10, self.y + 340
-        else:
-            x, y = self.x + 260, self.y + 340
+    def _print_color(self, color, properties_list, x, y, x_inc):
         for pname in properties_list:
             psprite = mglobals.PROPERTY_NAME_SPRITE_MAP[pname]
             psprite.set_x_y(x, y)
-            x += 60
+            x += x_inc
 
     # For each property in properties_list:
     #     Find the sprite of the property
@@ -244,7 +240,11 @@ class PlayerInfoUI(object):
         i = 0
         for color in sorted(self.properties.keys()):
             if color in ['purple', 'black']:
-                self._print_color(color, self.properties[color])
+                if color == 'black':
+                    x, y = self.x + 10, self.y + 340
+                else:
+                    x, y = self.x + 260, self.y + 340
+                self._print_color(color, self.properties[color], x, y, 60)
             else:
                 if i == 0:
                     x_current, y_current = self.x + 10, self.y + 70
