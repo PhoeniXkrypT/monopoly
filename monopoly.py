@@ -71,6 +71,7 @@ def game_loop():
 
     currentplayer, otherplayer = P1, P2
     double_count = 0
+    roll = True
 
     while True:
         for event in pygame.event.get():
@@ -84,6 +85,52 @@ def game_loop():
             if event.type == pygame.QUIT:
                 return
             elif event.type == pygame.KEYDOWN:
+
+                # Options 1, 2 & 3 to get out of jail
+                if currentplayer.pm.position == 10:
+                    if event.key == pygame.K_1:
+                        utils.draw_board()
+                        currentplayer.pm.render()
+                        otherplayer.pm.render()
+                        currentplayer.jail.use_cash()
+
+                    elif event.key == pygame.K_2:
+                        utils.draw_board()
+                        currentplayer.pm.render()
+                        otherplayer.pm.render()
+                        currentplayer.jail.use_jail_pass()
+
+                    elif event.key == pygame.K_3:
+                        utils.draw_board()
+                        currentplayer.pm.render()
+                        otherplayer.pm.render()
+                        pass
+
+                # Dice roll
+                if event.key == pygame.K_d and roll and not(currentplayer.jail.in_jail):
+                    utils.draw_board()
+                    mglobals.CHANCE_MAP[mglobals.CHANCE_CHEST_VALUE].unset_x_y()
+                    mglobals.CHEST_MAP[mglobals.CHANCE_CHEST_VALUE].unset_x_y()
+                    mglobals.DICEOBJ.hide()
+                    currentplayer.ps.hide()
+                    val, double = mglobals.DICEOBJ.roll()
+                    currentplayer.pm.advance(val)
+                    otherplayer.pm.render()
+                    roll = False
+
+                    """
+                    #TODO count = 3 goto Jail
+                    if double:
+                        double_count += 1
+                    else:
+                        roll = False
+                    if double_count == 0:
+                        pass
+                    elif double_count == 3:
+                        currentplayer, otherplayer = otherplayer, currentplayer
+                        double_count = 0
+                    """
+
                 if event.key == pygame.K_LEFT:
                     utils.draw_board()
                     currentplayer.ps.hide()
@@ -101,29 +148,6 @@ def game_loop():
                     otherplayer.ps.render()
                     currentplayer.pm.render()
                     otherplayer.pm.render()
-
-                # Dice roll
-                elif event.key == pygame.K_d:
-                    utils.draw_board()
-                    mglobals.CHANCE_MAP[mglobals.CHANCE_CHEST_VALUE].unset_x_y()
-                    mglobals.CHEST_MAP[mglobals.CHANCE_CHEST_VALUE].unset_x_y()
-                    mglobals.DICEOBJ.hide()
-                    currentplayer.ps.hide()
-                    val, double = mglobals.DICEOBJ.roll()
-                    currentplayer.pm.advance(val)
-                    otherplayer.pm.render()
-
-                    """
-                    #TODO count = 3 goto Jail
-                    if double:
-                        double_count += 1
-                    if double_count == 0:
-                        currentplayer, otherplayer = otherplayer, currentplayer
-                        print currentplayer.player_name, otherplayer.player_name
-                    elif double_count == 3:
-                        currentplayer, otherplayer = otherplayer, currentplayer
-                        double_count = 0
-                    """
 
                 # Buy property
                 elif event.key == pygame.K_b:
@@ -164,25 +188,15 @@ def game_loop():
                     currentplayer.ps.show()
                     currentplayer.sell_property(currentplayer.ps.position)
 
-                # Options 1, 2 & 3 to get out of jail
-                if currentplayer.pm.position == 10:
-                    if event.key == pygame.K_1:
-                        utils.draw_board()
-                        currentplayer.pm.render()
-                        otherplayer.pm.render()
-                        currentplayer.jail.use_cash()
-
-                    elif event.key == pygame.K_2:
-                        utils.draw_board()
-                        currentplayer.pm.render()
-                        otherplayer.pm.render()
-                        currentplayer.jail.use_jail_pass()
-
-                    elif event.key == pygame.K_3:
-                        utils.draw_board()
-                        currentplayer.pm.render()
-                        otherplayer.pm.render()
+                elif event.key == pygame.K_n:
+                    utils.draw_board()
+                    currentplayer.pm.render()
+                    otherplayer.pm.render()
+                    if roll:
                         pass
+                    else:
+                        roll = True
+                        currentplayer, otherplayer = otherplayer, currentplayer
 
         mglobals.DICE_DISPLAY.update()
         mglobals.DICE_DISPLAY.draw(mglobals.GD)
