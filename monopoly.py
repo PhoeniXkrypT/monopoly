@@ -6,6 +6,7 @@ import collections
 import ui
 import mglobals
 import utils
+import infra
 import property as _property
 
 from player import Player, PlayerSelection, PlayerMovement
@@ -40,19 +41,6 @@ def player_menu_loop():
 def game_loop():
     utils.draw_board()
 
-    # p1 = PlayerInfoUI(mglobals.PLAYER_ONE, 'royal_blue')
-    # p1.update_properties(prop)
-    # p2 = PlayerInfoUI(mglobals.PLAYER_TWO, 'sea_green')
-    # p2.update_properties(prop)
-
-    # p1.render()
-    # p2.render()
-
-    # utils.clear_p2_info()
-
-    # ps1 = PlayerSelection(1, 'royal_blue')
-    # ps1.render()
-
     P1 = Player(mglobals.PLAYER_ONE)
     P2 = Player(mglobals.PLAYER_TWO)
 
@@ -78,7 +66,7 @@ def game_loop():
 
             #TODO Fix jail
             if currentplayer.jail.in_jail:
-                mglobals.JAIL_MSG.set_x_y()
+                mglobals.JAIL_MSG.set_x_y(120, 650)
             else:
                 mglobals.JAIL_MSG.unset_x_y()
 
@@ -104,7 +92,7 @@ def game_loop():
                         utils.draw_board()
                         currentplayer.pm.render()
                         otherplayer.pm.render()
-                        pass
+                        roll = False
 
                 # Dice roll
                 if event.key == pygame.K_d and roll and not(currentplayer.jail.in_jail):
@@ -116,20 +104,23 @@ def game_loop():
                     val, double = mglobals.DICEOBJ.roll()
                     currentplayer.pm.advance(val)
                     otherplayer.pm.render()
-                    roll = False
 
-                    """
-                    #TODO count = 3 goto Jail
                     if double:
                         double_count += 1
+                        if double_count == 3:
+                            infra.ChanceChest().chance(currentplayer, 1)
+                            double_count = 0
+                            roll = False
                     else:
-                        roll = False
-                    if double_count == 0:
-                        pass
-                    elif double_count == 3:
-                        currentplayer, otherplayer = otherplayer, currentplayer
                         double_count = 0
-                    """
+                        roll = False
+
+                # Buy property
+                elif event.key == pygame.K_b and not(roll):
+                    utils.draw_board()
+                    currentplayer.pm.render()
+                    otherplayer.pm.render()
+                    currentplayer.buy_property(currentplayer.pm.position)
 
                 if event.key == pygame.K_LEFT:
                     utils.draw_board()
@@ -148,13 +139,6 @@ def game_loop():
                     otherplayer.ps.render()
                     currentplayer.pm.render()
                     otherplayer.pm.render()
-
-                # Buy property
-                elif event.key == pygame.K_b:
-                    utils.draw_board()
-                    currentplayer.pm.render()
-                    otherplayer.pm.render()
-                    currentplayer.buy_property(currentplayer.pm.position)
 
                 # Mortgage property
                 elif event.key == pygame.K_m:

@@ -49,9 +49,6 @@ class PlayerMovement(object):
         prev_pos = self.position
         self.position = (self.position + count) % mglobals.BOARD_SQUARES
         self.find_rent_amount(count)
-        if self.position == 10 and currentplayer.jail.in_jail:
-            print "JAIL"
-            pass
         if (self.position == 0 or prev_pos > self.position) and \
             (not currentplayer.jail.in_jail):
             currentplayer.give_player_cash(200)
@@ -65,7 +62,6 @@ class PlayerMovement(object):
             currentplayer.take_player_cash(100)
         # Go to jail
         elif self.position == 30:
-            #TODO Get out of jail
             self.position = 10
             currentplayer.jail.in_jail = True
         self.reposition()

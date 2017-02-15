@@ -84,8 +84,8 @@ class CHESTCHANCEUI(pygame.sprite.Sprite):
         self.rect = self.image.get_rect()
         self.unset_x_y()
 
-    def set_x_y(self):
-        self.x, self.y = 120, 600
+    def set_x_y(self, x=120, y=600):
+        self.x, self.y = x, y
 
     def unset_x_y(self):
         self.x, self.y = 900, 900
@@ -116,8 +116,7 @@ class PropertyDisplay(pygame.sprite.Sprite):
         self.unset_x_y()
 
     def set_x_y(self, x, y):
-        self.x = x
-        self.y = y
+        self.x, self.y = x, y
 
     def unset_x_y(self):
         self.x, self.y = 900, 900
@@ -159,8 +158,7 @@ class HouseCountDisplay(pygame.sprite.Sprite):
         self.unset_x_y()
 
     def set_x_y(self, x, y):
-        self.x = x
-        self.y = y
+        self.x, self.y = x, y
 
     def unset_x_y(self):
         self.x, self.y = 900, 900
