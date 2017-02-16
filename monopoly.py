@@ -179,15 +179,17 @@ def game_loop():
                     if roll:
                         pass
                     else:
+                        roll = True
+                        currentplayer, otherplayer = otherplayer, currentplayer
+
                         mglobals.CHANCE_MAP[mglobals.CHANCE_CHEST_VALUE].unset_x_y()
                         mglobals.CHEST_MAP[mglobals.CHANCE_CHEST_VALUE].unset_x_y()
                         mglobals.JAIL_MSG.unset_x_y()
                         mglobals.DICEOBJ.hide()
-                        roll = True
-                        currentplayer, otherplayer = otherplayer, currentplayer
                         mglobals.PLAYER_NAME_SPRITE[currentplayer.player_name].set_x_y(350, 120)
                         mglobals.PLAYER_NAME_SPRITE[otherplayer.player_name].unset_x_y()
                         currentplayer.ps.hide()
+                        otherplayer.ps.hide()
 
         mglobals.DICE_DISPLAY.update()
         mglobals.DICE_DISPLAY.draw(mglobals.GD)
