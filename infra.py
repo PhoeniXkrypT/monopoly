@@ -16,13 +16,11 @@ class Jail(object):
 
     def use_cash(self):
         if self.in_jail:
-            print "JAIL USE CASH "
             mglobals.PLAYER_OBJ[self.player].take_player_cash(50)
             self.in_jail = False
             mglobals.JAIL_MSG.unset_x_y()
 
     def use_jail_pass(self):
-        print "JAIL PASS", self.free_jail_pass
         if self.in_jail and self.free_jail_pass:
             self.free_jail_pass -= 1
             self.in_jail = False

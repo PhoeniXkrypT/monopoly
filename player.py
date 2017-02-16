@@ -209,8 +209,6 @@ class Player(object):
                             else mglobals.PLAYER_TWO_COLOR
         self.properties = collections.defaultdict(list)
         self.cash = mglobals.CASH_INITIAL
-        #self.in_jail = False
-        #self.free_jail_pass = 0
         self.jail = infra.Jail(self.player_name)
         self.ps = PlayerSelection(self.color)
         self.piu = PlayerInfoUI(self.player_name, self.color)
