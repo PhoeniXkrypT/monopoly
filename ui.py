@@ -4,20 +4,9 @@ import collections
 
 import utils
 import mglobals
-import property as _property
 import dice
 import infra
-
-color_offset = {
-        'blue': (5, 15),
-        'brown': ( ),
-        'green': (),
-        'orange': (),
-        'pink': (),
-        'red': (),
-        'sky_blue': (),
-        'yellow': (),
-};
+import property as _property
 
 class CentralUI(pygame.sprite.Sprite):
     def __init__(self, pindex):
@@ -74,13 +63,15 @@ def init_dice():
             mglobals.DICE_DISPLAY.add(temp)
             mglobals.DICE_NUMBER_MAP[(number1, number2)] = temp
 
-class CHESTCHANCEUI(pygame.sprite.Sprite):
-    def __init__(self, message):
-        super(CHESTCHANCEUI, self).__init__()
+class PRINTUI(pygame.sprite.Sprite):
+    def __init__(self, message, color='black', fntsize='small_p', alias=False):
+        super(PRINTUI, self).__init__()
         self.message = message
-        textfont = pygame.font.Font('./monaco.ttf', mglobals.fontsize_map['small_p'])
-        self.image = textfont.render(self.message, \
-                                     False, mglobals.color_map['black'])
+        self.color = mglobals.color_map[color]
+        self.fntsize = mglobals.fontsize_map[fntsize]
+        self.alias = alias
+        textfont = pygame.font.Font('./monaco.ttf', self.fntsize)
+        self.image = textfont.render(self.message, self.alias, self.color)
         self.rect = self.image.get_rect()
         self.unset_x_y()
 
@@ -93,14 +84,22 @@ class CHESTCHANCEUI(pygame.sprite.Sprite):
     def update(self):
         self.rect.x, self.rect.y = self.x, self.y
 
-def init_chestchance():
-    mglobals.JAIL_MSG = CHESTCHANCEUI("In JAIL")
+def init_printui():
+    mglobals.PLAYER_NAME_SPRITE[mglobals.PLAYER_ONE] = \
+            PRINTUI(mglobals.PLAYER_ONE, mglobals.PLAYER_ONE_COLOR, 'mid', True)
+    mglobals.PLAYER_NAME_DISPLAY.add(mglobals.PLAYER_NAME_SPRITE[mglobals.PLAYER_ONE])
+    mglobals.PLAYER_NAME_SPRITE[mglobals.PLAYER_TWO] = \
+            PRINTUI(mglobals.PLAYER_TWO, mglobals.PLAYER_TWO_COLOR, 'mid', True)
+    mglobals.PLAYER_NAME_DISPLAY.add(mglobals.PLAYER_NAME_SPRITE[mglobals.PLAYER_TWO])
+
+    mglobals.JAIL_MSG = PRINTUI("In JAIL")
     mglobals.CHESTCHANCE_DISPLAYS.add(mglobals.JAIL_MSG)
+
     for i in xrange(16):
-        temp = CHESTCHANCEUI(infra.COMMUNITYCHEST[i])
+        temp = PRINTUI(infra.COMMUNITYCHEST[i])
         mglobals.CHESTCHANCE_DISPLAYS.add(temp)
         mglobals.CHEST_MAP[i] = temp
-        temp1 = CHESTCHANCEUI(infra.CHANCE[i])
+        temp1 = PRINTUI(infra.CHANCE[i])
         mglobals.CHESTCHANCE_DISPLAYS.add(temp1)
         mglobals.CHANCE_MAP[i] = temp1
 
@@ -192,7 +191,7 @@ class PlayerInfoUI(object):
         pygame.draw.rect(mglobals.GD, mglobals.color_map[self.color],
                          [self.x, self.y, 375, 375], 4)
 
-    def _print_color(self, color, properties_list, x, y, x_inc):
+    def _print_color(self, properties_list, x, y, x_inc):
         for pname in properties_list:
             psprite = mglobals.PROPERTY_NAME_SPRITE_MAP[pname]
             psprite.set_x_y(x, y)
@@ -203,7 +202,7 @@ class PlayerInfoUI(object):
     #     Compute x, y according to the player
     #     Do sprite.set_x_y(x, y)
     #     (in main loop update() is called)
-    def _print_color2(self, color, properties_list, x, y, y_inc):
+    def _print_color2(self, properties_list, x, y, y_inc):
         for pname in properties_list:
             psprite = mglobals.PROPERTY_NAME_SPRITE_MAP[pname]
             psprite.set_x_y(x, y)
@@ -242,7 +241,7 @@ class PlayerInfoUI(object):
                     x, y = self.x + 10, self.y + 340
                 else:
                     x, y = self.x + 260, self.y + 340
-                self._print_color(color, self.properties[color], x, y, 60)
+                self._print_color(self.properties[color], x, y, 60)
             else:
                 if i == 0:
                     x_current, y_current = self.x + 10, self.y + 70
@@ -252,7 +251,7 @@ class PlayerInfoUI(object):
                 else:
                     x_current += 90
 
-                self._print_color2(color, self.properties[color],
+                self._print_color2(self.properties[color],
                                       x_current, y_current, 50)
                 i += 1
 
@@ -264,3 +263,7 @@ class PlayerInfoUI(object):
                               self.y + 30,
                               color=self.color,
                               fntsize='mid')
+        if self.player_name == mglobals.PLAYER_ONE:
+            mglobals.GD.blit(mglobals.P1_IMG, (self.x + 200, self.y + 10))
+        else:
+            mglobals.GD.blit(mglobals.P2_IMG, (self.x + 200, self.y + 10))

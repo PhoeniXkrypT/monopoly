@@ -58,15 +58,15 @@ def game_loop():
     P2.buy_property(39)
 
     currentplayer, otherplayer = P1, P2
+    mglobals.PLAYER_NAME_SPRITE[currentplayer.player_name].set_x_y(350, 120)
     double_count = 0
     roll = True
 
     while True:
         for event in pygame.event.get():
 
-            #TODO Fix jail
             if currentplayer.jail.in_jail:
-                mglobals.JAIL_MSG.set_x_y(120, 650)
+                mglobals.JAIL_MSG.set_x_y(120, 630)
             else:
                 mglobals.JAIL_MSG.unset_x_y()
 
@@ -75,7 +75,7 @@ def game_loop():
             elif event.type == pygame.KEYDOWN:
 
                 # Options 1, 2 & 3 to get out of jail
-                if currentplayer.pm.position == 10:
+                if currentplayer.pm.position == 10 and roll:
                     if event.key == pygame.K_1:
                         utils.draw_board()
                         currentplayer.pm.render()
@@ -116,7 +116,7 @@ def game_loop():
                         roll = False
 
                 # Buy property
-                elif event.key == pygame.K_b and not(roll):
+                elif event.key == pygame.K_b and (not(roll) or double):
                     utils.draw_board()
                     currentplayer.pm.render()
                     otherplayer.pm.render()
@@ -179,8 +179,15 @@ def game_loop():
                     if roll:
                         pass
                     else:
+                        mglobals.CHANCE_MAP[mglobals.CHANCE_CHEST_VALUE].unset_x_y()
+                        mglobals.CHEST_MAP[mglobals.CHANCE_CHEST_VALUE].unset_x_y()
+                        mglobals.JAIL_MSG.unset_x_y()
+                        mglobals.DICEOBJ.hide()
                         roll = True
                         currentplayer, otherplayer = otherplayer, currentplayer
+                        mglobals.PLAYER_NAME_SPRITE[currentplayer.player_name].set_x_y(350, 120)
+                        mglobals.PLAYER_NAME_SPRITE[otherplayer.player_name].unset_x_y()
+                        currentplayer.ps.hide()
 
         mglobals.DICE_DISPLAY.update()
         mglobals.DICE_DISPLAY.draw(mglobals.GD)
@@ -192,6 +199,8 @@ def game_loop():
         mglobals.HOUSE_COUNT_DISPLAYS.draw(mglobals.GD)
         mglobals.CHESTCHANCE_DISPLAYS.update()
         mglobals.CHESTCHANCE_DISPLAYS.draw(mglobals.GD)
+        mglobals.PLAYER_NAME_DISPLAY.update()
+        mglobals.PLAYER_NAME_DISPLAY.draw(mglobals.GD)
 
         pygame.display.update()
         mglobals.CLK.tick(30)
@@ -200,7 +209,7 @@ def main():
     mglobals.init()
     player_menu_loop()
     ui.init_dice()
-    ui.init_chestchance()
+    ui.init_printui()
     ui.init_centre_displays()
     ui.init_property_displays()
     ui.init_house_count_displays()

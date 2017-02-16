@@ -71,6 +71,9 @@ CHANCE_CHEST_VALUE = 0
 JAIL_MSG = None
 
 PLAYER_OBJ = {}
+PLAYER_NAME_SPRITE = {}
+PLAYER_NAME_DISPLAY = pygame.sprite.Group()
+
 DICEOBJ = None
 DICE_NUMBER_MAP = {}
 DICE_DISPLAY = pygame.sprite.Group()
@@ -81,6 +84,7 @@ CENTRE_DISPLAYS = pygame.sprite.Group()
 POBJECT_MAP = {}
 PNAME_OBJ_MAP = {}
 PROP_COLOR_INDEX = collections.defaultdict(list)
+
 INDEX_PROPPIC_MAP = {}
 HOUSE_COUNT_DISPLAYS = pygame.sprite.Group()
 INDEX_HOUSE_COUNT_MAP = collections.defaultdict(dict)
