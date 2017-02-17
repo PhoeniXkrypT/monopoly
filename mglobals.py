@@ -65,8 +65,9 @@ BACK_IMG = None
 P1_IMG = None
 P2_IMG = None
 PvAI = False
-CASH_INITIAL = 1500
 P_INFO_CLRSCR = None
+
+CASH_INITIAL = 1500
 CHANCE_CHEST_VALUE = 0
 JAIL_MSG = None
 
@@ -92,6 +93,8 @@ INDEX_HOUSE_COUNT_MAP = collections.defaultdict(dict)
 CHANCE_MAP = {}
 CHEST_MAP = {}
 CHESTCHANCE_DISPLAYS = pygame.sprite.Group()
+PLAYER_JAIL_CARD = collections.defaultdict(dict)
+JAILCARD_DISPLAY = pygame.sprite.Group()
 
 def load_imgs():
     global BACK_IMG, P1_IMG, P2_IMG, P_INFO_CLRSCR

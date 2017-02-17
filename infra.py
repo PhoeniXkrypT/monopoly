@@ -9,20 +9,21 @@ CHANCE_INDEXLIST = [7, 22, 36]
 CHEST_INDEXLIST = [2, 17, 33]
 
 class Jail(object):
-    def __init__(self, player):
-        self.player = player
+    def __init__(self, player_name):
+        self.player_name = player_name
         self.free_jail_pass = 0
         self.in_jail = False
 
     def use_cash(self):
         if self.in_jail:
-            mglobals.PLAYER_OBJ[self.player].take_player_cash(50)
+            mglobals.PLAYER_OBJ[self.player_name].take_player_cash(50)
             self.in_jail = False
             mglobals.JAIL_MSG.unset_x_y()
 
     def use_jail_pass(self):
         if self.in_jail and self.free_jail_pass:
             self.free_jail_pass -= 1
+            mglobals.PLAYER_OBJ[self.player_name].piu.jail_card_display(False)
             self.in_jail = False
             mglobals.JAIL_MSG.unset_x_y()
 
@@ -90,6 +91,7 @@ class ChanceChest(object):
             player_obj.give_player_cash(50)
         elif value == 15:
             player_obj.jail.free_jail_pass += 1
+            player_obj.piu.jail_card_display()
 
     def chest(self, player_obj, value):
         if value == 0:
@@ -122,6 +124,7 @@ class ChanceChest(object):
             player_obj.give_player_cash(10)
         elif value == 14:
             player_obj.jail.free_jail_pass += 1
+            player_obj.piu.jail_card_display()
         elif value == 15:
             player_obj.take_player_cash(10)
 

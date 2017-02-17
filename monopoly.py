@@ -201,6 +201,8 @@ def game_loop():
         mglobals.HOUSE_COUNT_DISPLAYS.draw(mglobals.GD)
         mglobals.CHESTCHANCE_DISPLAYS.update()
         mglobals.CHESTCHANCE_DISPLAYS.draw(mglobals.GD)
+        mglobals.JAILCARD_DISPLAY.update()
+        mglobals.JAILCARD_DISPLAY.draw(mglobals.GD)
         mglobals.PLAYER_NAME_DISPLAY.update()
         mglobals.PLAYER_NAME_DISPLAY.draw(mglobals.GD)
 

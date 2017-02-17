@@ -92,6 +92,15 @@ def init_printui():
             PRINTUI(mglobals.PLAYER_TWO, mglobals.PLAYER_TWO_COLOR, 'mid', True)
     mglobals.PLAYER_NAME_DISPLAY.add(mglobals.PLAYER_NAME_SPRITE[mglobals.PLAYER_TWO])
 
+    for each in [mglobals.PLAYER_ONE, mglobals.PLAYER_TWO]:
+        for i in xrange(1,12):
+            temp = PRINTUI(str(i))
+            mglobals.JAILCARD_DISPLAY.add(temp)
+            mglobals.PLAYER_JAIL_CARD[each][i] = temp
+        temp = PRINTUI("10+")
+        mglobals.JAILCARD_DISPLAY.add(temp)
+        mglobals.PLAYER_JAIL_CARD[each][11] = temp
+
     mglobals.JAIL_MSG = PRINTUI("In JAIL")
     mglobals.CHESTCHANCE_DISPLAYS.add(mglobals.JAIL_MSG)
 
@@ -267,3 +276,15 @@ class PlayerInfoUI(object):
             mglobals.GD.blit(mglobals.P1_IMG, (self.x + 200, self.y + 10))
         else:
             mglobals.GD.blit(mglobals.P2_IMG, (self.x + 200, self.y + 10))
+
+    def jail_card_display(self, add=True):
+        self.render_name_cash()
+        val = mglobals.PLAYER_OBJ[self.player_name].jail.free_jail_pass
+        if add and not(val - 1 == 0) and val < 12:
+            mglobals.PLAYER_JAIL_CARD[self.player_name][val-1].unset_x_y()
+        elif not(add) and val < 11:
+            mglobals.PLAYER_JAIL_CARD[self.player_name][val+1].unset_x_y()
+        if val in xrange(1,11):
+            mglobals.PLAYER_JAIL_CARD[self.player_name][val].set_x_y(self.x + 350, self.y + 20)
+        elif val == 11:
+            mglobals.PLAYER_JAIL_CARD[self.player_name][11].set_x_y(self.x + 340, self.y + 20)
