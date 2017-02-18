@@ -59,6 +59,8 @@ def game_loop():
 
     currentplayer, otherplayer = P1, P2
     mglobals.PLAYER_NAME_SPRITE[currentplayer.player_name].set_x_y(350, 120)
+    mglobals.CURRENTPLAYER_IMG[currentplayer.player_name].set_x_y(480, 115)
+
     double_count = 0
     roll = True
 
@@ -188,6 +190,8 @@ def game_loop():
                         mglobals.DICEOBJ.hide()
                         mglobals.PLAYER_NAME_SPRITE[currentplayer.player_name].set_x_y(350, 120)
                         mglobals.PLAYER_NAME_SPRITE[otherplayer.player_name].unset_x_y()
+                        mglobals.CURRENTPLAYER_IMG[currentplayer.player_name].set_x_y(480, 115)
+                        mglobals.CURRENTPLAYER_IMG[otherplayer.player_name].unset_x_y()
                         currentplayer.ps.hide()
                         otherplayer.ps.hide()
 

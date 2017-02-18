@@ -73,6 +73,7 @@ JAIL_MSG = None
 
 PLAYER_OBJ = {}
 PLAYER_NAME_SPRITE = {}
+CURRENTPLAYER_IMG = {}
 PLAYER_NAME_DISPLAY = pygame.sprite.Group()
 
 DICEOBJ = None

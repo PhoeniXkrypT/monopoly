@@ -64,7 +64,7 @@ def init_dice():
             mglobals.DICE_NUMBER_MAP[(number1, number2)] = temp
 
 class PRINTUI(pygame.sprite.Sprite):
-    def __init__(self, message, color='black', fntsize='small_p', alias=False):
+    def __init__(self, message="", color='black', fntsize='small_p', alias=False):
         super(PRINTUI, self).__init__()
         self.message = message
         self.color = mglobals.color_map[color]
@@ -85,12 +85,16 @@ class PRINTUI(pygame.sprite.Sprite):
         self.rect.x, self.rect.y = self.x, self.y
 
 def init_printui():
-    mglobals.PLAYER_NAME_SPRITE[mglobals.PLAYER_ONE] = \
-            PRINTUI(mglobals.PLAYER_ONE, mglobals.PLAYER_ONE_COLOR, 'mid', True)
-    mglobals.PLAYER_NAME_DISPLAY.add(mglobals.PLAYER_NAME_SPRITE[mglobals.PLAYER_ONE])
-    mglobals.PLAYER_NAME_SPRITE[mglobals.PLAYER_TWO] = \
-            PRINTUI(mglobals.PLAYER_TWO, mglobals.PLAYER_TWO_COLOR, 'mid', True)
-    mglobals.PLAYER_NAME_DISPLAY.add(mglobals.PLAYER_NAME_SPRITE[mglobals.PLAYER_TWO])
+    for player, color in zip ([mglobals.PLAYER_ONE, mglobals.PLAYER_TWO], \
+                              [mglobals.PLAYER_ONE_COLOR, mglobals.PLAYER_TWO_COLOR]):
+        temp_p = PRINTUI(player, color, 'mid', True)
+        mglobals.PLAYER_NAME_DISPLAY.add(temp_p)
+        mglobals.PLAYER_NAME_SPRITE[player] = temp_p
+        temp = PRINTUI()
+        temp.image = mglobals.P1_IMG if player == mglobals.PLAYER_ONE \
+                                     else mglobals.P2_IMG
+        mglobals.PLAYER_NAME_DISPLAY.add(temp)
+        mglobals.CURRENTPLAYER_IMG[player] = temp
 
     for each in [mglobals.PLAYER_ONE, mglobals.PLAYER_TWO]:
         for i in xrange(1,12):
@@ -100,7 +104,6 @@ def init_printui():
         temp = PRINTUI("10+")
         mglobals.JAILCARD_DISPLAY.add(temp)
         mglobals.PLAYER_JAIL_CARD[each][11] = temp
-
     mglobals.JAIL_MSG = PRINTUI("In JAIL")
     mglobals.CHESTCHANCE_DISPLAYS.add(mglobals.JAIL_MSG)
 
