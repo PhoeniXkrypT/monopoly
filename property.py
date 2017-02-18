@@ -2,6 +2,34 @@
 import mglobals
 
 class BaseProperty(object):
+    '''
+    Class managing common functionalities related to property.
+
+    >>> # Initialization
+    >>> import mglobals
+    >>> from player import Player
+    >>> mglobals.init()
+
+    >>> # Tests for can_purchase
+    >>> testplayer = Player(mglobals.PLAYER_ONE)
+    >>> b = BaseProperty()
+    >>> b.cost = mglobals.CASH_INITIAL - 1000; b.owner_name = mglobals.BANK
+    >>> b.can_purchase(testplayer.player_name, testplayer.cash)
+    (True,)
+    >>> b.cost = mglobals.CASH_INITIAL + 1000
+    >>> ret = b.can_purchase(testplayer.player_name, testplayer.cash)
+    >>> (ret[0] is False) and (ret[1] == '%s does not have enough cash.' \
+                                          %(testplayer.player_name))
+    True
+    >>> b.cost = mglobals.CASH_INITIAL
+    >>> b.property_name = 'Mayfair'
+    >>> b.owner_name = mglobals.PLAYER_TWO
+    >>> ret = b.can_purchase(testplayer.player_name, testplayer.cash)
+    >>> (ret[0] is False) and (ret[1] == '%s is already purchased!' \
+                                          %(b.property_name))
+    True
+    '''
+
     def __init__(self):
         pass
 
@@ -213,4 +241,8 @@ def init_pobject_map():
         mglobals.POBJECT_MAP[obj.index] = obj
         mglobals.PROP_COLOR_INDEX[obj.color].append(obj.index)
         mglobals.PNAME_OBJ_MAP[obj.property_name] = obj
+
+if __name__ == '__main__':
+    import doctest
+    doctest.testmod()
 
