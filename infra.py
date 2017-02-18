@@ -56,75 +56,58 @@ class ChanceChest(object):
         return repair_amt
 
     def chance(self, player_obj, value):
-        if value == 0:
-            player_obj.pm.advance(mglobals.BOARD_SQUARES - player_obj.pm.position)
-        elif value == 1:
-            player_obj.pm.advance(mglobals.BOARD_SQUARES + 10 - player_obj.pm.position)
-            player_obj.jail.in_jail= True
-        elif value == 2:
-            player_obj.pm.advance(mglobals.BOARD_SQUARES + 11 - player_obj.pm.position)
-        elif value == 3:
-            player_obj.pm.advance(mglobals.BOARD_SQUARES + 15 - player_obj.pm.position)
-        elif value == 4:
-            player_obj.pm.advance(mglobals.BOARD_SQUARES + 24 - player_obj.pm.position)
-        elif value == 5:
-            player_obj.pm.advance(mglobals.BOARD_SQUARES + 39 - player_obj.pm.position)
+        if value in xrange(6):
+            m = {0:0, 1:10, 2:11, 3:15, 4:24, 5:39}
+            player_obj.pm.advance(mglobals.BOARD_SQUARES + m[value] - player_obj.pm.position)
+            if value == 1:
+                player_obj.jail_in_jail = True
+
         elif value == 6:
             player_obj.pm.goback(3)
-        elif value == 7:
-            amt = self.deduct_house_hotel_repair(player_obj, 25, 100)
+
+        elif value in [7, 8]:
+            m = {7: (25, 100), 8: (40, 115)}
+            house_cost, hotel_cost = m[value]
+            amt = self.deduct_house_hotel_repair(player_obj, house_cost, hotel_cost)
             player_obj.take_player_cash(amt)
-        elif value == 8:
-            amt = self.deduct_house_hotel_repair(player_obj, 40, 115)
-            player_obj.take_player_cash(amt)
-        elif value == 9:
-            player_obj.take_player_cash(150)
-        elif value == 10:
-            player_obj.take_player_cash(20)
-        elif value == 11:
-            player_obj.take_player_cash(15)
-        elif value == 12:
-            player_obj.give_player_cash(150)
-        elif value == 13:
-            player_obj.give_player_cash(100)
-        elif value == 14:
-            player_obj.give_player_cash(50)
+
+        elif value in [9, 10, 11]:
+            m = {9:150, 10:20, 11:15}
+            player_obj.take_player_cash(m[value])
+
+        elif value in [12, 13, 14]:
+            m = {12:150, 13:100, 14:50}
+            player_obj.give_player_cash(m[value])
+
         elif value == 15:
             player_obj.jail.free_jail_pass += 1
             player_obj.piu.jail_card_display()
 
     def chest(self, player_obj, value):
-        if value == 0:
-            player_obj.pm.advance(mglobals.BOARD_SQUARES - player_obj.pm.position)
-        elif value == 1:
-            player_obj.pm.advance(mglobals.BOARD_SQUARES + 1 - player_obj.pm.position)
-        elif value == 2:
-            player_obj.pm.advance(mglobals.BOARD_SQUARES + 10 - player_obj.pm.position)
-            player_obj.jail.in_jail= True
-        elif value == 3:
-            player_obj.take_player_cash(100)
-        elif value == 4 or value == 5:
-            player_obj.take_player_cash(50)
-        elif value == 6:
-            player_obj.give_player_cash(200)
-        elif value == 7 or value == 8:
-            player_obj.give_player_cash(100)
-        elif value == 9:
-            player_obj.give_player_cash(50)
-        elif value == 10:
-            player_obj.give_player_cash(25)
-        elif value == 11:
-            player_obj.give_player_cash(20)
-        elif value == 12:
-            player_obj.give_player_cash(10)
+        if value in xrange(3):
+            m = {0:0, 1:1, 2:10}
+            player_obj.pm.advance(mglobals.BOARD_SQUARES + m[value] - player_obj.pm.position)
+            if value == 2:
+                player_obj.jail.in_jail = True
+
+        elif value in [3, 4, 5]:
+            m = {3:100, 4:50, 5:50}
+            player_obj.take_player_cash(m[value])
+
+        elif value in [6, 7, 9, 10, 11, 12]:
+            m = {6:200, 7:100, 8:100, 9:50, 10:25, 11:20, 12:10}
+            player_obj.give_player_cash(m[value])
+
         elif value == 13:
             for player, obj in mglobals.PLAYER_OBJ.iteritems():
                 if not(player == player_obj.player_name):
                     obj.take_player_cash(10)
             player_obj.give_player_cash(10)
+
         elif value == 14:
             player_obj.jail.free_jail_pass += 1
             player_obj.piu.jail_card_display()
+
         elif value == 15:
             player_obj.take_player_cash(10)
 
