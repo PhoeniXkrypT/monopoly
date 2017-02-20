@@ -46,9 +46,9 @@ class ChanceChest(object):
         for color in player_obj.properties:
             for pname in player_obj.properties[color]:
                 if '_' in pname:
-                    pname = pname[:-2]
+                    continue
                 prop = mglobals.PNAME_OBJ_MAP[pname]
-                if prop in _property.PROPERTIES and not(prop.mortgaged):
+                if prop in _property.PROPERTIES:
                     if prop.house_count > 4:
                         repair_amt += hotel_cost
                     else:
@@ -94,7 +94,7 @@ class ChanceChest(object):
             m = {3:100, 4:50, 5:50}
             player_obj.take_player_cash(m[value])
 
-        elif value in [6, 7, 9, 10, 11, 12]:
+        elif value in xrange(6,13):
             m = {6:200, 7:100, 8:100, 9:50, 10:25, 11:20, 12:10}
             player_obj.give_player_cash(m[value])
 
