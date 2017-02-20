@@ -53,7 +53,6 @@ def game_loop():
     P1.buy_property(1)
     P1.buy_property(3)
     P1.buy_property(11)
-    P1.buy_property(32)
     P2.buy_property(8)
     P2.buy_property(39)
 
@@ -62,7 +61,7 @@ def game_loop():
     mglobals.CURRENTPLAYER_IMG[currentplayer.player_name].set_x_y(480, 115)
 
     double_count = 0
-    roll = True
+    roll, double = True, False
 
     while True:
         for event in pygame.event.get():
