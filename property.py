@@ -10,7 +10,7 @@ class BaseProperty(object):
     >>> from player import Player
     >>> mglobals.init()
 
-    >>> # Tests for can_purchase
+    >>> # Tests for can_purchase()
     >>> testplayer = Player(mglobals.PLAYER_ONE)
     >>> b = BaseProperty()
     >>> b.cost = mglobals.CASH_INITIAL - 1000; b.owner_name = mglobals.BANK
@@ -21,14 +21,94 @@ class BaseProperty(object):
     >>> (ret[0] is False) and (ret[1] == '%s does not have enough cash.' \
                                           %(testplayer.player_name))
     True
-    >>> b.cost = mglobals.CASH_INITIAL
+    >>> b.cost = mglobals.CASH_INITIAL; b.owner_name = mglobals.PLAYER_TWO
     >>> b.property_name = 'Mayfair'
-    >>> b.owner_name = mglobals.PLAYER_TWO
     >>> ret = b.can_purchase(testplayer.player_name, testplayer.cash)
     >>> (ret[0] is False) and (ret[1] == '%s is already purchased!' \
                                           %(b.property_name))
     True
-    '''
+
+    >>> # Tests for purchase()
+    >>> b.cost = mglobals.CASH_INITIAL - 1000; b.owner_name = mglobals.BANK
+    >>> b.purchase(testplayer.player_name, testplayer.cash)
+    (True,)
+    >>> b.cost = mglobals.CASH_INITIAL + 1000; b.owner_name = mglobals.BANK
+    >>> ret = b.purchase(testplayer.player_name, testplayer.cash)
+    >>> (ret[0] is False) and (ret[1] == '%s does not have enough cash.' \
+                                          %(testplayer.player_name))
+    True
+    >>> b.owner_name = mglobals.PLAYER_TWO
+    >>> ret = b.purchase(testplayer.player_name, testplayer.cash)
+    >>> (ret[0] is False) and (ret[1] == '%s is already purchased!' \
+                                          %(b.property_name))
+    True
+
+    >>> # Tests for is_mortgaged()
+    >>> b.mortgaged = False
+    >>> b.is_mortgaged()
+    False
+    >>> b.mortgaged = True
+    >>> b.is_mortgaged()
+    True
+
+    >>> # Tests for can_mortgage()
+    >>> ret = b.can_mortgage(testplayer.player_name)
+    >>> (ret[0] == False) and (ret[1] == '%s does not own %s!' \
+                                          %(testplayer.player_name, b.property_name))
+    True
+    >>> b.mortgaged = True; b.owner_name = mglobals.PLAYER_ONE
+    >>> ret = b.can_mortgage(testplayer.player_name)
+    >>> (ret[0] == False) and (ret[1] == '%s is already mortgaged!' \
+                                          %(b.property_name))
+    True
+    >>> b.mortgaged = False
+    >>> b.can_mortgage(testplayer.player_name)
+    (True,)
+
+    >>> # Tests for mortgage()
+    >>> b.mortgage_val = mglobals.CASH_INITIAL - 1200
+    >>> ret = b.mortgage(testplayer.player_name)
+    >>> ret == b.mortgage_val
+    True
+    >>> b.mortgage(testplayer.player_name)
+    0
+    >>> b.owner_name = mglobals.BANK
+    >>> b.mortgage(testplayer.player_name)
+    0
+
+    >>> # Tests for can_unmortgage()
+    >>> ret = b.can_unmortgage(testplayer.player_name, testplayer.cash)
+    >>> (ret[0] == False) and (ret[1] == '%s does not own %s!' \
+                                          %(testplayer.player_name, b.property_name))
+    True
+    >>> b.mortgaged = False; b.owner_name = mglobals.PLAYER_ONE
+    >>> ret = b.can_unmortgage(testplayer.player_name, testplayer.cash)
+    >>> (ret[0] == False) and (ret[1] ==  '%s is not mortgaged!' \
+                                           %(b.property_name))
+    True
+    >>> b.mortgaged = True; b.mortgage_val = mglobals.CASH_INITIAL
+    >>> ret = b.can_unmortgage(testplayer.player_name, testplayer.cash)
+    >>> (ret[0] == False) and (ret[1] == '%s does not have enough cash to unmortgage %s!' \
+                                          %(b.owner_name, b.property_name))
+    True
+    >>> b.mortgage_val = mglobals.CASH_INITIAL - 1200
+    >>> b.can_unmortgage(testplayer.player_name, testplayer.cash)
+    (True,)
+
+    >>> # Tests for unmortgage()
+    >>> ret = b.unmortgage(testplayer.player_name, testplayer.cash)
+    >>> ret == b.mortgage_val * 1.1
+    True
+    >>> b.owner_name = mglobals.BANK
+    >>> b.unmortgage(testplayer.player_name, testplayer.cash)
+    0
+    >>> b.owner_name = mglobals.PLAYER_ONE; b.mortgaged = False
+    >>> b.unmortgage(testplayer.player_name, testplayer.cash)
+    0
+    >>> b.mortgaged = True; b.mortgage_val = mglobals.CASH_INITIAL
+    >>> b.unmortgage(testplayer.player_name, testplayer.cash)
+    0
+   '''
 
     def __init__(self):
         pass
@@ -83,6 +163,124 @@ class BaseProperty(object):
         return 0
 
 class Property(BaseProperty):
+    '''
+    Class managing functionalities for properties
+
+    >>> # Initialization
+    >>> import mglobals
+    >>> from player import Player
+    >>> mglobals.init()
+
+    >>> init_pobject_map()
+
+    >>> # Tests for can_mortgage()
+    >>> testplayer = Player(mglobals.PLAYER_ONE)
+    >>> p = mglobals.POBJECT_MAP[37]
+    >>> ret = p.can_mortgage(testplayer.player_name)
+    >>> (ret[0] == False) and (ret[1] ==  '%s does not own %s!' \
+                                           %(testplayer.player_name, p.property_name))
+    True
+    >>> p.mortgaged = True; p.owner_name = mglobals.PLAYER_ONE
+    >>> ret = p.can_mortgage(testplayer.player_name)
+    >>> (ret[0] == False) and (ret[1] == '%s is already mortgaged!' \
+                                          %(p.property_name))
+    True
+    >>> p.mortgaged = False; p.color_all=True; p.house_count = 1
+    >>> ret = p.can_mortgage(testplayer.player_name)
+    >>> (ret[0] == False) and (ret[1] == '%s has houses, so cannot mortgage!' \
+                                          %(p.property_name))
+    True
+    >>> p.color_all = False; p.house_count = 0
+    >>> p.can_mortgage(testplayer.player_name)
+    (True,)
+
+    >>> # Tests for compute_rent()
+    >>> p.compute_rent(testplayer.player_name)
+    0
+    >>> p.owner_name = mglobals.BANK
+    >>> p.compute_rent(testplayer.player_name)
+    0
+    >>> p.owner_name = mglobals.PLAYER_TWO; p.mortgaged = True
+    >>> p.compute_rent(testplayer.player_name)
+    0
+    >>> p.mortgaged = False
+    >>> ret = p.compute_rent(testplayer.player_name)
+    >>> ret == p.rent_details[0]
+    True
+    >>> p.color_all = True
+    >>> ret = p.compute_rent(testplayer.player_name)
+    >>> ret == p.rent_details[0] * p.color_cost
+    True
+    >>> p.house_count = 1
+    >>> ret = p.compute_rent(testplayer.player_name)
+    >>> ret == p.rent_details[p.house_count]
+    True
+    >>> p.house_count = 5
+    >>> ret = p.compute_rent(testplayer.player_name)
+    >>> ret == p.rent_details[p.house_count]
+    True
+
+    >>> #Tests for can_build_house()
+    >>> p.house_count = 0
+    >>> ret = p.can_build_house(testplayer.player_name, testplayer.cash)
+    >>> (ret[0] == False) and (ret[1] ==  '%s does not own %s!' \
+                                           %(testplayer.player_name, p.property_name))
+    True
+    >>> p.owner_name = mglobals.PLAYER_ONE; p.color_all = False
+    >>> ret = p.can_build_house(testplayer.player_name, testplayer.cash)
+    >>> (ret[0] == False) and (ret[1] == 'Buy all properties of this color FIRST!!')
+    True
+    >>> p.color_all = True; p.mortgaged = True
+    >>> ret = p.can_build_house(testplayer.player_name, testplayer.cash)
+    >>> (ret[0] == False) and (ret[1] == '%s is mortgaged, cannot build' \
+                                          %(p.property_name))
+    True
+    >>> p.mortgaged = False; p.house_hotel_cost += mglobals.CASH_INITIAL
+    >>> ret = p.can_build_house(testplayer.player_name, testplayer.cash)
+    >>> (ret[0] == False) and (ret[1] == '%s does not have enough cash to build' \
+                                          %(testplayer.player_name))
+    True
+    >>> p.house_hotel_cost -= mglobals.CASH_INITIAL; p.house_count = 5
+    >>> ret = p.can_build_house(testplayer.player_name, testplayer.cash)
+    >>> (ret[0] == False) and (ret[1] == 'Cannot build more houses/hotel on %s' \
+                                          %(p.property_name))
+    True
+    >>> p1 = mglobals.POBJECT_MAP[39]
+    >>> p1.owner_name = mglobals.PLAYER_ONE; p1.color_all = True
+    >>> p.house_count = 1
+    >>> ret = p.can_build_house(testplayer.player_name, testplayer.cash)
+    >>> (ret[0] == False) and (ret[1] == 'Build equal number of houses in a color!')
+    True
+    >>> p1.house_count = 1
+    >>> p.can_build_house(testplayer.player_name, testplayer.cash)
+    (True,)
+
+    >>> # Tests for build()
+    >>> p.house_count =0; p1.house_count = 0
+    >>> ret = p.build(testplayer.player_name, testplayer.cash)
+    >>> ret == p.house_hotel_cost
+    True
+    >>> p.owner_name = mglobals.BANK; p.color_all = False; p.house_count = 0
+    >>> p1.color_all = False; p1.house_count = 0
+    >>> p.build(testplayer.player_name, testplayer.cash)
+    0
+    >>> p1.build(testplayer.player_name, testplayer.cash)
+    0
+    >>> p.owner_name = mglobals.PLAYER_ONE; p.color_all = True; p1.color_all = True
+    >>> p.mortgaged = True
+    >>> p.build(testplayer.player_name, testplayer.cash)
+    0
+    >>> p.mortgaged = False; p.house_hotel_cost += mglobals.CASH_INITIAL
+    >>> p.build(testplayer.player_name, testplayer.cash)
+    0
+    >>> p.house_hotel_cost -= mglobals.CASH_INITIAL; p.house_count = 5
+    >>> p.build(testplayer.player_name, testplayer.cash)
+    0
+    >>> p.house_count = 1
+    >>> p.build(testplayer.player_name, testplayer.cash)
+    0
+    '''
+
     def __init__(self, index, property_name, cost, color, rent_details, mortgage_val,
                  house_hotel_cost, color_cost, color_all=False, owner_name=mglobals.BANK):
         super(Property, self).__init__()
@@ -126,8 +324,8 @@ class Property(BaseProperty):
             return (False, '%s is mortgaged, cannot build' %(self.property_name))
         if cash < self.house_hotel_cost:
             return (False, '%s does not have enough cash to build' %(self.owner_name))
-        if self.house_count >= 5:
-            return (False, 'Cannot build more houses/hotel on ', self.property_name)
+        if self.house_count == 5:
+            return (False, 'Cannot build more houses/hotel on %s' %(self.property_name))
         h_count = []
         for each_index in mglobals.PROP_COLOR_INDEX[self.color]:
             h_count.append(mglobals.POBJECT_MAP[each_index].house_count)
@@ -142,6 +340,36 @@ class Property(BaseProperty):
         return 0
 
 class UtilityProperty(BaseProperty):
+    '''
+    Class managing functionalities related to Utilities
+
+    >>> # Initialization
+    >>> import mglobals
+    >>> import random
+    >>> from player import Player
+    >>> mglobals.init()
+
+    >>> init_pobject_map()
+
+    >>> # Tests for compute_rent()
+    >>> testplayer = Player(mglobals.PLAYER_ONE)
+    >>> u = mglobals.POBJECT_MAP[12]
+    >>> d = random.randrange(2,12); count = 0
+    >>> u.compute_rent(testplayer.player_name, count, d)
+    0
+    >>> u.owner_name = mglobals.PLAYER_ONE
+    >>> u.compute_rent(testplayer.player_name, count, d)
+    0
+    >>> u.owner_name = mglobals.PLAYER_TWO; u.mortgaged = True
+    >>> count = 1
+    >>> u.compute_rent(testplayer.player_name, count, d)
+    0
+    >>> u.mortgaged = False
+    >>> ret = u.compute_rent(testplayer.player_name, count, d)
+    >>> ret == u.rent_details[count] * d
+    True
+    '''
+
     def __init__(self, index, property_name, cost, mortgage_val, owner_name=mglobals.BANK):
         super(UtilityProperty, self).__init__()
         self.index = index
@@ -162,6 +390,35 @@ class UtilityProperty(BaseProperty):
 
 
 class RailwayProperty(BaseProperty):
+    '''
+    Class managing functionalities related to Railways
+
+    >>> # Initialization
+    >>> import mglobals
+    >>> from player import Player
+    >>> mglobals.init()
+
+    >>> init_pobject_map()
+
+    >>> # Tests for compute_rent()
+    >>> testplayer = Player(mglobals.PLAYER_ONE)
+    >>> r = mglobals.POBJECT_MAP[15]
+    >>> count = 3
+    >>> r.compute_rent(testplayer.player_name, count)
+    0
+    >>> r.owner_name = mglobals.PLAYER_ONE
+    >>> r.compute_rent(testplayer.player_name, count)
+    0
+    >>> r.owner_name = mglobals.PLAYER_TWO; r.mortgaged = True
+    >>> r.compute_rent(testplayer.player_name, count)
+    0
+    >>> r.mortgaged = False
+    >>> ret = r.compute_rent(testplayer.player_name, count)
+    >>> ret == r.rent_details[count]
+    True
+
+    '''
+
     def __init__(self, index, property_name, cost, mortgage_val, owner_name=mglobals.BANK):
         super(RailwayProperty, self).__init__()
         self.index = index
@@ -179,9 +436,6 @@ class RailwayProperty(BaseProperty):
            self.owner_name == mglobals.BANK or self.mortgaged:
             return 0
         return self.rent_details[rail_count]
-
-class PropertyColor(object):
-    pass
 
 
 UTILITIES = [
