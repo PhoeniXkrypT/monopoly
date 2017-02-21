@@ -129,10 +129,6 @@ class BaseProperty(object):
             return (True,)
         return val
 
-    #TODO set this as a decorator?
-    def is_mortgaged(self):
-        return self.mortgaged
-
     def can_mortgage(self, currentplayer):
         if self.owner_name != currentplayer:
             return (False, '%s does not own %s!' % (currentplayer, self.property_name))
