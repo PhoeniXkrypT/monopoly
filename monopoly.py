@@ -3,6 +3,8 @@ import pygame
 import time
 import collections
 
+from pymsgbox import *
+
 import ui
 import mglobals
 import utils
@@ -75,6 +77,8 @@ def game_loop():
                 return
             elif event.type == pygame.KEYDOWN:
 
+                if event.key == pygame.K_x:
+                    alert(text='TEST', title='TestAlert', button='OK')
                 # Options 1, 2 & 3 to get out of jail
                 if currentplayer.pm.position == 10 and roll:
                     if event.key == pygame.K_1:
