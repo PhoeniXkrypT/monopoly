@@ -199,6 +199,43 @@ class PlayerSelection(object):
         psprite.unset_x_y()
 
 class Player(object):
+    '''
+    Class managing functionalities related to player
+
+    >>> # Initialization
+    >>> import mglobals
+    >>> import property as _property
+    >>> mglobals.init()
+    >>> _property.init_pobject_map()
+
+    >>> # Tests for give_player_cash()
+    >>> p = Player(mglobals.PLAYER_ONE)
+    >>> cash = 150
+    >>> p.give_player_cash(cash)
+    >>> p.cash == mglobals.CASH_INITIAL + cash
+    True
+
+    >>> # Tests for take_player_cash()
+    >>> p.cash -= (mglobals.CASH_INITIAL + cash)
+    >>> ret = p.take_player_cash(cash)
+    >>> (ret[0] == False) and (ret[1] ==  'Not enough money!')
+    True
+    >>> p.cash += mglobals.CASH_INITIAL
+    >>> p.take_player_cash(cash)
+    >>> p.cash == mglobals.CASH_INITIAL - cash
+    True
+
+    >>> # Tests for set_color_all()
+    >>> pos = 39
+    >>> p.set_color_all('blue')
+    >>> mglobals.POBJECT_MAP[pos].color_all == True
+    True
+    >>> p.set_color_all('blue', True)
+    >>> mglobals.POBJECT_MAP[pos].color_all == False
+    True
+
+    '''
+
     RECT_WIDTH = 65
     SQ_HEIGHT_WIDTH = 106
 
@@ -222,7 +259,7 @@ class Player(object):
         self.piu.update_cash(self.cash)
 
     def take_player_cash(self, cash):
-        if self.cash - cash < 1:
+        if self.cash - cash < 0:
             return (False, 'Not enough money!')
         self.cash -= cash
         self.piu.update_cash(self.cash)
@@ -346,3 +383,8 @@ class Player(object):
             self.take_player_cash(val)
         except KeyError, e:
             pass
+
+if __name__ == '__main__':
+    import doctest
+    doctest.testmod()
+
