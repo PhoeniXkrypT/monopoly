@@ -9,6 +9,23 @@ CHANCE_INDEXLIST = [7, 22, 36]
 CHEST_INDEXLIST = [2, 17, 33]
 
 class Jail(object):
+    '''
+    Class managing functionalities related to Jail
+
+    >>> # Initialization
+    >>> import mglobals
+    >>> from player import Player
+    >>> mglobals.init()
+
+    >>> # Tests for use_cash()
+    >>> testplayer = Player(mglobals.PLAYER_ONE)
+    >>> mglobals.PLAYER_OBJ[mglobals.PLAYER_ONE] = testplayer
+    >>> cash = testplayer.cash
+    >>> testplayer.jail.use_cash()
+    >>> (testplayer.jail.in_jail == False) and (cash == testplayer.cash)
+    True
+
+    '''
     def __init__(self, player_name):
         self.player_name = player_name
         self.free_jail_pass = 0
@@ -28,6 +45,130 @@ class Jail(object):
             mglobals.JAIL_MSG.unset_x_y()
 
 class ChanceChest(object):
+    '''
+    Class managing functionalities related to Chance and CommunityChest
+
+    >>> # Initialization
+    >>> import mglobals
+    >>> from player import Player
+    >>> mglobals.init()
+
+    >>> testplayer = Player(mglobals.PLAYER_ONE)
+    >>> mglobals.PLAYER_OBJ[mglobals.PLAYER_ONE] = testplayer
+    >>> mglobals.PLAYER_OBJ[mglobals.PLAYER_TWO] = Player(mglobals.PLAYER_TWO)
+
+    >>> # Tests for chance()
+    >>> ChanceChest().chance(testplayer, 0)
+    >>> testplayer.pm.position == 0
+    True
+    >>> ChanceChest().chance(testplayer, 1)
+    >>> (testplayer.pm.position == 10) and (testplayer.jail.in_jail == True)
+    True
+    >>> testplayer.jail.in_jail = False
+    >>> ChanceChest().chance(testplayer, 2)
+    >>> testplayer.pm.position == 11
+    True
+    >>> ChanceChest().chance(testplayer, 3)
+    >>> testplayer.pm.position == 15
+    True
+    >>> ChanceChest().chance(testplayer, 4)
+    >>> testplayer.pm.position == 24
+    True
+    >>> ChanceChest().chance(testplayer, 5)
+    >>> testplayer.pm.position == 39
+    True
+    >>> cur = testplayer.pm.position
+    >>> ChanceChest().chance(testplayer, 6)
+    >>> testplayer.pm.position == (cur - 3) % mglobals.BOARD_SQUARES
+    True
+    >>> ChanceChest().chance(testplayer, 7)
+    >>> ChanceChest().chance(testplayer, 8)
+    >>> cash = testplayer.cash
+    >>> ChanceChest().chance(testplayer, 9)
+    >>> testplayer.cash == cash - 150
+    True
+    >>> cash = testplayer.cash
+    >>> ChanceChest().chance(testplayer, 10)
+    >>> testplayer.cash == cash - 20
+    True
+    >>> cash = testplayer.cash
+    >>> ChanceChest().chance(testplayer, 11)
+    >>> testplayer.cash == cash - 15
+    True
+    >>> cash = testplayer.cash
+    >>> ChanceChest().chance(testplayer, 12)
+    >>> testplayer.cash == cash + 150
+    True
+    >>> cash = testplayer.cash
+    >>> ChanceChest().chance(testplayer, 13)
+    >>> testplayer.cash == cash + 100
+    True
+    >>> cash = testplayer.cash
+    >>> ChanceChest().chance(testplayer, 14)
+    >>> testplayer.cash == cash + 50
+    True
+
+    >>> # Tests for chest
+    >>> ChanceChest().chest(testplayer, 0)
+    >>> testplayer.pm.position == 0
+    True
+    >>> ChanceChest().chest(testplayer, 1)
+    >>> testplayer.pm.position == 1
+    True
+    >>> ChanceChest().chest(testplayer, 2)
+    >>> testplayer.pm.position == 10 and testplayer.jail.in_jail == True
+    True
+    >>> testplayer.jail.in_jail = False; cash = testplayer.cash
+    >>> ChanceChest().chest(testplayer, 3)
+    >>> testplayer.cash == cash - 100
+    True
+    >>> cash = testplayer.cash
+    >>> ChanceChest().chest(testplayer, 4)
+    >>> testplayer.cash == cash - 50
+    True
+    >>> cash = testplayer.cash
+    >>> ChanceChest().chest(testplayer, 5)
+    >>> testplayer.cash == cash - 50
+    True
+    >>> cash = testplayer.cash
+    >>> ChanceChest().chest(testplayer, 6)
+    >>> testplayer.cash == cash + 200
+    True
+    >>> cash = testplayer.cash
+    >>> ChanceChest().chest(testplayer, 7)
+    >>> testplayer.cash == cash + 100
+    True
+    >>> cash = testplayer.cash
+    >>> ChanceChest().chest(testplayer, 8)
+    >>> testplayer.cash == cash + 100
+    True
+    >>> cash = testplayer.cash
+    >>> ChanceChest().chest(testplayer, 9)
+    >>> testplayer.cash == cash + 50
+    True
+    >>> cash = testplayer.cash
+    >>> ChanceChest().chest(testplayer, 10)
+    >>> testplayer.cash == cash + 25
+    True
+    >>> cash = testplayer.cash
+    >>> ChanceChest().chest(testplayer, 11)
+    >>> testplayer.cash == cash + 20
+    True
+    >>> cash = testplayer.cash
+    >>> ChanceChest().chest(testplayer, 12)
+    >>> testplayer.cash == cash + 10
+    True
+    >>> cash1  = mglobals.PLAYER_OBJ[mglobals.PLAYER_ONE].cash
+    >>> cash2  = mglobals.PLAYER_OBJ[mglobals.PLAYER_TWO].cash
+    >>> ChanceChest().chest(testplayer, 13)
+    >>> testplayer.cash == cash1 + 10 and mglobals.PLAYER_OBJ[mglobals.PLAYER_TWO].cash == cash2 - 10
+    True
+    >>> cash = testplayer.cash
+    >>> ChanceChest().chest(testplayer, 15)
+    >>> testplayer.cash == cash - 10
+    True
+
+    '''
     def __init__(self):
         pass
 
@@ -60,7 +201,7 @@ class ChanceChest(object):
             m = {0:0, 1:10, 2:11, 3:15, 4:24, 5:39}
             player_obj.pm.advance(mglobals.BOARD_SQUARES + m[value] - player_obj.pm.position)
             if value == 1:
-                player_obj.jail_in_jail = True
+                player_obj.jail.in_jail = True
 
         elif value == 6:
             player_obj.pm.goback(3)
@@ -149,3 +290,7 @@ COMMUNITYCHEST={
         #TODO Take Chance
         15: 'Pay a £10 fine or take a "Chance"',
 }
+
+if __name__ == '__main__':
+    import doctest
+    doctest.testmod()
