@@ -43,14 +43,6 @@ class BaseProperty(object):
                                           %(b.property_name))
     True
 
-    >>> # Tests for is_mortgaged()
-    >>> b.mortgaged = False
-    >>> b.is_mortgaged()
-    False
-    >>> b.mortgaged = True
-    >>> b.is_mortgaged()
-    True
-
     >>> # Tests for can_mortgage()
     >>> ret = b.can_mortgage(testplayer.player_name)
     >>> (ret[0] == False) and (ret[1] == '%s does not own %s!' \
@@ -108,6 +100,22 @@ class BaseProperty(object):
     >>> b.mortgaged = True; b.mortgage_val = mglobals.CASH_INITIAL
     >>> b.unmortgage(testplayer.player_name, testplayer.cash)
     0
+
+    >>> # Tests for can_sell()
+    >>> ret = b.can_sell()
+    >>> (ret[0] == False) and (ret[1] == 'Unmortgage %s before selling.' %(b.property_name))
+    True
+    >>> b.mortgaged = False
+    >>> b.can_sell()
+    (True,)
+
+    >>> # Tests for sell()
+    >>> ret = b.sell()
+    >>> ret == b.cost and b.owner_name == mglobals.BANK
+    True
+    >>> b.mortgaged = True
+    >>> b.sell()
+    0
    '''
 
     def __init__(self):
@@ -156,6 +164,17 @@ class BaseProperty(object):
         if self.can_unmortgage(currentplayer, cash)[0]:
             self.mortgaged = False
             return int(self.mortgage_val * 1.1)
+        return 0
+
+    def can_sell(self):
+        if self.mortgaged:
+            return(False, 'Unmortgage %s before selling.' %(self.property_name))
+        return(True,)
+
+    def sell(self):
+        if self.can_sell()[0]:
+            self.owner_name = mglobals.BANK
+            return self.cost
         return 0
 
 class Property(BaseProperty):
@@ -275,6 +294,37 @@ class Property(BaseProperty):
     >>> p.house_count = 1
     >>> p.build(testplayer.player_name, testplayer.cash)
     0
+
+    >>> # Tests for can_sell()
+    >>> h_count = []; h_count.extend([p.house_count, p1.house_count])
+    >>> p.mortgaged = True
+    >>> ret = p.can_sell(h_count)
+    >>> (ret[0] == False) and (ret[1] == 'Unmortgage %s before selling.' %(p.property_name))
+    True
+    >>> p.mortgaged = False; p1.house_count = 2
+    >>> h_count = []; h_count.extend([p.house_count, p1.house_count])
+    >>> ret = p.can_sell(h_count)
+    >>> (ret[0] == False) and (ret[1] == 'Sell houses evenly in properties of %s color.' \
+                                                                              %(p.color))
+    True
+    >>> p.house_count = 2
+    >>> h_count = []; h_count.extend([p.house_count, p1.house_count])
+    >>> p.can_sell(h_count)
+    (True,)
+
+    >>> # Tests for sell()
+    >>> ret = p.sell()
+    >>> ret == p.house_hotel_cost
+    True
+    >>> p.sell()
+    0
+    >>> p.house_count = 0; p1.house_count = 0; p.mortgaged = True
+    >>> p.sell()
+    0
+    >>> p.mortgaged = False
+    >>> ret = p.sell()
+    >>> ret == p.cost
+    True
     '''
 
     def __init__(self, index, property_name, cost, color, rent_details, mortgage_val,
@@ -333,6 +383,26 @@ class Property(BaseProperty):
         if self.can_build_house(currentplayer, cash)[0]:
             self.house_count += 1
             return self.house_hotel_cost
+        return 0
+
+    def can_sell(self, h_count):
+        if self.mortgaged:
+            return(False, 'Unmortgage %s before selling.' %(self.property_name))
+        if set(h_count) != 1 and self.house_count != max(h_count):
+             return (False, 'Sell houses evenly in properties of %s color.' %(self.color))
+        return (True,)
+
+    def sell(self):
+        h_count = []
+        for each_index in mglobals.PROP_COLOR_INDEX[self.color]:
+            h_count.append(mglobals.POBJECT_MAP[each_index].house_count)
+        if self.can_sell(h_count)[0]:
+            if max(h_count) == 0:
+                self.owner_name = mglobals.BANK
+                return self.cost
+            else:
+                self.house_count -= 1
+                return self.house_hotel_cost
         return 0
 
 class UtilityProperty(BaseProperty):
