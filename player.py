@@ -28,21 +28,20 @@ class PlayerMovement(object):
                 currentplayer = obj
             else:
                 otherplayer = obj
-        try:
-            p_object = mglobals.POBJECT_MAP[self.position]
-            if p_object in _property.PROPERTIES:
-                val = p_object.compute_rent(self.player_name)
-            elif p_object in _property.RAILWAYS:
-                val = p_object.compute_rent(self.player_name, \
-                                            len(otherplayer.properties.get(p_object.color, [])))
-            else:
-                val = p_object.compute_rent(self.player_name, \
-                                            len(otherplayer.properties.get(p_object.color, [])), \
-                                            count)
-            currentplayer.take_player_cash(val)
-            otherplayer.give_player_cash(val)
-        except KeyError, e:
-            pass
+        p_object = mglobals.POBJECT_MAP.get(self.position, None)
+        if not p_object:
+            return
+        if p_object in _property.PROPERTIES:
+            val = p_object.compute_rent(self.player_name)
+        elif p_object in _property.RAILWAYS:
+            val = p_object.compute_rent(self.player_name, \
+                                        len(otherplayer.properties.get(p_object.color, [])))
+        else:
+            val = p_object.compute_rent(self.player_name, \
+                                        len(otherplayer.properties.get(p_object.color, [])), \
+                                        count)
+        currentplayer.take_player_cash(val)
+        otherplayer.give_player_cash(val)
 
     def advance(self, count):
         currentplayer = mglobals.PLAYER_OBJ[self.player_name]
@@ -273,78 +272,63 @@ class Player(object):
                 p_object.color_all = True
 
     def buy_property(self, index):
-        try:
-            p_object = mglobals.POBJECT_MAP[index]
-            if p_object.purchase(self.player_name, self.cash)[0]:
-                prop_list = self.properties.get(p_object.color, None)
-                if not prop_list or p_object.property_name not in prop_list:
-                    self.properties[p_object.color].append(p_object.property_name)
-                    self.take_player_cash(p_object.cost)
-                    if len(self.properties[p_object.color]) == \
-                       len(mglobals.PROP_COLOR_INDEX[p_object.color]) and \
-                       not(p_object in _property.RAILWAYS + _property.UTILITIES):
-                        self.set_color_all(p_object.color)
-                    self.piu.update_properties(self.properties)
-        except KeyError, e:
-            pass
+        p_object = mglobals.POBJECT_MAP.get(index, None)
+        if p_object and p_object.purchase(self.player_name, self.cash)[0]:
+            prop_list = self.properties.get(p_object.color, None)
+            if not prop_list or p_object.property_name not in prop_list:
+                self.properties[p_object.color].append(p_object.property_name)
+                self.take_player_cash(p_object.cost)
+                self.piu.update_properties(self.properties)
+                if len(self.properties[p_object.color]) == \
+                   len(mglobals.PROP_COLOR_INDEX[p_object.color]) and \
+                   not(p_object in _property.RAILWAYS + _property.UTILITIES):
+                    self.set_color_all(p_object.color)
 
     def mortgage_property(self, index):
-        try:
-            p_object = mglobals.POBJECT_MAP[index]
-            val = p_object.mortgage(self.player_name)
-            if not val:
-                return False
-            self.give_player_cash(val)
-            self.piu.replace_property(p_object.color, p_object.property_name, p_object.property_name+'_m')
-            self.piu.update_properties(self.properties)
-            return True
-        except KeyError, e:
-            pass
+        p_object = mglobals.POBJECT_MAP.get(index, None)
+        if not p_object:
+            return
+        val = p_object.mortgage(self.player_name)
+        if not val:
+            return False
+        self.give_player_cash(val)
+        self.piu.replace_property(p_object.color, p_object.property_name, p_object.property_name+'_m')
+        self.piu.update_properties(self.properties)
+        return True
 
     def unmortgage_property(self, index):
-        try:
-            p_object = mglobals.POBJECT_MAP[index]
-            val = p_object.unmortgage(self.player_name, self.cash)
-            if not val:
-                return False
-            self.take_player_cash(val)
-            self.piu.replace_property(p_object.color, p_object.property_name+'_m', p_object.property_name)
-            self.piu.update_properties(self.properties)
-            return True
-        except KeyError, e:
-            pass
+        p_object = mglobals.POBJECT_MAP.get(index, None)
+        if not p_object:
+            return
+        val = p_object.unmortgage(self.player_name, self.cash)
+        if not val:
+            return False
+        self.take_player_cash(val)
+        self.piu.replace_property(p_object.color, p_object.property_name+'_m', p_object.property_name)
+        self.piu.update_properties(self.properties)
+        return True
 
     def sell_property(self, index):
-        try:
-            p_object = mglobals.POBJECT_MAP[index]
-            if p_object.owner_name == self.player_name:
+        p_object = mglobals.POBJECT_MAP.get(index, None)
+        if p_object and p_object.owner_name == self.player_name:
+            val = p_object.sell()
+            if not val:
+                return
+            if val == p_object.cost:
+                self.properties[p_object.color].remove(p_object.property_name)
+                mglobals.PROPERTY_NAME_SPRITE_MAP[p_object.property_name].unset_x_y()
+                if self.properties.get(p_object.color) == []:
+                    self.properties.pop(p_object.color)
                 if p_object in _property.PROPERTIES:
-                    h_count = []
-                    for each_index in mglobals.PROP_COLOR_INDEX[p_object.color]:
-                        h_count.append(mglobals.POBJECT_MAP[each_index].house_count)
-                if p_object in _property.UTILITIES + _property.RAILWAYS \
-                        or max(h_count) == 0:
-                    p_object.owner_name = mglobals.BANK
-                    self.give_player_cash(p_object.cost)
-                    self.properties[p_object.color].remove(p_object.property_name)
-                    mglobals.PROPERTY_NAME_SPRITE_MAP[p_object.property_name].unset_x_y()
-                    if self.properties.get(p_object.color) == []:
-                        self.properties.pop(p_object.color)
-                    if p_object in _property.PROPERTIES:
-                        self.set_color_all(p_object.color, True)
-                    self.piu.update_properties(self.properties)
-                else:
-                    if set(h_count) != 1 and p_object.house_count != max(h_count):
-                        return (False, 'Sell houses in property of %s color.' % p_object.color)
-                    mglobals.INDEX_HOUSE_COUNT_MAP[index][p_object.house_count].unset_x_y()
-                    p_object.house_count -= 1
-                    self.give_player_cash(p_object.house_hotel_cost)
-                    if p_object.house_count != 0:
-                        hsprite = mglobals.INDEX_HOUSE_COUNT_MAP[index][p_object.house_count]
-                        x, y = self.h_count_reposition(index)
-                        hsprite.set_x_y(x, y)
-        except KeyError, e:
-            pass
+                    self.set_color_all(p_object.color, True)
+                self.piu.update_properties(self.properties)
+            elif val == p_object.house_hotel_cost:
+                mglobals.INDEX_HOUSE_COUNT_MAP[index][p_object.house_count+1].unset_x_y()
+                if p_object.house_count != 0:
+                    hsprite = mglobals.INDEX_HOUSE_COUNT_MAP[index][p_object.house_count]
+                    x, y = self.h_count_reposition(index)
+                    hsprite.set_x_y(x, y)
+            self.give_player_cash(val)
 
     def h_count_reposition(self, position):
         x, y = 900, 900
@@ -367,22 +351,21 @@ class Player(object):
         return x, y
 
     def build_house(self, index):
+        p_object = mglobals.POBJECT_MAP.get(index, None)
+        if not p_object:
+            return
         if index in [each.index for each in _property.UTILITIES + _property.RAILWAYS]:
             return False
-        try:
-            p_object = mglobals.POBJECT_MAP[index]
-            val = p_object.build(self.player_name, self.cash)
-            if not val:
-                return False
-            prev_count = p_object.house_count - 1
-            if not(prev_count == 0):
-                mglobals.INDEX_HOUSE_COUNT_MAP[index][prev_count].unset_x_y()
-            hsprite = mglobals.INDEX_HOUSE_COUNT_MAP[index][p_object.house_count]
-            x, y = self.h_count_reposition(index)
-            hsprite.set_x_y(x, y)
-            self.take_player_cash(val)
-        except KeyError, e:
-            pass
+        val = p_object.build(self.player_name, self.cash)
+        if not val:
+            return False
+        prev_count = p_object.house_count - 1
+        if not(prev_count == 0):
+            mglobals.INDEX_HOUSE_COUNT_MAP[index][prev_count].unset_x_y()
+        hsprite = mglobals.INDEX_HOUSE_COUNT_MAP[index][p_object.house_count]
+        x, y = self.h_count_reposition(index)
+        hsprite.set_x_y(x, y)
+        self.take_player_cash(val)
 
 if __name__ == '__main__':
     import doctest
