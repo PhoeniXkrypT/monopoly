@@ -51,7 +51,11 @@ def clear_p1_info():
 
 def clear_p2_info():
     mglobals.P_INFO_CLRSCR.fill(mglobals.color_map['white'])
-    mglobals.GD.blit(mglobals.P_INFO_CLRSCR, (808, 390))
+    mglobals.GD.blit(mglobals.P_INFO_CLRSCR, (808, 385))
+
+def clear_msg_info():
+    mglobals.MSG_CLRSCR.fill(mglobals.color_map['white'])
+    mglobals.GD.blit(mglobals.MSG_CLRSCR, (808, 770))
 
 def draw_player_menu(ocolor1, ocolor2):
     mglobals.GD.fill(mglobals.WHITE)

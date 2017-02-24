@@ -66,6 +66,8 @@ P1_IMG = None
 P2_IMG = None
 PvAI = False
 P_INFO_CLRSCR = None
+MSG_CLRSCR = None
+MSG_SCR = None
 
 CASH_INITIAL = 1500
 CHANCE_CHEST_VALUE = 0
@@ -98,12 +100,13 @@ PLAYER_JAIL_CARD = collections.defaultdict(dict)
 JAILCARD_DISPLAY = pygame.sprite.Group()
 
 def load_imgs():
-    global BACK_IMG, P1_IMG, P2_IMG, P_INFO_CLRSCR
+    global BACK_IMG, P1_IMG, P2_IMG, P_INFO_CLRSCR, MSG_CLRSCR
     BACK_IMG = pygame.image.load('pics/board_uk.jpg')
     P1_IMG = pygame.image.load('pics/p1.png')
     P2_IMG = pygame.image.load('pics/p2.png')
     BACK_IMG = pygame.transform.scale(BACK_IMG, (DISPLAY_W - 400, DISPLAY_H))
-    P_INFO_CLRSCR = pygame.Surface([380, 400])
+    P_INFO_CLRSCR = pygame.Surface([380, 380])
+    MSG_CLRSCR = pygame.Surface([380, 18])
 
 def init_pygame():
     global GD, CLK

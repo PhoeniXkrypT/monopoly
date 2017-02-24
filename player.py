@@ -259,7 +259,8 @@ class Player(object):
 
     def take_player_cash(self, cash):
         if self.cash - cash < 0:
-            return (False, 'Not enough money!')
+            mglobals.MSG_SCR.display('%s does not have enough money!' % (self.player_name))
+            return False
         self.cash -= cash
         self.piu.update_cash(self.cash)
 
@@ -273,7 +274,7 @@ class Player(object):
 
     def buy_property(self, index):
         p_object = mglobals.POBJECT_MAP.get(index, None)
-        if p_object and p_object.purchase(self.player_name, self.cash)[0]:
+        if p_object and p_object.purchase(self.player_name, self.cash):
             prop_list = self.properties.get(p_object.color, None)
             if not prop_list or p_object.property_name not in prop_list:
                 self.properties[p_object.color].append(p_object.property_name)

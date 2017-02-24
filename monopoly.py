@@ -43,6 +43,8 @@ def player_menu_loop():
 def game_loop():
     utils.draw_board()
 
+    mglobals.MSG_SCR = ui.MsgDisplayUI()
+
     P1 = Player(mglobals.PLAYER_ONE)
     P2 = Player(mglobals.PLAYER_TWO)
 
@@ -195,6 +197,7 @@ def game_loop():
                         mglobals.PLAYER_NAME_SPRITE[otherplayer.player_name].unset_x_y()
                         mglobals.CURRENTPLAYER_IMG[currentplayer.player_name].set_x_y(480, 115)
                         mglobals.CURRENTPLAYER_IMG[otherplayer.player_name].unset_x_y()
+                        mglobals.MSG_SCR.draw_rect()
                         currentplayer.ps.hide()
                         otherplayer.ps.hide()
 

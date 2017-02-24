@@ -190,10 +190,10 @@ class PlayerInfoUI(object):
         self.player_name = player_name
         if self.player_name == mglobals.PLAYER_ONE:
             self.x = 810
-            self.y = 10
+            self.y = 5
         elif self.player_name in [mglobals.PLAYER_TWO, mglobals.PLAYER_AI]:
             self.x = 810
-            self.y = 410
+            self.y = 385
         self.cash = cash
         self.properties = properties
         self.color = color
@@ -291,3 +291,20 @@ class PlayerInfoUI(object):
             mglobals.PLAYER_JAIL_CARD[self.player_name][val].set_x_y(self.x + 350, self.y + 20)
         elif val == 11:
             mglobals.PLAYER_JAIL_CARD[self.player_name][11].set_x_y(self.x + 340, self.y + 20)
+
+class MsgDisplayUI(object):
+    def __init__(self, color='black'):
+        self.color = color
+        self.x = 810
+        self.y = 768
+        self.draw_rect()
+
+    def display(self, message=''):
+        self.draw_rect()
+        utils.message_display(message, self.x+140, self.y+13, fntsize='small')
+
+    def draw_rect(self):
+        utils.clear_msg_info()
+        pygame.draw.rect(mglobals.GD, mglobals.color_map[self.color],
+                         [self.x, self.y, 375, 25], 2)
+
