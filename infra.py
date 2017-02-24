@@ -14,8 +14,10 @@ class Jail(object):
 
     >>> # Initialization
     >>> import mglobals
+    >>> import ui
     >>> from player import Player
     >>> mglobals.init()
+    >>> ui.init_printui()
 
     >>> # Tests for use_cash()
     >>> testplayer = Player(mglobals.PLAYER_ONE)
@@ -23,6 +25,20 @@ class Jail(object):
     >>> cash = testplayer.cash
     >>> testplayer.jail.use_cash()
     >>> (testplayer.jail.in_jail == False) and (cash == testplayer.cash)
+    True
+    >>> testplayer.jail.in_jail = True
+    >>> testplayer.jail.use_cash()
+    >>> (testplayer.jail.in_jail == False) and (cash - 50 == testplayer.cash)
+    True
+
+    >>> # Tests for use_jail_pass()
+    >>> testplayer.jail.in_jail = True
+    >>> testplayer.jail.use_jail_pass()
+    >>> testplayer.jail.in_jail == True
+    True
+    >>> testplayer.jail.free_jail_pass = 1
+    >>> testplayer.jail.use_jail_pass()
+    >>> testplayer.jail.in_jail == False and testplayer.jail.free_jail_pass == 0
     True
 
     '''
@@ -50,12 +66,25 @@ class ChanceChest(object):
 
     >>> # Initialization
     >>> import mglobals
+    >>> import ui
     >>> from player import Player
+    >>> import property as _property
     >>> mglobals.init()
+    >>> ui.init_printui()
+    >>> ui.init_property_displays()
+    >>> _property.init_pobject_map()
 
     >>> testplayer = Player(mglobals.PLAYER_ONE)
     >>> mglobals.PLAYER_OBJ[mglobals.PLAYER_ONE] = testplayer
     >>> mglobals.PLAYER_OBJ[mglobals.PLAYER_TWO] = Player(mglobals.PLAYER_TWO)
+
+    >>> # Tests for deduct_house_hotel_repair()
+    >>> testplayer.buy_property(1); testplayer.buy_property(39)
+    >>> t = testplayer.mortgage_property(1)
+    >>> mglobals.POBJECT_MAP[39].house_count = 3
+    >>> ret = ChanceChest().deduct_house_hotel_repair(testplayer, 10, 100)
+    >>> ret == mglobals.POBJECT_MAP[39].house_count * 10
+    True
 
     >>> # Tests for chance()
     >>> ChanceChest().chance(testplayer, 0)
@@ -81,8 +110,14 @@ class ChanceChest(object):
     >>> ChanceChest().chance(testplayer, 6)
     >>> testplayer.pm.position == (cur - 3) % mglobals.BOARD_SQUARES
     True
+    >>> cash = testplayer.cash
     >>> ChanceChest().chance(testplayer, 7)
+    >>> testplayer.cash == cash - mglobals.POBJECT_MAP[39].house_count * 25
+    True
+    >>> cash = testplayer.cash; mglobals.POBJECT_MAP[39].house_count = 5
     >>> ChanceChest().chance(testplayer, 8)
+    >>> testplayer.cash == cash - 115
+    True
     >>> cash = testplayer.cash
     >>> ChanceChest().chance(testplayer, 9)
     >>> testplayer.cash == cash - 150
@@ -106,6 +141,9 @@ class ChanceChest(object):
     >>> cash = testplayer.cash
     >>> ChanceChest().chance(testplayer, 14)
     >>> testplayer.cash == cash + 50
+    True
+    >>> ChanceChest().chance(testplayer, 15)
+    >>> testplayer.jail.free_jail_pass == 1
     True
 
     >>> # Tests for chest
@@ -162,6 +200,9 @@ class ChanceChest(object):
     >>> cash2  = mglobals.PLAYER_OBJ[mglobals.PLAYER_TWO].cash
     >>> ChanceChest().chest(testplayer, 13)
     >>> testplayer.cash == cash1 + 10 and mglobals.PLAYER_OBJ[mglobals.PLAYER_TWO].cash == cash2 - 10
+    True
+    >>> ChanceChest().chest(testplayer, 14)
+    >>> testplayer.jail.free_jail_pass == 2
     True
     >>> cash = testplayer.cash
     >>> ChanceChest().chest(testplayer, 15)

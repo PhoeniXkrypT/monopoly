@@ -203,34 +203,102 @@ class Player(object):
 
     >>> # Initialization
     >>> import mglobals
+    >>> import ui
     >>> import property as _property
     >>> mglobals.init()
     >>> _property.init_pobject_map()
+    >>> mglobals.MSG_SCR = ui.MsgDisplayUI()
+    >>> ui.init_property_displays()
 
     >>> # Tests for give_player_cash()
-    >>> p = Player(mglobals.PLAYER_ONE)
+    >>> testplayer = Player(mglobals.PLAYER_ONE)
     >>> cash = 150
-    >>> p.give_player_cash(cash)
-    >>> p.cash == mglobals.CASH_INITIAL + cash
+    >>> testplayer.give_player_cash(cash)
+    >>> testplayer.cash == mglobals.CASH_INITIAL + cash
     True
 
     >>> # Tests for take_player_cash()
-    >>> p.cash -= (mglobals.CASH_INITIAL + cash)
-    >>> ret = p.take_player_cash(cash)
-    >>> (ret[0] == False) and (ret[1] ==  'Not enough money!')
-    True
-    >>> p.cash += mglobals.CASH_INITIAL
-    >>> p.take_player_cash(cash)
-    >>> p.cash == mglobals.CASH_INITIAL - cash
+    >>> testplayer.cash -= (mglobals.CASH_INITIAL + cash)
+    >>> testplayer.take_player_cash(cash)
+    False
+    >>> testplayer.cash += mglobals.CASH_INITIAL
+    >>> testplayer.take_player_cash(cash)
+    >>> testplayer.cash == mglobals.CASH_INITIAL - cash
     True
 
     >>> # Tests for set_color_all()
     >>> pos = 39
-    >>> p.set_color_all('blue')
+    >>> testplayer.set_color_all('blue')
     >>> mglobals.POBJECT_MAP[pos].color_all == True
     True
-    >>> p.set_color_all('blue', True)
+    >>> testplayer.set_color_all('blue', True)
     >>> mglobals.POBJECT_MAP[pos].color_all == False
+    True
+
+    >>> # Tests for buy_property()
+    >>> pobj1 = mglobals.POBJECT_MAP[pos]
+    >>> pobj1.property_name in testplayer.properties[pobj1.color]
+    False
+    >>> cash = testplayer.cash
+    >>> testplayer.buy_property(pos)
+    >>> testplayer.cash == cash - mglobals.POBJECT_MAP[pos].cost and \
+                        pobj1.property_name in testplayer.properties[pobj1.color]
+    True
+    >>> cash = testplayer.cash
+    >>> testplayer.buy_property(pos)
+    >>> testplayer.cash == cash
+    True
+    >>> testplayer.cash -= testplayer.cash
+    >>> pos = 37; pobj2 = mglobals.POBJECT_MAP[pos]
+    >>> testplayer.buy_property(pos)
+    >>> pobj2.property_name in testplayer.properties[pobj2.color]
+    False
+    >>> pobj1.color_all == False
+    True
+    >>> testplayer.cash = mglobals.CASH_INITIAL
+    >>> testplayer.buy_property(pos)
+    >>> pobj2.property_name in testplayer.properties[pobj2.color]
+    True
+    >>> pobj2.color_all == True and pobj1.color_all == True
+    True
+
+    >>> # Tests for mortgage_property()
+    >>> testplayer.mortgage_property(pos)
+    True
+    >>> testplayer.mortgage_property(pos)
+    False
+    >>> testplayer.mortgage_property(38)
+
+    >>> # Tests for unmortgage_property()
+    >>> testplayer.unmortgage_property(pobj1.index)
+    False
+    >>> testplayer.unmortgage_property(pobj2.index)
+    True
+    >>> testplayer.unmortgage_property(38)
+
+    >>> # Tests for sell_property()
+    >>> ui.init_house_count_displays()
+    >>> testplayer.sell_property(pobj2.index)
+    >>> pobj2.owner_name == mglobals.BANK
+    True
+    >>> testplayer.sell_property(pobj2.index)
+    >>> pobj1.house_count = 1
+    >>> testplayer.sell_property(pobj1.index)
+    >>> pobj1.owner_name == mglobals.PLAYER_ONE and pobj1.house_count == 0
+    True
+    >>> pobj1.mortgaged = True
+    >>> testplayer.sell_property(pobj1.index)
+    >>> pobj1.mortgaged = False
+
+    >>> # Tests for build_house()
+    >>> testplayer.build_house(38)
+    >>> testplayer.build_house(15)
+    False
+    >>> testplayer.build_house(pobj1.index)
+    False
+    >>> testplayer.buy_property(pobj2.index)
+    >>> testplayer.build_house(pobj1.index)
+    >>> pobj1.house_count == 1
     True
 
     '''
