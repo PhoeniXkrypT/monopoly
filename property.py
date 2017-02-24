@@ -104,7 +104,6 @@ class BaseProperty(object):
     def __init__(self):
         pass
 
-    #TODO Display the error messages also
     def can_purchase(self, currentplayer, cash):
         if self.owner_name == mglobals.BANK:
             if cash >= self.cost:

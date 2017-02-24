@@ -301,7 +301,7 @@ class MsgDisplayUI(object):
 
     def display(self, message=''):
         self.draw_rect()
-        utils.message_display(message, self.x+140, self.y+13, fntsize='small')
+        utils.message_display(message, self.x+10, self.y+7, fntsize='small',center_coord=False)
 
     def draw_rect(self):
         utils.clear_msg_info()
