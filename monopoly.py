@@ -73,8 +73,8 @@ def game_loop():
             else:
                 mglobals.JAIL_MSG.unset_x_y()
 
-            mglobals.CASH_INSUFF = True if currentplayer.cash < 0 \
-                                         else False
+            mglobals.CASH_INSUFF = False if currentplayer.cash > 0 \
+                                         else True
 
             if event.type == pygame.QUIT:
                 return
@@ -183,6 +183,9 @@ def game_loop():
                     otherplayer.pm.render()
                     currentplayer.ps.show()
                     currentplayer.sell_property(currentplayer.ps.position)
+
+                elif event.key == pygame.K_z:
+                    currentplayer.take_player_cash(100)
 
                 elif event.key == pygame.K_n:
                     utils.draw_board()
