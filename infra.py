@@ -240,9 +240,9 @@ class ChanceChest(object):
     def chance(self, player_obj, value):
         if value in xrange(6):
             m = {0:0, 1:10, 2:11, 3:15, 4:24, 5:39}
-            player_obj.pm.advance(mglobals.BOARD_SQUARES + m[value] - player_obj.pm.position)
             if value == 1:
                 player_obj.jail.in_jail = True
+            player_obj.pm.advance(mglobals.BOARD_SQUARES + m[value] - player_obj.pm.position)
 
         elif value == 6:
             player_obj.pm.goback(3)
@@ -268,9 +268,9 @@ class ChanceChest(object):
     def chest(self, player_obj, value):
         if value in xrange(3):
             m = {0:0, 1:1, 2:10}
-            player_obj.pm.advance(mglobals.BOARD_SQUARES + m[value] - player_obj.pm.position)
             if value == 2:
                 player_obj.jail.in_jail = True
+            player_obj.pm.advance(mglobals.BOARD_SQUARES + m[value] - player_obj.pm.position)
 
         elif value in [3, 4, 5]:
             m = {3:100, 4:50, 5:50}

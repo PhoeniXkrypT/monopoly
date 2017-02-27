@@ -39,7 +39,7 @@ color_map = {
         'purple': PURPLE,
         'black': BLACK,
         'brown': BROWN,
-        'sky_blue': DEEP_SKY_BLUE,
+        'sky blue': DEEP_SKY_BLUE,
         'pink': PINK,
         'orange': ORANGE,
         'red': RED,
@@ -70,6 +70,7 @@ MSG_CLRSCR = None
 MSG_SCR = None
 
 CASH_INITIAL = 1500
+CASH_INSUFF = False
 CHANCE_CHEST_VALUE = 0
 JAIL_MSG = None
 

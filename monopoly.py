@@ -3,8 +3,6 @@ import pygame
 import time
 import collections
 
-from pymsgbox import *
-
 import ui
 import mglobals
 import utils
@@ -75,12 +73,18 @@ def game_loop():
             else:
                 mglobals.JAIL_MSG.unset_x_y()
 
+            mglobals.CASH_INSUFF = True if currentplayer.cash < 0 \
+                                         else False
+
             if event.type == pygame.QUIT:
                 return
             elif event.type == pygame.KEYDOWN:
 
-                if event.key == pygame.K_x:
-                    alert(text='TEST', title='TestAlert', button='OK')
+                if event.key == pygame.K_q:
+                    mglobals.MSG_SCR.display("%s declares bankrupcy!" \
+                                              % (currentplayer.player_name))
+                    return
+
                 # Options 1, 2 & 3 to get out of jail
                 if currentplayer.pm.position == 10 and roll:
                     if event.key == pygame.K_1:
@@ -102,7 +106,8 @@ def game_loop():
                         roll = False
 
                 # Dice roll
-                if event.key == pygame.K_d and roll and not(currentplayer.jail.in_jail):
+                if event.key == pygame.K_d and roll and not(currentplayer.jail.in_jail)\
+                                           and not mglobals.CASH_INSUFF:
                     utils.draw_board()
                     mglobals.CHANCE_MAP[mglobals.CHANCE_CHEST_VALUE].unset_x_y()
                     mglobals.CHEST_MAP[mglobals.CHANCE_CHEST_VALUE].unset_x_y()
@@ -183,7 +188,7 @@ def game_loop():
                     utils.draw_board()
                     currentplayer.pm.render()
                     otherplayer.pm.render()
-                    if roll:
+                    if roll or mglobals.CASH_INSUFF:
                         pass
                     else:
                         roll = True

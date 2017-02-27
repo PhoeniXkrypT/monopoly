@@ -48,8 +48,8 @@ class PlayerMovement(object):
         prev_pos = self.position
         self.position = (self.position + count) % mglobals.BOARD_SQUARES
         self.find_rent_amount(count)
-        if (self.position == 0 or prev_pos > self.position) and \
-            (not currentplayer.jail.in_jail):
+        if self.position == 0 or (prev_pos > self.position and \
+                                  not currentplayer.jail.in_jail):
             currentplayer.give_player_cash(200)
         if self.position in infra.CHANCE_INDEXLIST + infra.CHEST_INDEXLIST:
             infra.ChanceChest().chance_chest(self.player_name)
@@ -218,16 +218,21 @@ class Player(object):
     True
 
     >>> # Tests for take_player_cash()
-    >>> testplayer.cash -= (mglobals.CASH_INITIAL + cash)
-    >>> testplayer.take_player_cash(cash)
-    False
-    >>> testplayer.cash += mglobals.CASH_INITIAL
+    >>> testplayer.cash = mglobals.CASH_INITIAL
     >>> testplayer.take_player_cash(cash)
     >>> testplayer.cash == mglobals.CASH_INITIAL - cash
     True
+    >>> testplayer.cash -= testplayer.cash
+    >>> mglobals.CASH_INSUFF == False
+    True
+    >>> testplayer.take_player_cash(cash)
+    >>> mglobals.CASH_INSUFF == True
+    True
+    >>> testplayer.take_player_cash(cash)
+    False
 
     >>> # Tests for set_color_all()
-    >>> pos = 39
+    >>> pos = 39; testplayer.cash = mglobals.CASH_INITIAL
     >>> testplayer.set_color_all('blue')
     >>> mglobals.POBJECT_MAP[pos].color_all == True
     True
@@ -326,11 +331,13 @@ class Player(object):
         self.piu.update_cash(self.cash)
 
     def take_player_cash(self, cash):
-        if self.cash - cash < 0:
-            mglobals.MSG_SCR.display('%s does not have enough money!' % (self.player_name))
+        if self.cash < 0:
             return False
         self.cash -= cash
         self.piu.update_cash(self.cash)
+        if self.cash < 0:
+            mglobals.CASH_INSUFF = True
+            mglobals.MSG_SCR.display('%s owes money!' % (self.player_name))
 
     def set_color_all(self, color, unset=False):
         for each in mglobals.PROP_COLOR_INDEX[color]:
@@ -350,7 +357,7 @@ class Player(object):
                 self.piu.update_properties(self.properties)
                 if len(self.properties[p_object.color]) == \
                    len(mglobals.PROP_COLOR_INDEX[p_object.color]) and \
-                   not(p_object in _property.RAILWAYS + _property.UTILITIES):
+                   (p_object in _property.PROPERTIES):
                     self.set_color_all(p_object.color)
 
     def mortgage_property(self, index):

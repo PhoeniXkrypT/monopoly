@@ -109,7 +109,7 @@ class BaseProperty(object):
             if cash >= self.cost:
                 return True
             else:
-                mglobals.MSG_SCR.display('%s does not have enough cash!' \
+                mglobals.MSG_SCR.display('%s does not have enough cash to buy!' \
                                           % (currentplayer))
                 return False
         mglobals.MSG_SCR.display('%s is already purchased!' % (self.property_name))
@@ -350,7 +350,7 @@ class Property(BaseProperty):
                                       % (currentplayer, self.property_name))
             return False
         if not self.color_all:
-            mglobals.MSG_SCR.display('Buy all properties of this color FIRST!!')
+            mglobals.MSG_SCR.display('Buy all properties of %s color FIRST!!' % (self.color))
             return False
         if self.mortgaged:
             mglobals.MSG_SCR.display('%s is mortgaged, cannot build!' % (self.property_name))
@@ -517,9 +517,9 @@ PROPERTIES = [
         Property(3, 'Whitechapel Road', 60, 'brown', {0: 4, 1: 20, 2: 60, 3: 180, 4: 360, 5: 450}, 50, 30, 2, False),
 
         # Sky Blue
-        Property(6, 'The Angel Islington', 100, 'sky_blue', {0: 6, 1: 30, 2: 90, 3: 270, 4: 400, 5: 550}, 50, 50, 2, False),
-        Property(8, 'Euston Road', 100, 'sky_blue', {0: 6, 1: 30, 2: 90, 3: 270, 4: 400, 5: 550}, 50, 50, 2, False),
-        Property(9, 'Pentonville Road', 120, 'sky_blue', {0: 8, 1: 40, 2: 100, 3: 300, 4: 450, 5: 600}, 60, 50, 2, False),
+        Property(6, 'The Angel Islington', 100, 'sky blue', {0: 6, 1: 30, 2: 90, 3: 270, 4: 400, 5: 550}, 50, 50, 2, False),
+        Property(8, 'Euston Road', 100, 'sky blue', {0: 6, 1: 30, 2: 90, 3: 270, 4: 400, 5: 550}, 50, 50, 2, False),
+        Property(9, 'Pentonville Road', 120, 'sky blue', {0: 8, 1: 40, 2: 100, 3: 300, 4: 450, 5: 600}, 60, 50, 2, False),
 
         # Pink
         Property(11, 'Pall Mall', 140, 'pink', {0: 10, 1: 50, 2: 150, 3: 450, 4: 625, 5: 750}, 70, 100, 2, False),
