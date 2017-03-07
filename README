@@ -1,2 +1,6 @@
 
 # Monopoly !
+
+To play this game:
+Install pygame and run
+      python monopoly.py
