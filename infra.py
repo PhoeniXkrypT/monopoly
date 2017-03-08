@@ -18,6 +18,7 @@ class Jail(object):
     >>> from player import Player
     >>> mglobals.init()
     >>> ui.init_printui()
+    >>> mglobals.MSG_SCR = ui.MsgDisplayUI()
 
     >>> # Tests for use_cash()
     >>> testplayer = Player(mglobals.PLAYER_ONE)
@@ -47,18 +48,21 @@ class Jail(object):
         self.free_jail_pass = 0
         self.in_jail = False
 
+    def _clear_jail(self):
+        self.in_jail = False
+        mglobals.JAIL_MSG.unset_x_y()
+        mglobals.MSG_SCR.display()
+
     def use_cash(self):
         if self.in_jail:
             mglobals.PLAYER_OBJ[self.player_name].take_player_cash(50)
-            self.in_jail = False
-            mglobals.JAIL_MSG.unset_x_y()
+            self._clear_jail()
 
     def use_jail_pass(self):
         if self.in_jail and self.free_jail_pass:
             self.free_jail_pass -= 1
             mglobals.PLAYER_OBJ[self.player_name].piu.jail_card_display(False)
-            self.in_jail = False
-            mglobals.JAIL_MSG.unset_x_y()
+            self._clear_jail()
 
 class ChanceChest(object):
     '''

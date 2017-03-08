@@ -52,12 +52,6 @@ def game_loop():
     P1.pm.render()
     P2.pm.render()
 
-    P1.buy_property(1)
-    P1.buy_property(3)
-    P1.buy_property(11)
-    P2.buy_property(8)
-    P2.buy_property(39)
-
     currentplayer, otherplayer = P1, P2
     mglobals.PLAYER_NAME_SPRITE[currentplayer.player_name].set_x_y(350, 120)
     mglobals.CURRENTPLAYER_IMG[currentplayer.player_name].set_x_y(480, 115)
@@ -70,6 +64,8 @@ def game_loop():
 
             if currentplayer.jail.in_jail:
                 mglobals.JAIL_MSG.set_x_y(120, 630)
+                if roll:
+                    mglobals.MSG_SCR.display('To get out of jail: Press 1 use Cash, Press 2 use Card')
             else:
                 mglobals.JAIL_MSG.unset_x_y()
 
@@ -183,9 +179,6 @@ def game_loop():
                     otherplayer.pm.render()
                     currentplayer.ps.show()
                     currentplayer.sell_property(currentplayer.ps.position)
-
-                elif event.key == pygame.K_z:
-                    currentplayer.take_player_cash(100)
 
                 elif event.key == pygame.K_n:
                     utils.draw_board()
