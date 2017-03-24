@@ -65,12 +65,15 @@ def game_loop():
             if currentplayer.jail.in_jail:
                 mglobals.JAIL_MSG.set_x_y(120, 630)
                 if roll:
-                    mglobals.MSG_SCR.display('To get out of jail: Press 1 use Cash, Press 2 use Card')
+                    mglobals.MSG_SCR.display('Out of jail: Press 1 use Cash, Press 2 use Card, Press 3 Pass')
             else:
                 mglobals.JAIL_MSG.unset_x_y()
 
-            mglobals.CASH_INSUFF = False if currentplayer.cash > 0 \
+            mglobals.CASH_INSUFF = False if currentplayer.cash >= 0 \
                                          else True
+            if not mglobals.CASH_INSUFF and mglobals.MSG_SCR.cash_insuff_msg:
+                    mglobals.MSG_SCR.display()
+                    mglobals.MSG_SCR.cash_insuff_msg = False
 
             if event.type == pygame.QUIT:
                 return
@@ -135,7 +138,6 @@ def game_loop():
                     currentplayer.ps.hide()
                     currentplayer.ps.advance()
                     currentplayer.ps.show()
-                    otherplayer.ps.render()
                     currentplayer.pm.render()
                     otherplayer.pm.render()
 
@@ -144,7 +146,6 @@ def game_loop():
                     currentplayer.ps.hide()
                     currentplayer.ps.goback()
                     currentplayer.ps.show()
-                    otherplayer.ps.render()
                     currentplayer.pm.render()
                     otherplayer.pm.render()
 

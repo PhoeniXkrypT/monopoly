@@ -337,6 +337,7 @@ class Player(object):
         self.piu.update_cash(self.cash)
         if self.cash < 0:
             mglobals.CASH_INSUFF = True
+            mglobals.MSG_SCR.cash_insuff_msg = True
             mglobals.MSG_SCR.display('%s owes money!' % (self.player_name))
 
     def set_color_all(self, color, unset=False):

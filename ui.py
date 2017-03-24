@@ -297,6 +297,7 @@ class MsgDisplayUI(object):
         self.color = color
         self.x = 810
         self.y = 768
+        self.cash_insuff_msg = False
         self.draw_rect()
 
     def display(self, message=''):
