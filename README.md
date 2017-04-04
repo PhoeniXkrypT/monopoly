@@ -1,12 +1,10 @@
+# MONOPOLY!
 
-# Monopoly !
-
-How to?
+# How to?
 Install pygame and run
       python monopoly.py
 
-Keyboard Usage:
-
+# Keyboard Usage:
 B - Buy property
 D - Roll dice
 H - Build house
