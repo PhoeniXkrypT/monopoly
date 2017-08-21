@@ -3,7 +3,8 @@
 ## How to?
 Install pygame and run
 
-     `` python monopoly.py ``
+     python monopoly.py
+
 
 ## Keyboard Usage:
 * B - Buy property
@@ -22,6 +23,6 @@ To get out of jail
 * 2 - Use free jail pass
 * 3 - Pass
 
-## Our Monopoly!
+## Monopoly Layout!
 ![Alt
 text](https://github.com/PhoeniXkrypT/monopoly/blob/master/pics/gameScreenshot.png)
