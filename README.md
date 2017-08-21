@@ -20,3 +20,6 @@ To get out of jail
 * 1 - Use cash
 * 2 - Use free jail pass
 * 3 - Pass
+
+## Our Monopoly!
+![alt text](pics/gameScreenshot.png)
